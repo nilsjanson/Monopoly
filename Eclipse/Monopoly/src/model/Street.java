@@ -1,7 +1,6 @@
-package streets;
+package model;
 
 import javafx.scene.paint.Color;
-import model.Field;
 
 public class Street extends Field {
 

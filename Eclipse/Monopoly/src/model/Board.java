@@ -1,7 +1,5 @@
 package model;
 
-import streets.Street;
-
 public class Board {
 
 	private model.Field[] cards;
@@ -11,7 +9,7 @@ public class Board {
 	}
 
 
-//	 /*
+	 /*
 	public void init() {
 		cards = new Field[40];
 		cards[0] = new Go(0, "Start");
@@ -56,5 +54,5 @@ public class Board {
 	cards[39] = new Card("Bibliothek",39,400,mortage,street,rentalFee);
 
 	}
-//	 */
+	 */
 }

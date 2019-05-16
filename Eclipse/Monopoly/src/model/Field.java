@@ -3,7 +3,6 @@ package model;
 import java.io.FileNotFoundException;
 
 import javafx.scene.image.ImageView;
-import streets.Street;
 
 public class Field {
 

@@ -1,14 +1,12 @@
 package model;
 
-import streets.Street;
-
 public class Card extends Field {
 	
 	
 	private int cost;
 	private int mortgage;
 	private model.Player holder;
-	private streets.Street street;
+	private model.Street street;
 	private int[] rentalFee;
 	private int house;
 	
@@ -33,7 +31,7 @@ public class Card extends Field {
 		return mortgage;
 	}
 
-	public streets.Street getStreet() {
+	public model.Street getStreet() {
 		return street;
 	}
 
