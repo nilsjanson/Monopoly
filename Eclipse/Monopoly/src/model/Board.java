@@ -1,5 +1,7 @@
 package model;
 
+import streets.Street;
+
 public class Board {
 
 	private model.Field[] cards;

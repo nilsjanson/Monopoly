@@ -3,6 +3,7 @@ package model;
 import java.io.FileNotFoundException;
 
 import javafx.scene.image.ImageView;
+import streets.Street;
 
 public class Field {
 
@@ -18,9 +19,22 @@ public class Field {
 
 	public Field(int location, String name, boolean isStreet) {
 		super();
+		if (this instanceof Street) {
+			isStreet=true;
+		}
 		this.location = location;
 		this.name = name;
 		this.isStreet = isStreet;
+		icon = new ImageView(Go.class.getResource("/icons/"+name+".gif").toExternalForm());
+	}
+	
+	public Field(int location, String name) {
+		super();
+		if (this instanceof Street) {
+			isStreet=true;
+		}
+		this.location = location;
+		this.name = name;
 		icon = new ImageView(Go.class.getResource("/icons/"+name+".gif").toExternalForm());
 	}
 
