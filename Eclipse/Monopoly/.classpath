@@ -6,6 +6,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="F:/Studium/OneDrive - th-bingen.de/Anlagen/SENG/Projekt 2019/Monopoly/Monopoly/Eclipse/Monopoly/lib/jfxrt.jar"/>
+	<classpathentry kind="lib" path="F:/Studium/OneDrive - th-bingen.de/Anlagen/SENG/Projekt 2019/Monopoly/Monopoly/Eclipse/Monopoly/src/lib/jfxrt.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
