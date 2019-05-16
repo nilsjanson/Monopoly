@@ -86,8 +86,9 @@ public class Board {
 			@Override
 			public void handle(KeyEvent event) {
 				switch(event.getCode()) {
-				case UP: break;
+				case SPACE: break;
 				case ESCAPE: System.exit(0); break;
+				default: System.out.println(event.getCode()+" erkannt!"); break;
 				}
 			}
 		});
