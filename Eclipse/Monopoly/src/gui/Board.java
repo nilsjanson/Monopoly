@@ -18,6 +18,7 @@ public class Board {
 	private Stage prime;
 	private ImageView img = new ImageView(getClass().getResource("/icons/TH-Poly.jpg").toExternalForm());
 	private Stage welcome;
+	int spieler=0;
 	
 	public Board (Stage prime) {
 		this.prime=prime;
@@ -57,6 +58,7 @@ public class Board {
 		Button vier = new Button("4 Spieler");
 		butStyle(zwei,drei,vier);
 		hbox.getChildren().addAll(zwei,drei,vier);
+		hbox.setSpacing(10);
 		hbox.setAlignment(Pos.CENTER);
 		vbox.getChildren().addAll(logo,welcomel,hbox);
 		Scene scene=new Scene(vbox);
@@ -70,7 +72,7 @@ public class Board {
 
 	private void butStyle(Button...x) {
 		for (Button but: x) {
-			but.setStyle("-fx-border-color: black; -fx-background-color: lightgreen");
+			but.setStyle("-fx-border-color: black; -fx-background-color: lightgreen; -fx-font-size: 2em;");
 			but.setOnAction(e-> createBoard());
 		}
 	}
