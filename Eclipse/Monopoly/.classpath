@@ -6,6 +6,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="C:/Java/SENG/Monopoly/Eclipse/Monopoly/src/lib/jfxrt.jar"/>
+	<classpathentry kind="lib" path="src/lib/jfxrt.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
