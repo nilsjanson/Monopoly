@@ -41,7 +41,7 @@ public class Board {
 		vbox.setAlignment(Pos.CENTER);
 		Scene scene= new Scene(vbox);
 		prime.initStyle(StageStyle.UNDECORATED);
-		sceneControls(scene);
+		controlBoard(scene);
 		prime.setScene(scene);
 		prime.setWidth(max);
 		prime.setHeight(max);
@@ -66,7 +66,7 @@ public class Board {
 		vbox.getChildren().addAll(logo,welcomel,hbox);
 		Scene scene=new Scene(vbox);
 		vbox.autosize();
-		sceneControls(scene);
+		controlWelcome(scene);
 		welcome.setScene(scene);
 		welcome.initStyle(StageStyle.UNDECORATED);
 		welcome.initModality(Modality.APPLICATION_MODAL);
@@ -81,7 +81,7 @@ public class Board {
 		}
 	}
 
-	private void sceneControls(Scene scene) {
+	private void controlBoard(Scene scene) {
 		scene.setOnKeyPressed( new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent event) {
@@ -92,7 +92,18 @@ public class Board {
 				}
 			}
 		});
-
+	}
+	
+	private void controlWelcome(Scene scene) {
+		scene.setOnKeyPressed( new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent event) {
+				switch(event.getCode()) {
+				case ESCAPE: System.exit(0); break;
+				default: System.out.println(event.getCode()+" erkannt!"); break;
+				}
+			}
+		});
 	}
 	
 	
