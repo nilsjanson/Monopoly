@@ -1,11 +1,13 @@
 package gui;
 
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
@@ -36,9 +38,10 @@ public class Board {
 		img.setFitHeight(max);
 		img.setFitWidth(max);
 		vbox.getChildren().add(img);
-		Scene scene= new Scene(vbox);
 		vbox.setAlignment(Pos.CENTER);
+		Scene scene= new Scene(vbox);
 		prime.initStyle(StageStyle.UNDECORATED);
+		sceneControls(scene);
 		prime.setScene(scene);
 		prime.setWidth(max);
 		prime.setHeight(max);
@@ -63,6 +66,7 @@ public class Board {
 		vbox.getChildren().addAll(logo,welcomel,hbox);
 		Scene scene=new Scene(vbox);
 		vbox.autosize();
+		sceneControls(scene);
 		welcome.setScene(scene);
 		welcome.initStyle(StageStyle.UNDECORATED);
 		welcome.initModality(Modality.APPLICATION_MODAL);
@@ -77,9 +81,22 @@ public class Board {
 		}
 	}
 
+	private void sceneControls(Scene scene) {
+		scene.setOnKeyPressed( new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent event) {
+				switch(event.getCode()) {
+				case SPACE: break;
+				case ESCAPE: System.exit(0); break;
+				default: System.out.println(event.getCode()+" erkannt!"); break;
+				}
+			}
+		});
 
-
-double getMin(double x,double y) {
+	}
+	
+	
+	double getMin(double x,double y) {
 	if (x<y) {
 		return x;
 	} 
