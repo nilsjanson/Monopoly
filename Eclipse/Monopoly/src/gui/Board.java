@@ -86,7 +86,7 @@ public class Board {
 			@Override
 			public void handle(KeyEvent event) {
 				switch(event.getCode()) {
-				case SPACE: break;
+				case CONTROL: img.setRotate(img.getRotate()+90); break;
 				case ESCAPE: System.exit(0); break;
 				default: System.out.println(event.getCode()+" erkannt!"); break;
 				}
