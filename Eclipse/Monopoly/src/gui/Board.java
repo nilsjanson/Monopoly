@@ -62,7 +62,7 @@ public class Board {
 		Rectangle2D screen = Screen.getPrimary().getVisualBounds();
 		double width=screen.getMaxX();
 		double height=screen.getMaxY();
-		double max=getMin(width,height);
+		double max=Math.min(width, height);
 		Pane pane = new Pane();
 		parent=pane;
 		pane.setStyle("-fx-background-color: lightgreen;"
@@ -150,13 +150,5 @@ public class Board {
 			}
 		});
 	}
-	
-	
-	double getMin(double x,double y) {
-	if (x<y) {
-		return x;
-	} 
-	return y;
-}
 
 }
