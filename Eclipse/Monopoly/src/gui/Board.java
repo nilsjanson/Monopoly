@@ -99,7 +99,6 @@ public class Board {
 		ImageView logo = new ImageView(getClass().getResource("/icons/TH-Poly-Logo.jpg").toExternalForm());
 		vbox.setAlignment(Pos.CENTER);
 		vbox.setStyle("-fx-background-color: lightgreen");
-		Label welcomel = new Label("");
 		HBox hbox = new HBox();
 		Button zwei = new Button("2 Spieler");
 		Button drei = new Button("3 Spieler");
@@ -108,7 +107,7 @@ public class Board {
 		hbox.getChildren().addAll(zwei,drei,vier);
 		hbox.setSpacing(10);
 		hbox.setAlignment(Pos.CENTER);
-		vbox.getChildren().addAll(logo,welcomel,hbox);
+		vbox.getChildren().addAll(logo,hbox);
 		Scene scene=new Scene(vbox);
 		vbox.autosize();
 		controlWelcome(scene);
