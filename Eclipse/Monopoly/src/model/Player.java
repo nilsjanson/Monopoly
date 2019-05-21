@@ -1,12 +1,21 @@
 package model;
 
-public class Player {
+import javafx.scene.image.ImageView;
 
+public class Player {
+	private ImageView img; 
 	
 	Player() {
 		
 	}
 	
+	public ImageView getIcon () {
+		return img;
+	}
+	
+	public void setIcon(String x) {
+		img=new ImageView(getClass().getResource("/playerIcons/"+x+".png").toExternalForm());
+	}
 	
 	private void Zug() {
 		int augen = wuerfeln() +wuerfeln();

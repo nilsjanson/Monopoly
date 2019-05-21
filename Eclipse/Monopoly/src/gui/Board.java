@@ -8,12 +8,17 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Circle;
 import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import model.Player1;
+import model.Player2;
 
 public class Board {
 
@@ -21,10 +26,35 @@ public class Board {
 	private ImageView img = new ImageView(getClass().getResource("/icons/TH-Poly.jpg").toExternalForm());
 	private Stage welcome;
 	int spieler=0;
+	Pane parent;
 	
 	public Board (Stage prime) {
 		this.prime=prime;
 		welcome();
+	}
+	
+	private void createPlayer1(double width, double height) {
+		Player1 one = new Player1();
+		ImageView icon = one.getIcon();
+		height=height/20;
+		width=width/20;
+		icon.setFitHeight(height);
+		icon.setFitWidth(width);
+		parent.getChildren().add(icon);
+		icon.setX(prime.getWidth()-width);
+		icon.setY(prime.getHeight()-height);
+	}
+	
+	private void createPlayer2(double width, double height) {
+		Player2 two = new Player2();
+		ImageView icon = two.getIcon();
+		height=height/20;
+		width=width/20;
+		icon.setFitHeight(height);
+		icon.setFitWidth(width);
+		parent.getChildren().add(icon);
+		icon.setX(prime.getWidth()-width);
+		icon.setY(prime.getHeight()-(2*height));
 	}
 	
 	private void createBoard() {
@@ -33,19 +63,34 @@ public class Board {
 		double width=screen.getMaxX();
 		double height=screen.getMaxY();
 		double max=getMin(width,height);
-		VBox vbox= new VBox();
-		vbox.setStyle("-fx-background-color: lightgreen");
-		img.setFitHeight(max);
-		img.setFitWidth(max);
-		vbox.getChildren().add(img);
-		vbox.setAlignment(Pos.CENTER);
-		Scene scene= new Scene(vbox);
+		Pane pane = new Pane();
+		parent=pane;
+		pane.setStyle("-fx-background-color: lightgreen;"
+				+ "-fx-background-image: url(\"/icons/TH-Poly.jpg\");"
+				+ "    -fx-background-size: "+max+" "+max+";");
+		pane.autosize();
+//		img.setFitHeight(max);
+//		img.setFitWidth(max);
+//		vbox.getChildren().add(img);
+		Scene scene= new Scene(pane);
 		prime.initStyle(StageStyle.UNDECORATED);
 		controlBoard(scene);
 		prime.setScene(scene);
 		prime.setWidth(max);
 		prime.setHeight(max);
 		prime.show();
+		
+//		createPlayer1(width,height);
+//		createPlayer2(width,height);
+		addKreis(width,height);
+	}
+	
+	void addKreis(double width, double height) {
+		Circle circle = new Circle(200);
+		circle.setStyle("-fx-background-color: red;");
+		parent.getChildren().add(circle);
+		circle.setCenterY(0);
+		
 	}
 	
 	private void welcome() {
@@ -86,7 +131,7 @@ public class Board {
 			@Override
 			public void handle(KeyEvent event) {
 				switch(event.getCode()) {
-				case CONTROL: img.setRotate(img.getRotate()-90); break;
+				case CONTROL: parent.setRotate(parent.getRotate()-90); break;
 				case ESCAPE: System.exit(0); break;
 				default: System.out.println(event.getCode()+" erkannt!"); break;
 				}
