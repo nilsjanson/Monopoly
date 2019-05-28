@@ -1,10 +1,13 @@
 package model;
 
+import javafx.scene.image.ImageView;
+
 public class Player {
 
+	ImageView img; 
 	
 	Player() {
-		
+		img = new ImageView(getClass().getResource("").toExternalForm());
 	}
 	
 	
