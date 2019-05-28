@@ -4,12 +4,19 @@ import javafx.scene.image.ImageView;
 
 public class Player {
 
-	ImageView img; 
+	private ImageView img; 
 	
 	Player() {
 		img = new ImageView(getClass().getResource("").toExternalForm());
 	}
 	
+	public ImageView getIcon () {
+		return img;
+	}
+	
+	public void setIcon(String x) {
+		img=new ImageView(getClass().getResource("/playerIcons/"+x+".png").toExternalForm());
+	}
 	
 	private void Zug() {
 		int augen = wuerfeln() +wuerfeln();

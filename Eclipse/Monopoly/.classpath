@@ -5,7 +5,7 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="src" path="src"/>
+	<classpathentry excluding="lib/" kind="src" path="src"/>
 	<classpathentry kind="lib" path="src/lib/jfxrt.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

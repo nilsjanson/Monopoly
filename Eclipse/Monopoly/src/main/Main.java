@@ -5,12 +5,11 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-
 	Stage prime;
 	Board board;
+	//Test Commit
 	
 	public static void main(String...args) {
-
 		launch();
 	}
 
