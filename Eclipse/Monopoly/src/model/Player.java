@@ -3,10 +3,11 @@ package model;
 import javafx.scene.image.ImageView;
 
 public class Player {
+
 	private ImageView img; 
 	
 	Player() {
-		
+		img = new ImageView(getClass().getResource("").toExternalForm());
 	}
 	
 	public ImageView getIcon () {
