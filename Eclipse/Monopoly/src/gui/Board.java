@@ -28,7 +28,6 @@ public class Board {
 	final Media media = new Media(resource.toString());
 	final MediaPlayer mediaPlayer = new MediaPlayer(media);
 	private Stage prime;
-	private ImageView img = new ImageView(getClass().getResource("/icons/TH-Poly.jpg").toExternalForm());
 	private Stage welcome;
 	int spieler = 0;
 	Pane parent;
@@ -74,9 +73,6 @@ public class Board {
 		pane.setStyle("-fx-background-color: lightgreen;" + "-fx-background-image: url(\"/icons/TH-Poly.jpg\");"
 				+ "    -fx-background-size: " + max + " " + max + ";");
 		pane.autosize();
-		// img.setFitHeight(max);
-		// img.setFitWidth(max);
-		// vbox.getChildren().add(img);
 		Scene scene = new Scene(pane);
 		prime.initStyle(StageStyle.UNDECORATED);
 		controlBoard(scene);
