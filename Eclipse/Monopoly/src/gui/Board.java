@@ -1,12 +1,14 @@
 package gui;
 
 import java.net.URL;
+import java.util.ArrayList;
 
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
@@ -130,6 +132,19 @@ public class Board {
 			but.setOnAction(e -> createBoard());
 		}
 	}
+	
+	void helpMe() {
+		Stage help = new Stage();
+		VBox vbox = new VBox();
+		ArrayList<Label> helpfull = new ArrayList<Label>();
+		helpfull.add(new Label("F1 = Hilfe"));
+		helpfull.add(new Label("F11 = Musik an"));
+		helpfull.add(new Label("F12 = Musik aus"));
+		helpfull.add(new Label("ESC = Beendet das Programm"));
+		vbox.getChildren().addAll(helpfull);
+		help.setScene(new Scene(vbox));
+		help.show();
+	}
 
 	private void controlBoard(Scene scene) {
 		scene.setOnMousePressed(new EventHandler<javafx.scene.input.MouseEvent>() {
@@ -142,6 +157,9 @@ public class Board {
 			@Override
 			public void handle(KeyEvent event) {
 				switch (event.getCode()) {
+				case F1:
+					helpMe();
+					break;
 				case CONTROL:
 					parent.setRotate(parent.getRotate() - 90);
 					break;
@@ -153,6 +171,8 @@ public class Board {
 					break;
 				case F12:
 					mediaPlayer.stop();
+				case WINDOWS:
+					break;
 				default:
 					System.out.println(event.getCode() + " erkannt!");
 					break;
