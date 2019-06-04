@@ -70,12 +70,12 @@ public class Board {
 		}
 	}
 	
-	private int wuerfeln() {
+	public static int wuerfeln() {
 		int erg = 7;
 		while(erg==7) {
 			erg = (int)(Math.random()*6)+1;
 		}
 		return erg;
 	}
-
+	
 }
