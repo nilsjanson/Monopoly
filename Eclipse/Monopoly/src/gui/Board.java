@@ -163,6 +163,9 @@ public class Board {
 				case F1:
 					helpMe();
 					break;
+				case SPACE:
+					new WuerfelStage();
+					break;
 				case CONTROL:
 					parent.setRotate(parent.getRotate() - 90);
 					break;
