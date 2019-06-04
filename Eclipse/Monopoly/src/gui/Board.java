@@ -84,6 +84,12 @@ public class Board {
 		prime.show();
 		 createPlayer1(width,height);
 		 createPlayer2(width,height);
+		 System.out.println("Maximale Groeﬂe: "+max);
+	}
+	
+	int wuerfeln () {
+		
+		return 1;
 	}
 
 	void startMusik() {
@@ -142,7 +148,9 @@ public class Board {
 		helpfull.add(new Label("F12 = Musik aus"));
 		helpfull.add(new Label("ESC = Beendet das Programm"));
 		vbox.getChildren().addAll(helpfull);
-		help.setScene(new Scene(vbox));
+		vbox.setStyle("-fx-background-color: honeydew");
+		Scene scene = new Scene(vbox);
+		help.setScene(scene);
 		help.show();
 	}
 
