@@ -44,6 +44,10 @@ public class Player {
 		position = position % 40;
 	}
 	
+	
+	protected void buyHouseOption(Card card) {
+		
+	}
 	public int getPosition() {
 		return position;
 	}
