@@ -82,7 +82,6 @@ public class Board {
 		prime.show();
 		 createPlayer1(width,height);
 		 createPlayer2(width,height);
-
 	}
 
 	void startMusik() {
@@ -177,5 +176,4 @@ public class Board {
 			}
 		});
 	}
-
 }
