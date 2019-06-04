@@ -21,11 +21,10 @@ import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import model.Player1;
-import model.Player2;
 
 public class Board {
-
+	
+	Board me = this;
 	final URL resource = getClass().getResource("/musik/AnnoDominiBeatsStillStanding.mp3");
 	final Media media = new Media(resource.toString());
 	final MediaPlayer mediaPlayer = new MediaPlayer(media);
@@ -40,29 +39,28 @@ public class Board {
 		welcome();
 	}
 
-	private void createPlayer1(double width, double height) {
-		Player1 one = new Player1();
-		ImageView icon = one.getIcon();
-		height = height / 20;
-		width = width / 20;
-		icon.setFitHeight(height);
-		icon.setFitWidth(width);
-		parent.getChildren().add(icon);
-		icon.setX(prime.getWidth() - width);
-		icon.setY(prime.getHeight() - height);
-	}
-
-	private void createPlayer2(double width, double height) {
-		Player2 two = new Player2();
-		ImageView icon = two.getIcon();
-		height = height / 20;
-		width = width / 20;
-		icon.setFitHeight(height);
-		icon.setFitWidth(width);
-		parent.getChildren().add(icon);
-		icon.setX(prime.getWidth() - width);
-		icon.setY(prime.getHeight() - (2 * height));
-	}
+//	private void createPlayer1(double width, double height) {
+//		Player1 one = new Player1();
+//		ImageView icon = one.getIcon();
+//		height = height / 20;
+//		width = width / 20;
+//		icon.setFitHeight(height);
+//		icon.setFitWidth(width);
+//		parent.getChildren().add(icon);
+//		icon.setX(prime.getWidth() - width);
+//		icon.setY(prime.getHeight() - height);
+//	}
+//
+//	private void createPlayer2(double width, double height) {
+//
+//		height = height / 20;
+//		width = width / 20;
+//		icon.setFitHeight(height);
+//		icon.setFitWidth(width);
+//		parent.getChildren().add(icon);
+//		icon.setX(prime.getWidth() - width);
+//		icon.setY(prime.getHeight() - (2 * height));
+//	}
 
 	private void createBoard() {
 		welcome.close();
@@ -82,8 +80,6 @@ public class Board {
 		prime.setWidth(max);
 		prime.setHeight(max);
 		prime.show();
-		 createPlayer1(width,height);
-		 createPlayer2(width,height);
 		 System.out.println("Maximale Groeﬂe: "+max);
 	}
 
@@ -92,14 +88,6 @@ public class Board {
 		final Media media = new Media(resource.toString());
 		final MediaPlayer mediaPlayer = new MediaPlayer(media);
 		mediaPlayer.play();
-	}
-
-	void addKreis(double width, double height) {
-		Circle circle = new Circle(200);
-		circle.setStyle("-fx-background-color: red;");
-		parent.getChildren().add(circle);
-		circle.setCenterY(0);
-
 	}
 
 	private void welcome() {
@@ -134,7 +122,7 @@ public class Board {
 		}
 	}
 	
-	void helpMe() {
+	protected void helpMe() {
 		Stage help = new Stage();
 		VBox vbox = new VBox();
 		ArrayList<Label> helpfull = new ArrayList<Label>();
@@ -164,7 +152,7 @@ public class Board {
 					helpMe();
 					break;
 				case SPACE:
-					new WuerfelStage();
+					new WuerfelStage(me,1,1);
 					break;
 				case CONTROL:
 					parent.setRotate(parent.getRotate() - 90);
