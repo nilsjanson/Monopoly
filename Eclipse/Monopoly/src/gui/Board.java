@@ -86,11 +86,6 @@ public class Board {
 		 createPlayer2(width,height);
 		 System.out.println("Maximale Groeﬂe: "+max);
 	}
-	
-	int wuerfeln () {
-		
-		return 1;
-	}
 
 	void startMusik() {
 		final URL resource = getClass().getResource("/musik/AnnoDominiBeatsStillStanding.mp3");
