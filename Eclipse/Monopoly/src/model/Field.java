@@ -36,5 +36,9 @@ public class Field {
 		this.name = name;
 		icon = new ImageView(Go.class.getResource("/icons/"+name+".gif").toExternalForm());
 	}
+	
+	public void action(Player player) {
+		
+	}
 
 }

@@ -5,6 +5,9 @@ import javafx.scene.image.ImageView;
 public class Player {
 
 	private ImageView img; 
+	private int position;
+	private int bilanz;
+	private int id ;
 	
 	Player() {
 		img = new ImageView(getClass().getResource("").toExternalForm());
@@ -14,20 +17,36 @@ public class Player {
 		return img;
 	}
 	
+	
+	
 	public void setIcon(String x) {
 		img=new ImageView(getClass().getResource("/playerIcons/"+x+".png").toExternalForm());
 	}
 	
-	private void Zug() {
-		int augen = wuerfeln() +wuerfeln();
+	public void payRental(int rentalFee) {
+		bilanz -= bilanz;
+	}
+	
+	public void earnRental(int rentalFee) {
+		bilanz +=bilanz;
+	}
+	
+	public int getID() {
+		return id;
+	}
+	public void buyCardOption(Card x) {
+		//
 	}
 	
 	
-	private int wuerfeln() {
-		int erg = 7;
-		while(erg==7) {
-			erg = (int)(Math.random()*6)+1;
-		}
-		return erg;
+	private void move(int count) {
+		position+=count;
+		position = position % 40;
 	}
+	
+	public int getPosition() {
+		return position;
+	}
+	
+	
 }
