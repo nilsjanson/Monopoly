@@ -126,6 +126,7 @@ public class Board {
 		VBox vbox = new VBox();
 		ArrayList<Label> helpfull = new ArrayList<Label>();
 		helpfull.add(new Label("F1 = Hilfe"));
+		helpfull.add(new Label("Enter = Wueferln bestaetigen"));
 		helpfull.add(new Label("F11 = Musik an"));
 		helpfull.add(new Label("F12 = Musik aus"));
 		helpfull.add(new Label("ESC = Beendet das Programm"));

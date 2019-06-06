@@ -45,7 +45,6 @@ public class WuerfelStage extends Application {
 		int y=model.Board.wuerfeln();
 		hbox.getChildren().add(views.get(x - 1));
 		hbox.getChildren().add(views.get((y + 6) - 1));
-
 		Scene scene = new Scene(hbox);
 		scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			@Override
