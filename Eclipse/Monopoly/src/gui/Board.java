@@ -134,6 +134,7 @@ public class Board {
 		vbox.setStyle("-fx-background-color: honeydew");
 		Scene scene = new Scene(vbox);
 		help.setScene(scene);
+		help.initModality(Modality.APPLICATION_MODAL);
 		help.show();
 	}
 
