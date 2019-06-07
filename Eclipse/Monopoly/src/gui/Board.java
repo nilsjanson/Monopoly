@@ -3,6 +3,7 @@ package gui;
 import java.net.URL;
 import java.util.ArrayList;
 
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
@@ -11,11 +12,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -30,8 +33,9 @@ public class Board {
 	private Stage prime;
 	private Stage welcome;
 	int spieler = 0;
-	Pane parent;
-
+	BorderPane parent;
+	private double max;
+	int buttonCount=0;
 	public Board(Stage prime) {
 		mediaPlayer.play();
 		this.prime = prime;
@@ -66,12 +70,28 @@ public class Board {
 		Rectangle2D screen = Screen.getPrimary().getVisualBounds();
 		double width = screen.getMaxX();
 		double height = screen.getMaxY();
-		double max = Math.min(width, height);
-		Pane pane = new Pane();
+		max = Math.min(width, height);
+		BorderPane pane = new BorderPane();
+
 		parent = pane;
 		pane.setStyle("-fx-background-color: lightgreen;" + "-fx-background-image: url(\"/icons/TH-Poly.jpg\");"
 				+ "    -fx-background-size: " + max + " " + max + ";");
 		pane.autosize();
+		
+		
+		HBox buttom = hButtonRow(true);
+		VBox left = vButtonRow(true);
+		HBox top = hButtonRow();
+		VBox right=vButtonRow();
+		
+		pane.setTop(top);
+		pane.setBottom(buttom);
+		pane.setLeft(left);
+		pane.setRight(right);
+
+		BorderPane.setAlignment(left, Pos.CENTER);
+		BorderPane.setAlignment(right, Pos.CENTER);
+		
 		Scene scene = new Scene(pane);
 		prime.initStyle(StageStyle.UNDECORATED);
 		controlBoard(scene);
@@ -80,6 +100,89 @@ public class Board {
 		prime.setHeight(max);
 		prime.show();
 		 System.out.println("Maximale Groeﬂe: "+max);
+	}
+	
+	private HBox hButtonRow() {
+		HBox hbox = new HBox();
+		ArrayList<Button> buttons = new ArrayList<Button>();
+		for (int i=0;i<=10;i++) {
+			buttons.add(new Button(""+buttonCount++));
+		}
+		streetHButs(buttons);
+		hbox.getChildren().addAll(buttons);
+		return hbox;
+	}
+	
+	private HBox hButtonRow(boolean invers) {
+		HBox hbox = new HBox();
+		ArrayList<Button> buttons = new ArrayList<Button>();
+		int j=buttonCount+10;
+		for (int i=0;i<=10;i++) {
+			buttons.add(new Button(""+j--));
+			buttonCount++;
+		}
+		streetHButs(buttons);
+		hbox.getChildren().addAll(buttons);
+		return hbox;
+	}
+	
+	private VBox vButtonRow() {
+		VBox vbox = new VBox();
+		ArrayList<Button> buttons = new ArrayList<Button>();
+		for (int i=0;i<=8;i++) {
+			buttons.add(new Button(""+buttonCount++));
+		}
+		streetVButs(buttons);
+		vbox.getChildren().addAll(buttons);
+		return vbox;
+	}
+	
+	private VBox vButtonRow(boolean invers) {
+		VBox vbox = new VBox();
+		ArrayList<Button> buttons = new ArrayList<Button>();
+		int j=buttonCount+8;
+		for (int i=0;i<=8;i++) {
+			buttons.add(new Button(""+j--));
+			buttonCount++;
+		}
+		streetVButs(buttons);
+		vbox.getChildren().addAll(buttons);
+		return vbox;
+	}
+	
+	private void streetHButs(ArrayList<Button> buttons) {
+		for (Button x: buttons) {
+			x.setPrefHeight(max*0.134);
+			x.setPrefWidth(max*0.0843);;
+			x.setStyle("-fx-border-color: transparent; -fx-background-color: transparent");
+			x.setTextFill(Color.TRANSPARENT);
+			x.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent arg0) {
+					System.out.println("Street "+x.getText());
+				}
+			});	
+		}
+		buttons.get(0).setPrefWidth(max*0.136);
+		buttons.get(buttons.size()-1).setPrefWidth(max*0.136);
+		
+		buttons.get(0).setPrefHeight(max*0.136);
+		buttons.get(buttons.size()-1).setPrefHeight(max*0.136);
+	}
+	
+	private void streetVButs(ArrayList<Button> buttons) {
+		for (Button x: buttons) {
+			x.setPrefWidth(max*0.134);
+			x.setPrefHeight(max*0.0814);;
+			x.setStyle("-fx-border-color: transparent; -fx-background-color: transparent");
+			x.setTextFill(Color.TRANSPARENT);
+			x.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent arg0) {
+					System.out.println("Street "+x.getText());
+				}
+			});	
+		}
 	}
 
 	void startMusik() {
@@ -113,8 +216,8 @@ public class Board {
 		welcome.show();
 		welcome.centerOnScreen();
 	}
-
-	private void butStyle(Button... x) {
+	
+	private void butStyle(Button...x) {
 		for (Button but : x) {
 			but.setStyle("-fx-border-color: black; -fx-background-color: lightgreen; -fx-font-size: 2em;");
 			but.setOnAction(e -> createBoard());
@@ -158,15 +261,16 @@ public class Board {
 				case CONTROL:
 					parent.setRotate(parent.getRotate() - 90);
 					break;
-				case ESCAPE:
-					System.exit(0);
-					break;
 				case F11:
 					mediaPlayer.play();
 					break;
 				case F12:
 					mediaPlayer.stop();
+					break;
 				case WINDOWS:
+					break;
+				case ESCAPE:
+					System.exit(0);
 					break;
 				default:
 					System.out.println(event.getCode() + " erkannt!");
@@ -181,6 +285,9 @@ public class Board {
 			@Override
 			public void handle(KeyEvent event) {
 				switch (event.getCode()) {
+				case F12:
+					mediaPlayer.stop();
+					break;
 				case ESCAPE:
 					System.exit(0);
 					break;
