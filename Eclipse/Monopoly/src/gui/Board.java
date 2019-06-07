@@ -16,7 +16,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.scene.shape.Circle;
 import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -127,6 +126,7 @@ public class Board {
 		VBox vbox = new VBox();
 		ArrayList<Label> helpfull = new ArrayList<Label>();
 		helpfull.add(new Label("F1 = Hilfe"));
+		helpfull.add(new Label("Enter = Wueferln bestaetigen"));
 		helpfull.add(new Label("F11 = Musik an"));
 		helpfull.add(new Label("F12 = Musik aus"));
 		helpfull.add(new Label("ESC = Beendet das Programm"));
