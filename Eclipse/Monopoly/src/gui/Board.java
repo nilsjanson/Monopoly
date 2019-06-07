@@ -115,8 +115,8 @@ public class Board {
 		Button email=new Button("EMAIL");
 		Button asta=new Button("ASTA");
 		Pane cards = new Pane();
-		email.setStyle("-fx-border-color: transparent; -fx-background-color: transparent");
-		asta.setStyle("-fx-border-color: transparent; -fx-background-color: transparent");
+		email.setStyle("-fx-border-color: transparent; -fx-background-color: transparent; -fx-text-fill: transparent;");
+		asta.setStyle("-fx-border-color: transparent; -fx-background-color: transparent;  -fx-text-fill: transparent;");
 		
 		email.setPrefHeight(max*0.1414);
 		asta.setPrefHeight(max*0.1414);
@@ -130,10 +130,20 @@ public class Board {
 		asta.setLayoutX(max*0.065);
 		asta.setLayoutY(max*0.085);
 		
-		
-		email.setStyle("-fx-border-color: red; -fx-background-color: transparent");
-		asta.setStyle("-fx-border-color: red; -fx-background-color: transparent");
+		email.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				System.out.println("Hier koennte eine E-Mail stehen.");
+			}
+		});
 
+		asta.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent arg0) {
+				System.out.println("Hier koennte eine Asta Karte stehen.");
+			}
+		});
 		
 		cards.getChildren().addAll(email,asta);
 		return cards;
