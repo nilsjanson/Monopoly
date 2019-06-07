@@ -2,18 +2,25 @@ package gui;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -22,6 +29,7 @@ import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.beans.binding.Bindings;
 
 public class Board {
 	
@@ -87,6 +95,7 @@ public class Board {
 		pane.setBottom(buttom);
 		pane.setLeft(left);
 		pane.setRight(right);
+		pane.setCenter(createCardFields());
 
 		BorderPane.setAlignment(left, Pos.CENTER);
 		BorderPane.setAlignment(right, Pos.CENTER);
@@ -99,6 +108,35 @@ public class Board {
 		prime.setHeight(max);
 		prime.show();
 		 System.out.println("Maximale Groeﬂe: "+max);
+	}
+	
+	private Pane createCardFields() {
+//		parent.setRotate(45);
+		Button email=new Button("EMAIL");
+		Button asta=new Button("ASTA");
+		Pane cards = new Pane();
+		email.setStyle("-fx-border-color: transparent; -fx-background-color: transparent");
+		asta.setStyle("-fx-border-color: transparent; -fx-background-color: transparent");
+		
+		email.setPrefHeight(max*0.1414);
+		asta.setPrefHeight(max*0.1414);
+		asta.setPrefWidth(max*0.1986);
+		email.setPrefWidth(max*0.1986);
+		
+		email.setRotate(-45);
+		email.setLayoutX(max*0.47);
+		email.setLayoutY(max*0.51);
+		asta.setRotate(135);
+		asta.setLayoutX(max*0.065);
+		asta.setLayoutY(max*0.085);
+		
+		
+		email.setStyle("-fx-border-color: red; -fx-background-color: transparent");
+		asta.setStyle("-fx-border-color: red; -fx-background-color: transparent");
+
+		
+		cards.getChildren().addAll(email,asta);
+		return cards;
 	}
 	
 	private HBox hButtonRow() {
@@ -228,12 +266,12 @@ public class Board {
 		VBox vbox = new VBox();
 		ArrayList<Label> helpfull = new ArrayList<Label>();
 		helpfull.add(new Label("F1 = Hilfe"));
-		helpfull.add(new Label("Enter = Wueferln bestaetigen"));
+		helpfull.add(new Label("Enter = Wuerfeln bestaetigen"));
 		helpfull.add(new Label("F11 = Musik an"));
 		helpfull.add(new Label("F12 = Musik aus"));
 		helpfull.add(new Label("ESC = Beendet das Programm"));
 		vbox.getChildren().addAll(helpfull);
-		vbox.setStyle("-fx-background-color: honeydew");
+		vbox.setStyle("-fx-background-color: rgb(" + 192 + "," + 254 + ", " + 213 + ");");
 		Scene scene = new Scene(vbox);
 		help.setScene(scene);
 		help.initModality(Modality.APPLICATION_MODAL);
