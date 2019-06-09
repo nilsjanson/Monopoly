@@ -25,6 +25,8 @@ public class StreetStage extends Application {
 	StreetStage(Board board, String name) {
 		img = new ImageView(getClass().getResource("/besitzkarten/"+name+".jpg").toExternalForm());
 		this.board= board;
+		img.setFitWidth(board.getMax()*0.40);
+		img.setFitHeight(board.getMax()*0.40);
 		try {
 			this.start(board.prime);
 		} catch (Exception e) {
@@ -99,6 +101,7 @@ public class StreetStage extends Application {
 					stage.centerOnScreen();
 					break;
 				default:
+					System.out.println(event.getCode());
 					break;
 				}
 			}
@@ -108,8 +111,8 @@ public class StreetStage extends Application {
 		stage.initStyle(StageStyle.UNDECORATED);
 		stage.initModality(Modality.APPLICATION_MODAL);
 		stage.show();
-		stage.setY(board.getMax()/2-(stage.getHeight()/2));
-		stage.setX(board.getMax()/2+board.getMax()*0.055);
+		stage.setY((board.getMax()/2)-(stage.getHeight()/2));
+		stage.setX((board.getMax()/2)+(board.getMax()*0.06));
 	}
 	
 	private void buttonStyle(Button...buttons) {
