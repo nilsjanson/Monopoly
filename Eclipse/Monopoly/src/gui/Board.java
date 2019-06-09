@@ -300,6 +300,13 @@ public class Board {
 				case F1:
 					helpMe();
 					break;
+				case E:
+					try {
+						new EmailStage(me,"Stupa Seminar","Studiensekreteriat","Wir laden Sie herzlichst zu unserem Stupa Seminar am 15.07 ein.").start(prime);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					break;
 				case B: 
 					new StreetStage(me,"Kesselhaus"); // den String kannst du dann einfach mit dem Namensattribut der Street aufrufen, halte ich erstmal fuer eine gute Idee
 					break;
