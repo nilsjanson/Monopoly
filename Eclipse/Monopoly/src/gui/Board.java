@@ -308,7 +308,7 @@ public class Board {
 					}
 					break;
 				case B: 
-					new StreetStage(me,"Kesselhaus"); // den String kannst du dann einfach mit dem Namensattribut der Street aufrufen, halte ich erstmal fuer eine gute Idee
+					new StreetStage(me,"AstaBuero"); 
 					break;
 				case CONTROL:
 					parent.setRotate(parent.getRotate() - 90);
