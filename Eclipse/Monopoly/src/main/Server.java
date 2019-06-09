@@ -120,8 +120,8 @@ public class Server {
 	}
 
 	/**
-	 * 
-	 * @param q
+	 * Erstellt einen neuen Thread und startet das Spiel
+	 * @param q Die wartenden Clients
 	 */
 	private static void startGame(Queue<Socket> q) {
 		new Server().new GameThread(q);
@@ -132,19 +132,119 @@ public class Server {
 	 *
 	 */
 	public class GameThread extends Thread {
-		/*
-		 * Queue der Spieler
+		/**
+		 * Liste der Spieler
 		 */
-		Queue<Socket> q;
-		
+		private List<Client> list = new ArrayList<Client>();
+		/**
+		 * Verbund aus Socket und Player
+		 * @author lucastheiss
+		 *
+		 */
+		protected class Client {
+			private Socket s;
+			private DataInputStream in;
+			private DataOutputStream out;
+			private model.Player p;
+			int w1;
+			int w2;
+			public Client(Socket s, model.Player p) throws IOException {
+				this.s = s;
+				this.in = new DataInputStream(new BufferedInputStream(s.getInputStream()));
+				this.out = new DataOutputStream(new BufferedOutputStream(s.getOutputStream()));
+				this.p = p;
+			}
+			public Socket getSocket() {
+				return s;
+			}
+			public DataInputStream getIn() {
+				return in;
+			}
+			public DataOutputStream getOut() {
+				return out;
+			}
+			public model.Player getPlayer() {
+				return p;
+			}
+			public int getW1() {
+				return w1;
+			}
+			public int getW2() {
+				return w2;
+			}
+			public int getW() {
+				return w1 + w2;
+			}
+			public void wuerfeln() throws IOException {
+				out.writeUTF("rolling the dice Sending {" + Integer.class.toString() + ", " + Integer.class.toString() + "}");
+				w1 = model.Board.wuerfeln();
+				w2 = model.Board.wuerfeln();
+				out.writeInt(w1);
+				out.writeInt(w2);
+			}
+			
+		}
 		public GameThread(Queue<Socket> q) {
-			this.q = q;
+			init(q);
 			this.start();
 		}
 		
 		@Override
 		public void run() {
-			System.out.println("running game...\nlogic is comming...");
+			System.out.println("Start game with " + list.size() + " players");
+			//auswuerfeln wer anfaengt
+			for(Client c : list) {
+				try {
+					c.wuerfeln();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			int nextPlayer = 0;
+			for(int i = 0; i < list.size(); i++) {
+				if(list.get(i).getW() > list.get(nextPlayer).getW()) {
+					nextPlayer = i;
+				}
+			}
+			//Main Loop
+			//solange mehr als ein Spieler uebrig ist
+			while(list.size() > 1) {
+				try {
+					Client client = list.get(nextPlayer);
+					client.wuerfeln();
+					//Methode private
+					//client.getPlayer().move(client.getW());
+					
+					
+					
+					//naechster Spieler
+					nextPlayer++;
+					nextPlayer %= list.size();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			try {
+				list.get(0).getOut().writeUTF("you have won");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		/**
+		 * Initialsetup der Spieler<br>
+		 * Clients in der Liste speichern und allen Spielern das Startgeld geben
+		 * @param q Queue der Sockets
+		 */
+		private void init(Queue<Socket> q) {
+			for(Socket s: q) {
+				//Konstruktor nicht public
+				//list.add(new Client(s, new model.Player()));
+			}
+			for(Client c : list) {
+				c.getPlayer().earnRental(1500);
+			}
 		}
 	}
 }
