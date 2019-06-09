@@ -1,15 +1,17 @@
 package model;
 
+import java.util.ArrayList;
+
 public class Board {
 
 	private model.Field[] cards;
 	private model.Player[] player;
-	
+	ArrayList<String> streetNames;
 
 	Board() {
 
 	}
-
+	
 
 	 /*
 	public void init() {
@@ -69,7 +71,7 @@ public class Board {
 			
 		}
 	}
-	
+
 	public static int wuerfeln() {
 		int erg = 7;
 		while(erg==7) {

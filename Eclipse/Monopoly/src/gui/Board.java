@@ -24,45 +24,50 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 public class Board {
-	
+
 	Board me = this;
 	final URL resource = getClass().getResource("/musik/AnnoDominiBeatsStillStanding.mp3");
 	final Media media = new Media(resource.toString());
 	final MediaPlayer mediaPlayer = new MediaPlayer(media);
-	private Stage prime;
+	protected Stage prime;
 	private Stage welcome;
 	int spieler = 0;
 	BorderPane parent;
 	private double max;
-	int buttonCount=0;
+	int buttonCount = 0;
+
 	public Board(Stage prime) {
 		mediaPlayer.play();
 		this.prime = prime;
 		welcome();
 	}
+	
+	protected double getMax() {
+		return max;
+	}
 
-//	private void createPlayer1(double width, double height) {
-//		Player1 one = new Player1();
-//		ImageView icon = one.getIcon();
-//		height = height / 20;
-//		width = width / 20;
-//		icon.setFitHeight(height);
-//		icon.setFitWidth(width);
-//		parent.getChildren().add(icon);
-//		icon.setX(prime.getWidth() - width);
-//		icon.setY(prime.getHeight() - height);
-//	}
-//
-//	private void createPlayer2(double width, double height) {
-//
-//		height = height / 20;
-//		width = width / 20;
-//		icon.setFitHeight(height);
-//		icon.setFitWidth(width);
-//		parent.getChildren().add(icon);
-//		icon.setX(prime.getWidth() - width);
-//		icon.setY(prime.getHeight() - (2 * height));
-//	}
+	// private void createPlayer1(double width, double height) {
+	// Player1 one = new Player1();
+	// ImageView icon = one.getIcon();
+	// height = height / 20;
+	// width = width / 20;
+	// icon.setFitHeight(height);
+	// icon.setFitWidth(width);
+	// parent.getChildren().add(icon);
+	// icon.setX(prime.getWidth() - width);
+	// icon.setY(prime.getHeight() - height);
+	// }
+	//
+	// private void createPlayer2(double width, double height) {
+	//
+	// height = height / 20;
+	// width = width / 20;
+	// icon.setFitHeight(height);
+	// icon.setFitWidth(width);
+	// parent.getChildren().add(icon);
+	// icon.setX(prime.getWidth() - width);
+	// icon.setY(prime.getHeight() - (2 * height));
+	// }
 
 	private void createBoard() {
 		welcome.close();
@@ -75,14 +80,13 @@ public class Board {
 		parent = pane;
 		pane.setStyle("-fx-background-color: lightgreen;" + "-fx-background-image: url(\"/icons/TH-Poly.jpg\");"
 				+ "    -fx-background-size: " + max + " " + max + ";");
-		pane.autosize();
-		
-		
+
+
 		HBox buttom = hButtonRow(true);
 		VBox left = vButtonRow(true);
 		HBox top = hButtonRow();
-		VBox right=vButtonRow();
-		
+		VBox right = vButtonRow();
+
 		pane.setTop(top);
 		pane.setBottom(buttom);
 		pane.setLeft(left);
@@ -91,7 +95,7 @@ public class Board {
 
 		BorderPane.setAlignment(left, Pos.CENTER);
 		BorderPane.setAlignment(right, Pos.CENTER);
-		
+
 		Scene scene = new Scene(pane);
 		prime.initStyle(StageStyle.UNDECORATED);
 		controlBoard(scene);
@@ -99,29 +103,29 @@ public class Board {
 		prime.setWidth(max);
 		prime.setHeight(max);
 		prime.show();
-		 System.out.println("Maximale Groeﬂe: "+max);
+		System.out.println("Maximale Groeﬂe: " + max);
 	}
-	
+
 	private Pane createCardFields() {
-//		parent.setRotate(45);
-		Button email=new Button("EMAIL");
-		Button asta=new Button("ASTA");
+		// parent.setRotate(45);
+		Button email = new Button("EMAIL");
+		Button asta = new Button("ASTA");
 		Pane cards = new Pane();
 		email.setStyle("-fx-border-color: transparent; -fx-background-color: transparent; -fx-text-fill: transparent;");
 		asta.setStyle("-fx-border-color: transparent; -fx-background-color: transparent;  -fx-text-fill: transparent;");
-		
-		email.setPrefHeight(max*0.1414);
-		asta.setPrefHeight(max*0.1414);
-		asta.setPrefWidth(max*0.1986);
-		email.setPrefWidth(max*0.1986);
-		
+
+		email.setPrefHeight(max * 0.1414);
+		asta.setPrefHeight(max * 0.1414);
+		asta.setPrefWidth(max * 0.1986);
+		email.setPrefWidth(max * 0.1986);
+
 		email.setRotate(-45);
-		email.setLayoutX(max*0.47);
-		email.setLayoutY(max*0.51);
+		email.setLayoutX(max * 0.47);
+		email.setLayoutY(max * 0.51);
 		asta.setRotate(135);
-		asta.setLayoutX(max*0.065);
-		asta.setLayoutY(max*0.085);
-		
+		asta.setLayoutX(max * 0.065);
+		asta.setLayoutY(max * 0.085);
+
 		email.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
@@ -136,91 +140,93 @@ public class Board {
 				System.out.println("Hier koennte eine Asta Karte stehen.");
 			}
 		});
-		
-		cards.getChildren().addAll(email,asta);
+
+		cards.getChildren().addAll(email, asta);
 		return cards;
 	}
-	
+
 	private HBox hButtonRow() {
 		HBox hbox = new HBox();
 		ArrayList<Button> buttons = new ArrayList<Button>();
-		for (int i=0;i<=10;i++) {
-			buttons.add(new Button(""+buttonCount++));
+		for (int i = 0; i <= 10; i++) {
+			buttons.add(new Button("" + buttonCount++));
 		}
 		streetHButs(buttons);
 		hbox.getChildren().addAll(buttons);
 		return hbox;
 	}
-	
+
 	private HBox hButtonRow(boolean invers) {
 		HBox hbox = new HBox();
 		ArrayList<Button> buttons = new ArrayList<Button>();
-		int j=buttonCount+10;
-		for (int i=0;i<=10;i++) {
-			buttons.add(new Button(""+j--));
+		int j = buttonCount + 10;
+		for (int i = 0; i <= 10; i++) {
+			buttons.add(new Button("" + j--));
 			buttonCount++;
 		}
 		streetHButs(buttons);
 		hbox.getChildren().addAll(buttons);
 		return hbox;
 	}
-	
+
 	private VBox vButtonRow() {
 		VBox vbox = new VBox();
 		ArrayList<Button> buttons = new ArrayList<Button>();
-		for (int i=0;i<=8;i++) {
-			buttons.add(new Button(""+buttonCount++));
+		for (int i = 0; i <= 8; i++) {
+			buttons.add(new Button("" + buttonCount++));
 		}
 		streetVButs(buttons);
 		vbox.getChildren().addAll(buttons);
 		return vbox;
 	}
-	
+
 	private VBox vButtonRow(boolean invers) {
 		VBox vbox = new VBox();
 		ArrayList<Button> buttons = new ArrayList<Button>();
-		int j=buttonCount+8;
-		for (int i=0;i<=8;i++) {
-			buttons.add(new Button(""+j--));
+		int j = buttonCount + 8;
+		for (int i = 0; i <= 8; i++) {
+			buttons.add(new Button("" + j--));
 			buttonCount++;
 		}
 		streetVButs(buttons);
 		vbox.getChildren().addAll(buttons);
 		return vbox;
 	}
-	
+
 	private void streetHButs(ArrayList<Button> buttons) {
-		for (Button x: buttons) {
-			x.setPrefHeight(max*0.134);
-			x.setPrefWidth(max*0.0843);;
+		for (Button x : buttons) {
+			x.setPrefHeight(max * 0.134);
+			x.setPrefWidth(max * 0.0843);
+			;
 			x.setStyle("-fx-border-color: transparent; -fx-background-color: transparent");
 			x.setTextFill(Color.TRANSPARENT);
 			x.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent arg0) {
-					System.out.println("Street "+x.getText());
+					System.out.println("Street " + x.getText());
 				}
-			});	
+			});
 		}
-		buttons.get(0).setPrefWidth(max*0.136);
-		buttons.get(buttons.size()-1).setPrefWidth(max*0.136);
-		
-		buttons.get(0).setPrefHeight(max*0.136);
-		buttons.get(buttons.size()-1).setPrefHeight(max*0.136);
+		buttons.get(0).setPrefWidth(max * 0.136);
+		buttons.get(buttons.size() - 1).setPrefWidth(max * 0.136);
+
+		buttons.get(0).setPrefHeight(max * 0.136);
+		buttons.get(buttons.size() - 1).setPrefHeight(max * 0.136);
 	}
-	
+
 	private void streetVButs(ArrayList<Button> buttons) {
-		for (Button x: buttons) {
-			x.setPrefWidth(max*0.134);
-			x.setPrefHeight(max*0.0814);;
+		for (Button x : buttons) {
+			x.setPrefWidth(max * 0.134);
+			x.setPrefHeight(max * 0.0814);
+			;
 			x.setStyle("-fx-border-color: transparent; -fx-background-color: transparent");
 			x.setTextFill(Color.TRANSPARENT);
 			x.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent arg0) {
-					System.out.println("Street "+x.getText());
+					System.out.println("Street " + x.getText());
 				}
-			});	
+			});
 		}
 	}
 
@@ -255,14 +261,14 @@ public class Board {
 		welcome.show();
 		welcome.centerOnScreen();
 	}
-	
-	private void butStyle(Button...x) {
+
+	private void butStyle(Button... x) {
 		for (Button but : x) {
 			but.setStyle("-fx-border-color: black; -fx-background-color: lightgreen; -fx-font-size: 2em;");
 			but.setOnAction(e -> createBoard());
 		}
 	}
-	
+
 	protected void helpMe() {
 		Stage help = new Stage();
 		VBox vbox = new VBox();
@@ -284,7 +290,7 @@ public class Board {
 		scene.setOnMousePressed(new EventHandler<javafx.scene.input.MouseEvent>() {
 			@Override
 			public void handle(javafx.scene.input.MouseEvent event) {
-				System.out.println("X: "+event.getSceneX()+" Y: "+event.getSceneY());
+				System.out.println("X: " + event.getSceneX() + " Y: " + event.getSceneY());
 			}
 		});
 		scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
@@ -294,8 +300,15 @@ public class Board {
 				case F1:
 					helpMe();
 					break;
-				case SPACE:
-					new WuerfelStage(me);
+				case E:
+					try {
+						new EmailStage(me,"Stupa Seminar","Studiensekreteriat","Wir laden Sie herzlichst zu unserem Stupa Seminar am 15.07 ein.").start(prime);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					break;
+				case B: 
+					new StreetStage(me,"Kesselhaus"); // den String kannst du dann einfach mit dem Namensattribut der Street aufrufen, halte ich erstmal fuer eine gute Idee
 					break;
 				case CONTROL:
 					parent.setRotate(parent.getRotate() - 90);
