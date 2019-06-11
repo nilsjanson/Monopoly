@@ -348,9 +348,12 @@ public class Server {
 			/**
 			 * 
 			 * @param change Aenderung des Geldes, Positiv oder Negativ.
+			 * @throws IOException Client antwortet nicht.
 			 */
-			public void addGeld(int change) {
+			public void addGeld(int change) throws IOException {
 				geld += change;
+				this.out.writeUTF("Geld add value Sending {" + Integer.class.toString() + "}");
+				this.out.writeInt(change);
 			}
 
 			/**
@@ -494,14 +497,36 @@ public class Server {
 		/**
 		 * Prueft das Feld auf dem der Spieler ist.
 		 * @param c der Client der an der reihe ist.
+		 * @throws IOException Client antwortet nicht.
 		 */
-		private void checkField(Client c) {
-			if(feld[c.getPos()] != null) {
-				//Feld gehoert dem Spieler -> nichts
-				
-				//Feld gehoert null -> Spieler kann Grundstueck kaufen, sonst wird es Versteigert
-				
-				//Feld gehoert einem anderen Spieler -> Spieler zahlt Miete an anderen Spieler
+		private void checkField(Client c) throws IOException {
+			Grundstueck grundstueck = feld[c.getPos()];
+			if(grundstueck != null) {
+				if(grundstueck.getBesitzer() == null) {
+					boolean versteigern = c.getGeld() < grundstueck.getPreis();
+					if(versteigern) { //Versteigern...
+						
+					} else {
+						//muss der Index gesendet werden? Client muss wissen wo er steht.
+						c.getOut().writeUTF("Grundstueck kaufen? Sending(Index) {" + Integer.class.toString() + "} expecting {" + Boolean.class.toString() + "}");
+						versteigern = !c.getIn().readBoolean();
+						if(versteigern) { //Versteigern...
+							
+						}
+					}
+				} else {
+					Client besitzer = grundstueck.getBesitzer();
+					if(!besitzer.equals(c)) { //Feld gehoert einem anderen Spieler -> Spieler zahlt Miete an anderen Spieler
+						int miete = grundstueck.getMiete();
+						if(c.getGeld() >= grundstueck.getMiete()) { //Miete zahlen
+							besitzer.addGeld(miete);
+							c.addGeld(-miete);
+						} else { //Nicht genug Geld -> Verkaufen bis: genug Geld oder nichts mehr zu verkaufen.
+							
+						}
+					}
+					//Feld gehoert dem Spieler -> nichts
+				}
 			} else {
 				//Feld == null
 				//Switch...
@@ -565,10 +590,8 @@ public class Server {
 			}
 			for (int i = 0; i < list.size(); i++) {
 				Client c = list.get(i);
-				c.addGeld(1500);
 				try {
-					c.getOut().writeUTF("Geld add value Sending {" + Integer.class.toString() + "}");
-					c.getOut().writeInt(1500);
+					c.addGeld(1500);
 				} catch (IOException e) {
 					// Client entfernen der eine IOException geworfen hat.
 					list.remove(i);
