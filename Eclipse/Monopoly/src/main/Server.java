@@ -15,7 +15,8 @@ import java.util.List;
  * Klasse mit der Main Methode des Servers.
  * 
  * @author lucastheiss
- *
+ * @version 0.1
+ *	
  */
 public class Server {
 
@@ -27,7 +28,6 @@ public class Server {
 	 *             Sonst wird der Defaultwert 1337 genommen.
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 		/**
 		 * Port auf dem der Server hoert.
 		 */
@@ -72,7 +72,6 @@ public class Server {
 				}
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -127,6 +126,7 @@ public class Server {
 	 * Ein laufendes Spiel
 	 * 
 	 * @author lucastheiss
+	 * @version 0.1
 	 *
 	 */
 	public class GameThread extends Thread {
@@ -149,9 +149,10 @@ public class Server {
 		private String leaveMessage = "\nPlayer has left because of IOException.\n";
 
 		/**
-		 * Verbund aus Socket und Player
+		 * Ein Grundstueck.
 		 * 
 		 * @author lucastheiss
+		 * @version 0.1
 		 *
 		 */
 		protected class Grundstueck {
@@ -180,6 +181,7 @@ public class Server {
 			 * @param miete      Mietkosten je nach Bebauung.
 			 * @param preis      Kosten des Grundstuecks.
 			 * @param hausKosten Kosten pro neues Haus.
+			 * @param stelle     Stelle auf dem Spielfeld.
 			 */
 			public Grundstueck(int[] miete, int preis, int hausKosten, int stelle) {
 				this.miete = miete;
@@ -217,8 +219,11 @@ public class Server {
 			 * Aendern des Besitzers.
 			 * 
 			 * @param c der neue Besitzer.
+			 * @throws IOException keine Antwort vom Client.
 			 */
-			public void setBesitzer(Client c) {
+			public void setBesitzer(Client c) throws IOException {
+				c.getOut().writeUTF(
+						"Grundstueck gekauft Sending(Stelle auf dem Spielfeld) {" + Integer.class.toString() + "}");
 				this.besitzer = c;
 			}
 
@@ -258,7 +263,13 @@ public class Server {
 				}
 			}
 		}
-
+		/**
+		 * Der Client.<br>
+		 * Sammlung von Werten und Methoden die einen Spieler beschreiben.
+		 * @author lucastheiss
+		 * @version 0.1
+		 *
+		 */
 		protected class Client {
 			/**
 			 * Geld des Spielers.
@@ -273,6 +284,14 @@ public class Server {
 			private Socket s;
 			private DataInputStream in;
 			private DataOutputStream out;
+			/**
+			 * Gefaengnisfreikarte vom ersten Stapel
+			 */
+			private boolean hasFreeCard1 = false;
+			/**
+			 * Gefaengnisfreikarte vom zweiten Stapel
+			 */
+			private boolean hasFreeCard2 = false;
 			private boolean imGefaengnis = false;
 			/**
 			 * Versuche einen Pasch zu wuerfeln wenn man im Gefaengnis ist.
@@ -301,6 +320,44 @@ public class Server {
 				this.out = new DataOutputStream(new BufferedOutputStream(s.getOutputStream()));
 				this.name = name;
 				this.ID = ID;
+			}
+
+			/**
+			 * 
+			 * @return <b>true</b><br>
+			 *         wenn er eine Gefaengnisfreikarte aus dem ersten Stapel hat.
+			 *         <b>false</b> wenn er keine Gefaengnisfreikarte aus dem ersten Stapel
+			 *         hat.
+			 */
+			public boolean hasFree1() {
+				return hasFreeCard1;
+			}
+
+			/**
+			 * 
+			 * @param hasFreeCard1 besitz der Gefaengnisfreikarte aus dem ersten Stapel.
+			 */
+			public void setFree1(boolean hasFreeCard1) {
+				this.hasFreeCard1 = hasFreeCard1;
+			}
+
+			/**
+			 * 
+			 * @return <b>true</b><br>
+			 *         wenn er eine Gefaengnisfreikarte aus dem zweiten Stapel hat.
+			 *         <b>false</b> wenn er keine Gefaengnisfreikarte aus dem zweiten Stapel
+			 *         hat.
+			 */
+			public boolean hasFree2() {
+				return hasFreeCard2;
+			}
+
+			/**
+			 * 
+			 * @param hasFreeCard2 besitz der Gefaengnisfreikarte aus dem zweiten Stapel.
+			 */
+			public void setFree2(boolean hasFreeCard2) {
+				this.hasFreeCard2 = hasFreeCard2;
 			}
 
 			/**
@@ -372,9 +429,33 @@ public class Server {
 			 */
 			public void walk(int count) throws IOException {
 				position += count;
-				position %= fieldLength;
+				if (position >= 40) {
+					// ueber Los gekommen
+					this.addGeld(200);
+					position %= fieldLength;
+				}
 				out.writeUTF("move sending {" + Integer.class.toString() + "}");
 				out.writeInt(count);
+			}
+
+			/**
+			 * Kann der Client Karten verkaufen?
+			 * 
+			 * @return <b>true</b> wenn Client noch Gefaengnisfreikarten hat oder
+			 *         Grundstuecke verkaufen kann.<br>
+			 *         <b>false</b> wenn er nichts mehr hat.
+			 */
+			public boolean canMakeMoney() {
+				if (hasFreeCard1 || hasFreeCard2) { // Gefaengnisfreikarte zum verkaufen gefunden.
+					return true;
+				}
+				for (Grundstueck g : feld) {
+					if (g != null && g.getBesitzer().equals(this)) { // Grundstueck zum verkaufen gefunden.
+						return true;
+					}
+				}
+				// Kein Grundstueck zum verkaufen gefunden.
+				return false;
 			}
 
 			/**
@@ -472,15 +553,26 @@ public class Server {
 			while (list.size() > 1) {
 				try {
 					Client client = list.get(nextPlayer);
+					//client im gefaengnis?
+					if(client.getImGefaengnis()) {
+						if(client.hasFree1()) {
+							//Freikarte 1 aktivieren.
+						} else if(client.hasFree2()) {
+							//Freikarte 2 aktivieren.
+						} else if(client.getVersuche() < 3) {
+							//Fragen ob bezahlen oder Pasch versuchen.
+						} else {
+							//bezahlen.
+						}
+					}
 					client.wuerfeln();
 					client.walk(client.getW());
 					checkField(client);
-					
+
 					// naechster Spieler
 					nextPlayer++;
 					nextPlayer %= list.size();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					// Client entfernen wegen IOException
 					list.remove(nextPlayer);
 					nextPlayer %= list.size();
@@ -490,48 +582,115 @@ public class Server {
 			try {
 				list.get(0).getOut().writeUTF("you have won");
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
+
 		/**
 		 * Prueft das Feld auf dem der Spieler ist.
+		 * 
 		 * @param c der Client der an der reihe ist.
 		 * @throws IOException Client antwortet nicht.
 		 */
 		private void checkField(Client c) throws IOException {
 			Grundstueck grundstueck = feld[c.getPos()];
-			if(grundstueck != null) {
-				if(grundstueck.getBesitzer() == null) {
+			if (grundstueck != null) {
+				if (grundstueck.getBesitzer() == null) {
 					boolean versteigern = c.getGeld() < grundstueck.getPreis();
-					if(versteigern) { //Versteigern...
-						
+					if (versteigern) { // Versteigern...
+
 					} else {
-						//muss der Index gesendet werden? Client muss wissen wo er steht.
-						c.getOut().writeUTF("Grundstueck kaufen? Sending(Index) {" + Integer.class.toString() + "} expecting {" + Boolean.class.toString() + "}");
+						// muss der Index gesendet werden? Client muss wissen wo er steht.
+						c.getOut().writeUTF("Grundstueck kaufen? Sending(Index) {" + Integer.class.toString()
+								+ "} expecting {" + Boolean.class.toString() + "}");
 						versteigern = !c.getIn().readBoolean();
-						if(versteigern) { //Versteigern...
-							
+						if (versteigern) { // Versteigern...
+
+						} else { // Grundstueck kaufen...
+							grundstueck.setBesitzer(c);
+							c.addGeld(-grundstueck.getPreis());
 						}
 					}
 				} else {
 					Client besitzer = grundstueck.getBesitzer();
-					if(!besitzer.equals(c)) { //Feld gehoert einem anderen Spieler -> Spieler zahlt Miete an anderen Spieler
+					if (!besitzer.equals(c)) { // Feld gehoert einem anderen Spieler -> Spieler zahlt Miete an anderen
+												// Spieler
 						int miete = grundstueck.getMiete();
-						if(c.getGeld() >= grundstueck.getMiete()) { //Miete zahlen
+						if (c.getGeld() >= grundstueck.getMiete()) { // Miete zahlen
 							besitzer.addGeld(miete);
 							c.addGeld(-miete);
-						} else { //Nicht genug Geld -> Verkaufen bis: genug Geld oder nichts mehr zu verkaufen.
-							
+						} else { // Nicht genug Geld -> Verkaufen bis: genug Geld oder nichts mehr zu verkaufen.
+							boolean lauf = true;
+							while (lauf) {
+								if (c.getGeld() >= miete) {
+									lauf = false;
+								} else {
+									if (c.canMakeMoney()) {
+										// Verkaufen...
+										// zuerst die Gefaengnisfreikarten (falls vorhanden).
+										if (c.hasFree1()) { // erste Gefaengnisfreikarte verkaufen.
+											c.getOut().writeUTF("Sells freeCard1");
+											c.addGeld(50);
+											c.setFree1(false);
+										} else if (c.hasFree2()) { // zweite Gefaengnisfreikarte verkaufen.
+											c.getOut().writeUTF("Sells freeCard2");
+											c.addGeld(50);
+											c.setFree2(false);
+										} else { // Grundstuecke oder Haeuser verkaufen.
+
+										}
+									} else {
+										lauf = false;
+									}
+								}
+							}
+							if (c.getGeld() >= miete) { // genug Geld -> Miete zahlen.
+								besitzer.addGeld(miete);
+								c.addGeld(-miete);
+							} else { // nicht genug Geld -> Verlieren.
+								c.getOut().writeUTF("Nicht genug Geld, du hast verloren.");
+								list.remove(c.getID()); // Stimmt die Reihenfolge der Spieler (naechsterSpieler) noch?
+							}
 						}
 					}
-					//Feld gehoert dem Spieler -> nichts
+					// Feld gehoert dem Spieler -> nichts
 				}
-			} else {
-				//Feld == null
-				//Switch...
+			} else { // Feld == null -> Sonderfelder
+				int steuern = 0;
+				switch (c.getPos()) {
+				case 0: // Los
+					break;
+				// Fall through beabsichtigt -> Karte von Stapel 1 ziehen.
+				case 2:
+				case 17:
+				case 33:
+					// Karte von Stapel 1 ziehen.
+					break;
+				// Fall through beabsichtigt -> Karte von Stapel 2 ziehen.
+				case 7:
+				case 22:
+				case 36:
+					// Karte von Stapel 2 ziehen.
+					break;
+				// Fall through beabsichtigt -> Steuern zahlen.
+				case 4:
+					steuern += 100;
+				case 38:
+					steuern += 100;
+					c.addGeld(-steuern);
+					break;
+				case 10: // Gefaengnis
+					break;
+				case 20: // frei parken
+					break;
+				case 30: // gehe in das Gefaengnis
+					break;
+				default: //falls was uebersehen wurde.
+					break;
+				}
 			}
 		}
+
 		/**
 		 * Entscheidet welcher Spieler beginnt.
 		 * 
@@ -584,13 +743,22 @@ public class Server {
 				} catch (IOException e) {
 					// Client entfernen der eine IOException geworfen hat.
 					list.remove(list.size() - 1);
-					// Karten versteigern...
 					System.out.println(leaveMessage);
 				}
 			}
 			for (int i = 0; i < list.size(); i++) {
 				Client c = list.get(i);
 				try {
+					// Jedem Client die anderen Mitspieler mitteilen.
+					for (Client other : list) {
+						if (c.getID() != other.getID()) {
+							c.getOut().writeUTF("Other Player, Sending(Name, ID) {" + String.class.toString() + ", "
+									+ Integer.class.toString() + "}");
+							c.getOut().writeUTF(other.getName());
+							c.getOut().writeInt(other.getID());
+						}
+					}
+					// Jedem Client das Stargeld geben.
 					c.addGeld(1500);
 				} catch (IOException e) {
 					// Client entfernen der eine IOException geworfen hat.
