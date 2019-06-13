@@ -26,7 +26,7 @@ import javafx.stage.StageStyle;
 public class Board {
 
 	Board me = this;
-	final URL resource = getClass().getResource("/musik/AnnoDominiBeatsStillStanding.mp3");
+	final URL resource = getClass().getResource("/musik/StillStanding.mp3");
 	final Media media = new Media(resource.toString());
 	final MediaPlayer mediaPlayer = new MediaPlayer(media);
 	protected Stage prime;
@@ -321,6 +321,9 @@ public class Board {
 					break;
 				case WINDOWS:
 					break;
+				case SPACE:
+					new WuerfelStage(me);
+					break;
 				case ESCAPE:
 					System.exit(0);
 					break;
@@ -331,6 +334,14 @@ public class Board {
 			}
 		});
 	}
+	
+//	public void eventFilter(Scene scene) {
+//		scene.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
+//	                public void handle(KeyEvent.) { 
+//	                	
+//	                };
+//	            });
+//	}
 
 	private void controlWelcome(Scene scene) {
 		scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
