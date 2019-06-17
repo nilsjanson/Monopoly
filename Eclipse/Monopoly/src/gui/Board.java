@@ -302,13 +302,13 @@ public class Board {
 					break;
 				case E:
 					try {
-						new EmailStage(me,"Stupa Seminar","Studiensekreteriat","Wir laden Sie herzlichst zu unserem Stupa Seminar am 15.07 ein.").start(prime);
+				//		new EmailStage(me,"Stupa Seminar","Studiensekreteriat","Wir laden Sie herzlichst zu unserem Stupa Seminar am 15.07 ein.").start(prime);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
 					break;
 				case B: 
-					new StreetStage(me,"AstaBuero"); 
+		//			new StreetStage(me,"AstaBuero"); 
 					break;
 				case CONTROL:
 					parent.setRotate(parent.getRotate() - 90);
