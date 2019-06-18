@@ -1,5 +1,14 @@
 package main;
 
+import java.awt.Button;
+import java.awt.Color;
+import java.awt.Frame;
+import java.awt.GridLayout;
+import java.awt.TextField;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
@@ -22,10 +31,11 @@ public class Server {
 
 	/**
 	 * 
-	 * @param args optional kann der Port als Argument angegeben werden.<br>
-	 *             Es darf dafuer nur 1 Argument angegeben werden, welches ein
-	 *             Positiver Integer < 49152 sein muss. <br>
-	 *             Sonst wird der Defaultwert 1337 genommen.
+	 * @param args
+	 *            optional kann der Port als Argument angegeben werden.<br>
+	 *            Es darf dafuer nur 1 Argument angegeben werden, welches ein
+	 *            Positiver Integer < 49152 sein muss. <br>
+	 *            Sonst wird der Defaultwert 1337 genommen.
 	 */
 	public static void main(String[] args) {
 		/**
@@ -49,60 +59,153 @@ public class Server {
 		 */
 		listOfLists.add(new ArrayList<Socket>());
 		// Falls Anforderungen erfuellt, Port von args[0] nehmen
-		if (args.length == 1 && args[0].matches("[0-9]{1,5}") && !args[0].matches("[0]")) {
-			int arg = Integer.parseInt(args[0]);
-			// Ab 49152 fuer Dynamische Port-Adressen reserviert.
-			if (arg < 49152) {
-				port = arg;
-			}
-		}
-		System.out.println("Port:\t" + port);
-		try (ServerSocket server = new ServerSocket(port)) {
-			while (true) {
 
-				System.out.println("Waiting for client ...");
-				Socket client = server.accept();
-				System.out.println("Client" + client.getInetAddress() + "connected");
-				sortClientInQueue(client, listOfLists);
-				int i = isStartPossible(listOfLists);
-				if (i != -1) {
-					startGame(listOfLists.get(i));
-					// Gestartete Queue ersetzen
-					listOfLists.set(i, new LinkedList<Socket>());
-				}
-			}
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+//		Frame frame = createServerGui(listOfLists);
+//		frame.setSize(200, 200);					AWT GUI? Nur ein Gedanke
+//		frame.setVisible(true);
+		
+		 if (args.length == 1 && args[0].matches("[0-9]{1,5}") &&
+		 !args[0].matches("[0]")) {
+		 int arg = Integer.parseInt(args[0]);
+		 // Ab 49152 fuer Dynamische Port-Adressen reserviert.
+		 if (arg < 49152) {
+		 port = arg;
+		 }
+		 }
+		 System.out.println("Port:\t" + port);
+		 try (ServerSocket server = new ServerSocket(port)) {
+		 while (true) {
+		 System.out.println("Waiting for client ...");
+		 Socket client = server.accept();
+		 System.out.println("Client" + client.getInetAddress() + "connected");
+		 sortClientInQueue(client, listOfLists);
+		 int i = isStartPossible(listOfLists);
+		 if (i != -1) {
+		 startGame(listOfLists.get(i));
+		 // Gestartete Queue ersetzen
+		 listOfLists.set(i, new LinkedList<Socket>());
+		 }
+		 }
+		
+		 } catch (IOException e) {
+		 e.printStackTrace();
+		 }
 	}
+
+//	private static Frame createServerGui(List<List<Socket>> listOfLists) {		Mal nur eine Idee und da AWT fuer sowas perfekt ist.. mal ein Gedanke..?
+//		Frame frame = new Frame("TH-Poly Server");
+//		TextField portTx = new TextField();
+//		Button start = new Button("Start Server");
+//		start.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent arg0) {
+//				String args = portTx.getText();
+//				int port = 1337;
+//				if (args.matches("[0-9]{1,5}") && !args.matches("[0]") && args.length() != 0) {
+//					int arg = Integer.parseInt(args);
+//					// Ab 49152 fuer Dynamische Port-Adressen reserviert.
+//					if (arg < 49152) {
+//						port = arg;
+//						System.out.println("Port:\t" + port);
+//					}
+//				}
+//				boolean started = false;
+//				if (!started) {
+//					start.setBackground(Color.GREEN);
+//					try (ServerSocket server = new ServerSocket(port)) {
+//						while (true) {
+//							System.out.println("Waiting for client ...");
+//							Socket client = server.accept();
+//							System.out.println("Client" + client.getInetAddress() + "connected");
+//							sortClientInQueue(client, listOfLists);
+//							int i = isStartPossible(listOfLists);
+//							if (i != -1) {
+//								startGame(listOfLists.get(i));
+//								// Gestartete Queue ersetzen
+//								listOfLists.set(i, new LinkedList<Socket>());
+//							}
+//						}
+//					} catch (IOException e) {
+//						e.printStackTrace();
+//					}
+//				}
+//			}
+//		});
+//		frame.setLayout(new GridLayout(2, 1));
+//		frame.add(portTx);
+//		frame.add(start);
+//		frame.addWindowListener(new WindowListener() {
+//
+//			@Override
+//			public void windowOpened(WindowEvent arg0) {
+//
+//			}
+//
+//			@Override
+//			public void windowIconified(WindowEvent arg0) {
+//
+//			}
+//
+//			@Override
+//			public void windowDeiconified(WindowEvent arg0) {
+//
+//			}
+//
+//			@Override
+//			public void windowDeactivated(WindowEvent arg0) {
+//
+//			}
+//
+//			@Override
+//			public void windowClosing(WindowEvent arg0) {
+//				System.exit(0);
+//			}
+//
+//			@Override
+//			public void windowClosed(WindowEvent arg0) {
+//
+//			}
+//
+//			@Override
+//			public void windowActivated(WindowEvent arg0) {
+//
+//			}
+//		});
+//		return frame;
+//	}
 
 	/**
 	 * Clients werden in eine Wartequeue gepackt. <br>
 	 * Client antwortet mit einem Integer[2-4] um passend mit anderen Clients
 	 * sortiert zu werden.
 	 * 
-	 * @param client der wartende Client.
-	 * @param list   Liste der Client Queues.
+	 * @param client
+	 *            der wartende Client.
+	 * @param list
+	 *            Liste der Client Queues.
 	 * @throws IOException
 	 */
 	private static void sortClientInQueue(Socket client, List<List<Socket>> list) throws IOException {
 		DataOutputStream out = new DataOutputStream(new BufferedOutputStream(client.getOutputStream()));
 		DataInputStream in = new DataInputStream(new BufferedInputStream(client.getInputStream()));
-	//	out.writeUTF("select number of Players [2-4]; expects {" + Integer.class.toString() + "}");
+		// out.writeUTF("select number of Players [2-4]; expects {" +
+		// Integer.class.toString() + "}");
 		int i = in.readInt();
-//		while (!Integer.valueOf(i).toString().matches("[2-4]")) { //nicht umsetzbar wegen GUI
-//			out.writeUTF("select number of Players; expects {" + Integer.class.toString() + "}");
-//			i = in.readInt();
-//		}
-		
+		// while (!Integer.valueOf(i).toString().matches("[2-4]")) { //nicht umsetzbar
+		// wegen GUI
+		// out.writeUTF("select number of Players; expects {" + Integer.class.toString()
+		// + "}");
+		// i = in.readInt();
+		// }
+
 		list.get(i - 2).add(client);
 	}
 
 	/**
 	 * Prueft ob ein Spiel gestartet werden kann.
 	 * 
-	 * @param list die Liste der Queues die ueberprueft werden soll.
+	 * @param list
+	 *            die Liste der Queues die ueberprueft werden soll.
 	 * @return -1 wenn kein Spielstart moeglich ist, <br>
 	 *         sonst den Index der Queue die aus der Liste gestartet werden kann.
 	 */
@@ -118,7 +221,8 @@ public class Server {
 	/**
 	 * Erstellt einen neuen Thread und startet das Spiel
 	 * 
-	 * @param q Die wartenden Clients
+	 * @param q
+	 *            Die wartenden Clients
 	 */
 	private static void startGame(List<Socket> q) {
 		System.out.println("Neuer Server wird gestartet");
@@ -181,10 +285,14 @@ public class Server {
 			/**
 			 * Initialisierung des Grundstuecks.
 			 * 
-			 * @param miete      Mietkosten je nach Bebauung.
-			 * @param preis      Kosten des Grundstuecks.
-			 * @param hausKosten Kosten pro neues Haus.
-			 * @param stelle     Stelle auf dem Spielfeld.
+			 * @param miete
+			 *            Mietkosten je nach Bebauung.
+			 * @param preis
+			 *            Kosten des Grundstuecks.
+			 * @param hausKosten
+			 *            Kosten pro neues Haus.
+			 * @param stelle
+			 *            Stelle auf dem Spielfeld.
 			 */
 			public Grundstueck(int[] miete, int preis, int hausKosten, int stelle) {
 				this.miete = miete;
@@ -221,8 +329,10 @@ public class Server {
 			/**
 			 * Aendern des Besitzers.
 			 * 
-			 * @param c der neue Besitzer.
-			 * @throws IOException keine Antwort vom Client.
+			 * @param c
+			 *            der neue Besitzer.
+			 * @throws IOException
+			 *             keine Antwort vom Client.
 			 */
 			public void setBesitzer(Client c) throws IOException {
 				c.getOut().writeUTF(
@@ -256,7 +366,8 @@ public class Server {
 
 			/**
 			 * 
-			 * @param haeuser neue Anzahl an Haeusern.
+			 * @param haeuser
+			 *            neue Anzahl an Haeusern.
 			 */
 			public void setHaeuser(int haeuser) {
 				if (haeuser < 0 || haeuser > 5) {
@@ -314,10 +425,14 @@ public class Server {
 			/**
 			 * Client initialisieren.
 			 * 
-			 * @param s    Socket des Spielers.
-			 * @param name Name des Spielers.
-			 * @param ID   eine <b>eindeutige</b> Nummer des Spielers.
-			 * @throws IOException wenn Spieler nichtmehr antwortet.
+			 * @param s
+			 *            Socket des Spielers.
+			 * @param name
+			 *            Name des Spielers.
+			 * @param ID
+			 *            eine <b>eindeutige</b> Nummer des Spielers.
+			 * @throws IOException
+			 *             wenn Spieler nichtmehr antwortet.
 			 */
 			public Client(Socket s, String name, int ID) throws IOException {
 				this.s = s;
@@ -341,7 +456,8 @@ public class Server {
 
 			/**
 			 * 
-			 * @param hasFreeCard1 besitz der Gefaengnisfreikarte aus dem ersten Stapel.
+			 * @param hasFreeCard1
+			 *            besitz der Gefaengnisfreikarte aus dem ersten Stapel.
 			 */
 			public void setFree1(boolean hasFreeCard1) {
 				this.hasFreeCard1 = hasFreeCard1;
@@ -360,7 +476,8 @@ public class Server {
 
 			/**
 			 * 
-			 * @param hasFreeCard2 besitz der Gefaengnisfreikarte aus dem zweiten Stapel.
+			 * @param hasFreeCard2
+			 *            besitz der Gefaengnisfreikarte aus dem zweiten Stapel.
 			 */
 			public void setFree2(boolean hasFreeCard2) {
 				this.hasFreeCard2 = hasFreeCard2;
@@ -410,8 +527,10 @@ public class Server {
 
 			/**
 			 * 
-			 * @param change Aenderung des Geldes, Positiv oder Negativ.
-			 * @throws IOException Client antwortet nicht.
+			 * @param change
+			 *            Aenderung des Geldes, Positiv oder Negativ.
+			 * @throws IOException
+			 *             Client antwortet nicht.
 			 */
 			public void addGeld(int change) throws IOException {
 				geld += change;
@@ -430,8 +549,10 @@ public class Server {
 			/**
 			 * Bewegt den Client und sendet dem Client die Anzahl.
 			 * 
-			 * @param count Anzahl Augen auf dem Wuerfel.
-			 * @throws IOException Keine Verbindung zum Client.
+			 * @param count
+			 *            Anzahl Augen auf dem Wuerfel.
+			 * @throws IOException
+			 *             Keine Verbindung zum Client.
 			 */
 			public void walk(int count) throws IOException {
 				position += count;
@@ -515,7 +636,8 @@ public class Server {
 			/**
 			 * Spieler wuerfelt. Sendet die beiden Integer Werte an den Client.
 			 * 
-			 * @throws IOException wenn der Client nicht erreichbar ist.
+			 * @throws IOException
+			 *             wenn der Client nicht erreichbar ist.
 			 */
 			public void wuerfeln(int playerNumber) throws IOException {
 				System.out.println("im wuerfeln drin");
@@ -532,7 +654,8 @@ public class Server {
 		/**
 		 * Initialisierung eines neuen Spiels.
 		 * 
-		 * @param sList Liste der Sockets der Mitspieler
+		 * @param sList
+		 *            Liste der Sockets der Mitspieler
 		 */
 		public GameThread(List<Socket> sList) {
 			init(sList);
@@ -541,23 +664,16 @@ public class Server {
 
 		@Override
 		public void run() {
-			//try {
+			// try {
 			System.out.println("Start game with " + list.size() + " players");
-			
-		/*	// auswuerfeln wer anfaengt
-			for (Client c : list) {
-				c.wuerfeln();
-			}} catch (IOException e) {
-					e.printStackTrace();
-			}
-			
-			int nextPlayer = setBeginner();
-			for (int i = 0; i < list.size(); i++) {
-				if (list.get(i).getW() > list.get(nextPlayer).getW()) {
-					nextPlayer = i;
-				}
-			}
-			*/
+
+			/*
+			 * // auswuerfeln wer anfaengt for (Client c : list) { c.wuerfeln(); }} catch
+			 * (IOException e) { e.printStackTrace(); }
+			 * 
+			 * int nextPlayer = setBeginner(); for (int i = 0; i < list.size(); i++) { if
+			 * (list.get(i).getW() > list.get(nextPlayer).getW()) { nextPlayer = i; } }
+			 */
 			int nextPlayer = 0;
 			// Main Loop
 			// solange mehr als ein Spieler uebrig ist
@@ -600,8 +716,10 @@ public class Server {
 		/**
 		 * Prueft das Feld auf dem der Spieler ist.
 		 * 
-		 * @param c der Client der an der reihe ist.
-		 * @throws IOException Client antwortet nicht.
+		 * @param c
+		 *            der Client der an der reihe ist.
+		 * @throws IOException
+		 *             Client antwortet nicht.
 		 */
 		private void checkField(Client c) throws IOException {
 			Grundstueck grundstueck = feld[c.getPos()];
@@ -732,15 +850,16 @@ public class Server {
 		 * Initialsetup der Spieler<br>
 		 * Clients in der Liste speichern und allen Spielern das Startgeld geben
 		 * 
-		 * @param sList Liste der Sockets
+		 * @param sList
+		 *            Liste der Sockets
 		 */
 		private void broadcastInt(int x) throws IOException {
-			for(Client s: list) {
+			for (Client s : list) {
 				s.out.writeInt(x);
 				s.out.flush();
 			}
 		}
-		
+
 		private void init(List<Socket> sList) {
 			for (int i = 0; i < sList.size(); i++) {
 				Socket s = sList.get(i);
@@ -749,18 +868,19 @@ public class Server {
 					DataInputStream in = new DataInputStream(new BufferedInputStream(s.getInputStream()));
 					String name = "";
 					// Spielername benoetigt
-				//	String needPlayerName = "need Playername expects {" + String.class.toString() + "}";
-				//	out.writeUTF(needPlayerName);
+					// String needPlayerName = "need Playername expects {" + String.class.toString()
+					// + "}";
+					// out.writeUTF(needPlayerName);
 					// Spielername gelesen
-					System.out.println("Spieler " + i +"erzeugt");
+					System.out.println("Spieler " + i + "erzeugt");
 					out.writeInt(i);
 					out.flush();
 					name = in.readUTF();
-					
-				//	while (name == null || name.equals("")) {
-				//		out.writeUTF(needPlayerName);
-				//		name = in.readUTF();
-				//	}
+
+					// while (name == null || name.equals("")) {
+					// out.writeUTF(needPlayerName);
+					// name = in.readUTF();
+					// }
 					list.add(new Client(s, name, i));
 				} catch (IOException e) {
 					// Client entfernen der eine IOException geworfen hat.
@@ -773,16 +893,16 @@ public class Server {
 				try {
 					// Jedem Client die anderen Mitspieler mitteilen.
 					for (Client other : list) {
-						/*if (c.getID() != other.getID()) {
-							c.getOut().writeUTF("Other Player, Sending(Name, ID) {" + String.class.toString() + ", "
-									+ Integer.class.toString() + "}");
-							c.getOut().writeUTF(other.getName());
-							c.getOut().writeInt(other.getID());
-						}*/
+						/*
+						 * if (c.getID() != other.getID()) {
+						 * c.getOut().writeUTF("Other Player, Sending(Name, ID) {" +
+						 * String.class.toString() + ", " + Integer.class.toString() + "}");
+						 * c.getOut().writeUTF(other.getName()); c.getOut().writeInt(other.getID()); }
+						 */
 					}
 					// Jedem Client das Stargeld geben.
-					System.out.println(c.name + " "+ c.ID);
-				//	c.addGeld(1500);
+					System.out.println(c.name + " " + c.ID);
+					// c.addGeld(1500);
 				} catch (Exception e) {
 					// Client entfernen der eine IOException geworfen hat.
 					list.remove(i);

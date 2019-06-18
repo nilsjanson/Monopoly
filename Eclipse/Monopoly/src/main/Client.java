@@ -7,9 +7,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
-import gui.WuerfelStage;
-import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.stage.Stage;
 
 public class Client extends Thread {
@@ -61,9 +58,9 @@ public class Client extends Thread {
 	public void wuerfel() throws IOException {
 
 		try {
-			System.out.println("Wuerfeln starten");			
+			System.out.println("Wuerfeln starten");
 			int playerNumber = in.readInt(); // erhalte den wuerfelnden SPieler
-			System.out.println(playerNumber+" ist am Zug");
+			System.out.println(playerNumber + " ist am Zug");
 			Thread.sleep(5000);
 			if (playerNumber == ownPlayerNumber) { // ist der Client selber am Zug
 				System.out.println("Sie sind am Zug druecken sie die Leertaste zum wuerfeln!");
@@ -78,12 +75,12 @@ public class Client extends Thread {
 			int wuerfel2 = in.readInt();
 			System.out.println(wuerfel1);
 			System.out.println(wuerfel2);
-			
-                	board.wuerfelStage.wuerfeln(wuerfel1, wuerfel2);
-                	
-           
+
+			board.wuerfelStage.wuerfeln(wuerfel1, wuerfel2);
+
 			board.move(board.playerArr[playerNumber]);
 		} catch (Exception ex) {
+			System.out.println("An error occured");
 			ex.printStackTrace();
 		}
 	}

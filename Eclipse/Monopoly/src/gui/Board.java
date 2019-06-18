@@ -382,7 +382,7 @@ public class Board {
 
 	private void butStyle(Button... x) {
 		for (Button but : x) {
-			but.setStyle("-fx-border-color: black; -fx-background-color: lightgreen; ");
+			but.setStyle("-fx-border-color: black; -fx-background-color: lightgreen; -fx-border-color: black; -fx-font-size: 2em;");
 		}
 	}
 	
@@ -437,7 +437,7 @@ public class Board {
 					break;
 
 				case X:
-	
+					new Lobby();
 					break;
 				case CONTROL:
 					parent.setRotate(parent.getRotate() - 90);
