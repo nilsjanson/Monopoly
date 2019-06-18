@@ -89,12 +89,13 @@ public class Server {
 	private static void sortClientInQueue(Socket client, List<List<Socket>> list) throws IOException {
 		DataOutputStream out = new DataOutputStream(new BufferedOutputStream(client.getOutputStream()));
 		DataInputStream in = new DataInputStream(new BufferedInputStream(client.getInputStream()));
-		out.writeUTF("select number of Players [2-4]; expects {" + Integer.class.toString() + "}");
+	//	out.writeUTF("select number of Players [2-4]; expects {" + Integer.class.toString() + "}");
 		int i = in.readInt();
 //		while (!Integer.valueOf(i).toString().matches("[2-4]")) { //nicht umsetzbar wegen GUI
 //			out.writeUTF("select number of Players; expects {" + Integer.class.toString() + "}");
 //			i = in.readInt();
 //		}
+		
 		list.get(i - 2).add(client);
 	}
 
@@ -120,6 +121,7 @@ public class Server {
 	 * @param q Die wartenden Clients
 	 */
 	private static void startGame(List<Socket> q) {
+		System.out.println("Neuer Server wird gestartet");
 		new Server().new GameThread(q);
 	}
 
@@ -323,6 +325,7 @@ public class Server {
 				this.out = new DataOutputStream(new BufferedOutputStream(s.getOutputStream()));
 				this.name = name;
 				this.ID = ID;
+				System.out.println("Client initialisiert");
 			}
 
 			/**
@@ -541,12 +544,7 @@ public class Server {
 			System.out.println("Start game with " + list.size() + " players");
 			
 			// auswuerfeln wer anfaengt
-			int playerCounter = 1;
 			for (Client c : list) {
-				
-				DataOutputStream out = new DataOutputStream(new BufferedOutputStream(c.s.getOutputStream()));
-				out.write(playerCounter);
-				out.flush();
 				c.wuerfeln();
 			}} catch (IOException e) {
 					e.printStackTrace();
@@ -733,8 +731,12 @@ public class Server {
 		 * 
 		 * @param sList Liste der Sockets
 		 */
-		private void broadcastInt(int x) {
-			//broadcast integer
+		private void broadcastInt(int x, List<Socket> slist) throws IOException {
+			for(Socket s: slist) {
+				DataOutputStream out = new DataOutputStream(new BufferedOutputStream(s.getOutputStream()));
+				out.write(x);
+				out.flush();
+			}
 		}
 		
 		private void init(List<Socket> sList) {
@@ -745,14 +747,18 @@ public class Server {
 					DataInputStream in = new DataInputStream(new BufferedInputStream(s.getInputStream()));
 					String name = "";
 					// Spielername benoetigt
-					String needPlayerName = "need Playername expects {" + String.class.toString() + "}";
-					out.writeUTF(needPlayerName);
+				//	String needPlayerName = "need Playername expects {" + String.class.toString() + "}";
+				//	out.writeUTF(needPlayerName);
 					// Spielername gelesen
+					
+					out.writeInt(i);
+					out.flush();
 					name = in.readUTF();
-					while (name == null || name.equals("")) {
-						out.writeUTF(needPlayerName);
-						name = in.readUTF();
-					}
+					
+				//	while (name == null || name.equals("")) {
+				//		out.writeUTF(needPlayerName);
+				//		name = in.readUTF();
+				//	}
 					list.add(new Client(s, name, i));
 				} catch (IOException e) {
 					// Client entfernen der eine IOException geworfen hat.
@@ -765,14 +771,15 @@ public class Server {
 				try {
 					// Jedem Client die anderen Mitspieler mitteilen.
 					for (Client other : list) {
-						if (c.getID() != other.getID()) {
+						/*if (c.getID() != other.getID()) {
 							c.getOut().writeUTF("Other Player, Sending(Name, ID) {" + String.class.toString() + ", "
 									+ Integer.class.toString() + "}");
 							c.getOut().writeUTF(other.getName());
 							c.getOut().writeInt(other.getID());
-						}
+						}*/
 					}
 					// Jedem Client das Stargeld geben.
+					System.out.println(c.name + " "+ c.ID);
 					c.addGeld(1500);
 				} catch (IOException e) {
 					// Client entfernen der eine IOException geworfen hat.

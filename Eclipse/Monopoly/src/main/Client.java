@@ -10,7 +10,7 @@ import java.net.Socket;
 import gui.WuerfelStage;
 import javafx.stage.Stage;
 
-public class Client {
+public class Client extends Thread {
 
 	gui.Board board;
 	Stage stage;
@@ -18,21 +18,28 @@ public class Client {
 	DataInputStream in;
 	DataOutputStream out;
 	int ownPlayerNumber;
+	String name ;
 
 	Client(gui.Board board, Stage stage) {
 		this.board = board;
 		this.stage = stage;
+		start();
 	}
 
-	public void start() {
+	public void run() {
 		try {
 			server = new Socket("localhost", 1337);
 			in = new DataInputStream(new BufferedInputStream(server.getInputStream()));
 			out = new DataOutputStream(new BufferedOutputStream(server.getOutputStream()));
 			board.actionSeamphore.acquire();
-			out.write(board.spieler);
+			out.writeInt(board.spieler);
 			out.flush();
 			int ownPlayerNumber = in.readInt();
+			System.out.println("hier");
+			name = board.playerName;
+			out.writeUTF(name);
+			out.flush();
+			
 			int x = in.readInt();
 			while (x != -1) {
 				switch (x) {

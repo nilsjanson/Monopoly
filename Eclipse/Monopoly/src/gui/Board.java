@@ -39,6 +39,7 @@ public class Board {
 	protected Stage prime;
 	private Stage welcome;
 	public int spieler = 0;
+	public String playerName ;
 	BorderPane parent;
 	private double max;
 	int buttonCount = 0;
@@ -353,7 +354,12 @@ public class Board {
 
 	private void startGame(int player,String playername) {
 		spieler = player;
-		actionSeamphore.release();
+		if(playername==null || playername.equals("")) {
+			this.playerName = "Player " +(int) (Math.random()*10000);
+		}else {
+			this.playerName=playername;
+		}
+		actionSeamphore.release(1);
 		createBoard();
 	}
 
