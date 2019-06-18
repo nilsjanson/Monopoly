@@ -372,7 +372,13 @@ public class Board {
 	
 	private void butStyle(Button... x) {
 		for (Button but : x) {
-			but.setStyle("-fx-border-color: black; -fx-background-color: lightgreen; -fx-font-size: 2em;");
+			but.setStyle("-fx-border-color: black; -fx-background-color: lightgreen; ");
+		}
+	}
+	
+	private void helpLabelStyle(ArrayList<Label> help) {
+		for (Label x: help) {
+			x.setStyle("-fx-font-size: 2em;");
 		}
 	}
 
@@ -385,6 +391,7 @@ public class Board {
 		helpfull.add(new Label("F11 = Musik an"));
 		helpfull.add(new Label("F12 = Musik aus"));
 		helpfull.add(new Label("ESC = Beendet das Programm"));
+		helpLabelStyle(helpfull);
 		vbox.getChildren().addAll(helpfull);
 		vbox.setStyle("-fx-background-color: rgb(" + 192 + "," + 254 + ", " + 213 + ");");
 		Scene scene = new Scene(vbox);
