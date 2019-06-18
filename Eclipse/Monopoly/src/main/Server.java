@@ -752,7 +752,7 @@ public class Server {
 				//	String needPlayerName = "need Playername expects {" + String.class.toString() + "}";
 				//	out.writeUTF(needPlayerName);
 					// Spielername gelesen
-					
+					System.out.println("Spieler " + i +"erzeugt");
 					out.writeInt(i);
 					out.flush();
 					name = in.readUTF();

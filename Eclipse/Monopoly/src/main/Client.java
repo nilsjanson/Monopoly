@@ -47,6 +47,7 @@ public class Client extends Thread {
 				switch (x) {
 				case 2:
 					wuerfel();
+					break;
 				}
 
 			}
@@ -62,6 +63,8 @@ public class Client extends Thread {
 		try {
 			System.out.println("Wuerfeln starten");			
 			int playerNumber = in.readInt(); // erhalte den wuerfelnden SPieler
+			System.out.println(playerNumber+" ist am Zug");
+			Thread.sleep(5000);
 			if (playerNumber == ownPlayerNumber) { // ist der Client selber am Zug
 				System.out.println("Sie sind am Zug druecken sie die Leertaste zum wuerfeln!");
 				board.wuerfelStage.getLeertaste().acquire();
@@ -73,8 +76,12 @@ public class Client extends Thread {
 			}
 			int wuerfel1 = in.readInt();
 			int wuerfel2 = in.readInt();
+			System.out.println(wuerfel1);
 			System.out.println(wuerfel2);
-			board.wuerfelStage.wuerfeln(wuerfel1, wuerfel2);
+			
+                	board.wuerfelStage.wuerfeln(wuerfel1, wuerfel2);
+                	
+           
 			board.move(board.playerArr[playerNumber]);
 		} catch (Exception ex) {
 			ex.printStackTrace();
