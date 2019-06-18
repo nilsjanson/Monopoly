@@ -46,6 +46,7 @@ public class Board {
 	double playerStartPositionX;
 	double playerStartPositionY;
 	public Semaphore actionSeamphore;
+	public WuerfelStage wuerfelStage;
 
 	public ImageView[] playerArr;
 
@@ -433,6 +434,11 @@ public class Board {
 					
 				case X:
 					gui.WuerfelStage w = new WuerfelStage(me);
+					try {
+						w.start(prime);
+					}catch(Exception ex) {
+						ex.printStackTrace();
+					}
 					break;
 				case CONTROL:
 					parent.setRotate(parent.getRotate() - 90);
@@ -454,6 +460,16 @@ public class Board {
 				}
 			}
 		});
+	}
+	
+	public void wuerfelnStart() {
+		
+		WuerfelStage x = new WuerfelStage(me);	
+		try {
+			x.start(prime);
+		}catch(Exception ex) {
+			ex.printStackTrace();
+		}
 	}
 
 	// public void eventFilter(Scene scene) {
