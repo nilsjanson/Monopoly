@@ -111,7 +111,6 @@ public class WuerfelStage {
 		stage.setScene(scene);
 		stage.initStyle(StageStyle.UNDECORATED);
 		stage.show();
-		stage.setAlwaysOnTop(true);
 		stage.setX((max / 2) - (stage.getWidth()+(stage.getWidth()*.35)));
 		stage.setY(max / 2);
 	}
