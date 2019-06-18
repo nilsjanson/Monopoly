@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
@@ -119,8 +120,14 @@ public class WuerfelStage {
 	}
 	
 	public void wuerfeln(int x,int y) {
-		hbox.getChildren().remove(0, 1);
-		hbox.getChildren().add(views.get(x - 1));
-		hbox.getChildren().add(views.get((y + 6) - 1));
+		
+            	hbox.getChildren().remove(0);
+        		hbox.getChildren().remove(0);
+        		
+        		hbox.getChildren().add(views.get(x - 1));
+        		hbox.getChildren().add(views.get((y + 6) - 1));
+            	
+           
+	
 	}
 }
