@@ -61,7 +61,6 @@ public class WuerfelStage {
 			@Override
 			public void handle(KeyEvent event) {
 				switch (event.getCode()) {
-				
 				case SPACE:
 					leertaste.release();
 					break;
