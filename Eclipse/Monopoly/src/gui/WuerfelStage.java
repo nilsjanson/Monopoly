@@ -1,6 +1,8 @@
 package gui;
 
 import java.util.ArrayList;
+import java.util.concurrent.Semaphore;
+
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -16,8 +18,9 @@ public class WuerfelStage extends Application {
 	Stage stage;
 	Board game;
 	ArrayList<ImageView> views = new ArrayList<ImageView>();
+	private Semaphore leertaste ;
 
-	WuerfelStage(Board board) {
+	public WuerfelStage(Board board) {
 		game = board;
 		try {
 			views.add(new ImageView(getClass().getResource("/wuerfel/1.png").toExternalForm()));
@@ -33,16 +36,19 @@ public class WuerfelStage extends Application {
 			views.add(new ImageView(getClass().getResource("/wuerfel/4.png").toExternalForm()));
 			views.add(new ImageView(getClass().getResource("/wuerfel/5.png").toExternalForm()));
 			views.add(new ImageView(getClass().getResource("/wuerfel/6.png").toExternalForm()));
-			this.start(new Stage());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public void start(Stage primaryStage) throws Exception {
+	
+	
+	
+	
+	public void showWuerfel(Stage primaryStage,int wuerfel1 , int wuerfel2) {
 		HBox hbox = new HBox();
-		int x=model.Board.wuerfeln();
-		int y=model.Board.wuerfeln();
+		int x=wuerfel1;
+		int y=wuerfel2;
 		hbox.getChildren().add(views.get(x - 1));
 		hbox.getChildren().add(views.get((y + 6) - 1));
 		Scene scene = new Scene(hbox);
@@ -50,6 +56,10 @@ public class WuerfelStage extends Application {
 			@Override
 			public void handle(KeyEvent event) {
 				switch (event.getCode()) {
+				
+				case SPACE:
+					
+					break;
 				case F1:
 					game.helpMe();
 					break;
@@ -65,5 +75,40 @@ public class WuerfelStage extends Application {
 		stage.setScene(scene);
 		stage.initStyle(StageStyle.UNDECORATED);
 		stage.show();
+	}
+
+
+
+	public Semaphore getLeertaste() {
+		return leertaste;
+	}
+
+	@Override
+	public void start(Stage primaryStage) throws Exception {
+		leertaste = new Semaphore(0);
+		HBox hbox = new HBox();
+		
+		Scene scene = new Scene(hbox);
+		scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent event) {
+				switch (event.getCode()) {
+				
+				case SPACE:
+					leertaste.release();
+					break;
+				case F1:
+					game.helpMe();
+					break;
+				default:
+					break;
+				}
+			}
+		});
+		stage = new Stage();
+		stage.setScene(scene);
+		stage.initStyle(StageStyle.UNDECORATED);
+		stage.show();
+		
 	}
 }

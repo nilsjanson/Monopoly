@@ -16,7 +16,7 @@ import java.util.List;
  * 
  * @author lucastheiss
  * @version 0.1
- *	
+ * 
  */
 public class Server {
 
@@ -59,10 +59,10 @@ public class Server {
 		System.out.println("Port:\t" + port);
 		try (ServerSocket server = new ServerSocket(port)) {
 			while (true) {
+
 				System.out.println("Waiting for client ...");
 				Socket client = server.accept();
 				System.out.println("Client" + client.getInetAddress() + "connected");
-
 				sortClientInQueue(client, listOfLists);
 				int i = isStartPossible(listOfLists);
 				if (i != -1) {
@@ -71,6 +71,7 @@ public class Server {
 					listOfLists.set(i, new LinkedList<Socket>());
 				}
 			}
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -90,10 +91,10 @@ public class Server {
 		DataInputStream in = new DataInputStream(new BufferedInputStream(client.getInputStream()));
 		out.writeUTF("select number of Players [2-4]; expects {" + Integer.class.toString() + "}");
 		int i = in.readInt();
-		while (!Integer.valueOf(i).toString().matches("[2-4]")) {
-			out.writeUTF("select number of Players; expects {" + Integer.class.toString() + "}");
-			i = in.readInt();
-		}
+//		while (!Integer.valueOf(i).toString().matches("[2-4]")) { //nicht umsetzbar wegen GUI
+//			out.writeUTF("select number of Players; expects {" + Integer.class.toString() + "}");
+//			i = in.readInt();
+//		}
 		list.get(i - 2).add(client);
 	}
 
@@ -263,9 +264,11 @@ public class Server {
 				}
 			}
 		}
+
 		/**
 		 * Der Client.<br>
 		 * Sammlung von Werten und Methoden die einen Spieler beschreiben.
+		 * 
 		 * @author lucastheiss
 		 * @version 0.1
 		 *
@@ -512,8 +515,9 @@ public class Server {
 			 * @throws IOException wenn der Client nicht erreichbar ist.
 			 */
 			public void wuerfeln() throws IOException {
-				out.writeUTF("rolling the dice Sending {" + Integer.class.toString() + ", " + Integer.class.toString()
-						+ "}");
+				out.write(2);
+				out.flush();
+				
 				w1 = model.Board.wuerfeln();
 				w2 = model.Board.wuerfeln();
 				out.writeInt(w1);
@@ -533,15 +537,21 @@ public class Server {
 
 		@Override
 		public void run() {
+			try {
 			System.out.println("Start game with " + list.size() + " players");
+			
 			// auswuerfeln wer anfaengt
+			int playerCounter = 1;
 			for (Client c : list) {
-				try {
-					c.wuerfeln();
-				} catch (IOException e) {
+				
+				DataOutputStream out = new DataOutputStream(new BufferedOutputStream(c.s.getOutputStream()));
+				out.write(playerCounter);
+				out.flush();
+				c.wuerfeln();
+			}} catch (IOException e) {
 					e.printStackTrace();
-				}
 			}
+			
 			int nextPlayer = setBeginner();
 			for (int i = 0; i < list.size(); i++) {
 				if (list.get(i).getW() > list.get(nextPlayer).getW()) {
@@ -553,16 +563,16 @@ public class Server {
 			while (list.size() > 1) {
 				try {
 					Client client = list.get(nextPlayer);
-					//client im gefaengnis?
-					if(client.getImGefaengnis()) {
-						if(client.hasFree1()) {
-							//Freikarte 1 aktivieren.
-						} else if(client.hasFree2()) {
-							//Freikarte 2 aktivieren.
-						} else if(client.getVersuche() < 3) {
-							//Fragen ob bezahlen oder Pasch versuchen.
+					// client im gefaengnis?
+					if (client.getImGefaengnis()) {
+						if (client.hasFree1()) {
+							// Freikarte 1 aktivieren.
+						} else if (client.hasFree2()) {
+							// Freikarte 2 aktivieren.
+						} else if (client.getVersuche() < 3) {
+							// Fragen ob bezahlen oder Pasch versuchen.
 						} else {
-							//bezahlen.
+							// bezahlen.
 						}
 					}
 					client.wuerfeln();
@@ -685,7 +695,7 @@ public class Server {
 					break;
 				case 30: // gehe in das Gefaengnis
 					break;
-				default: //falls was uebersehen wurde.
+				default: // falls was uebersehen wurde.
 					break;
 				}
 			}
@@ -723,6 +733,10 @@ public class Server {
 		 * 
 		 * @param sList Liste der Sockets
 		 */
+		private void broadcastInt(int x) {
+			//broadcast integer
+		}
+		
 		private void init(List<Socket> sList) {
 			for (int i = 0; i < sList.size(); i++) {
 				Socket s = sList.get(i);

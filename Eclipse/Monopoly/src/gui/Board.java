@@ -2,6 +2,7 @@ package gui;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.concurrent.Semaphore;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -36,16 +37,18 @@ public class Board {
 	final MediaPlayer mediaPlayer = new MediaPlayer(media);
 	protected Stage prime;
 	private Stage welcome;
-	int spieler = 0;
+	public int spieler = 0;
 	BorderPane parent;
 	private double max;
 	int buttonCount = 0;
 	ImageView player1;
 	double playerStartPositionX;
 	double playerStartPositionY;
+	public Semaphore actionSeamphore ;
 
 	public Board(Stage prime) {
 		mediaPlayer.play();
+		actionSeamphore = new Semaphore(0);
 		this.prime = prime;
 		welcome();
 	}
@@ -311,6 +314,16 @@ public class Board {
 		Button zwei = new Button("2 Spieler");
 		Button drei = new Button("3 Spieler");
 		Button vier = new Button("4 Spieler");
+		
+		 zwei.setOnAction(new EventHandler<ActionEvent>() {
+	            @Override
+	            public void handle(ActionEvent event) {
+	               startGame(2);
+	            }
+	        });
+		drei.setOnAction(e -> startGame(3));
+		vier.setOnAction(e -> startGame(4));
+		
 		butStyle(zwei, drei, vier);
 		hbox.getChildren().addAll(zwei, drei, vier);
 		hbox.setSpacing(10);
@@ -325,11 +338,17 @@ public class Board {
 		welcome.show();
 		welcome.centerOnScreen();
 	}
+	
+	private void startGame(int player) {
+		spieler = player;
+		actionSeamphore.release();
+		createBoard();
+		
+	}
 
 	private void butStyle(Button... x) {
 		for (Button but : x) {
 			but.setStyle("-fx-border-color: black; -fx-background-color: lightgreen; -fx-font-size: 2em;");
-			but.setOnAction(e -> createBoard());
 		}
 	}
 
@@ -391,9 +410,6 @@ public class Board {
 					mediaPlayer.stop();
 					break;
 				case WINDOWS:
-					break;
-				case SPACE:
-					new WuerfelStage(me);
 					break;
 				case ESCAPE:
 					System.exit(0);

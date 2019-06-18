@@ -18,12 +18,14 @@ public class Main extends Application {
 	 */
 	public static void main(String...args) {
 		launch();
+		
 	}
 
 	@Override
 	public void start(Stage prime) throws Exception {
 		this.prime=prime;
 		this.board =new gui.Board(prime);
+		new Client(board,prime);
 	}
 	
 }
