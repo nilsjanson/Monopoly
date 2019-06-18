@@ -16,7 +16,7 @@ import javafx.stage.StageStyle;
 public class WuerfelStage {
 	Stage stage;
 	Board game;
-	ArrayList<ImageView> views = new ArrayList<ImageView>();
+	ArrayList<ImageView> views ;
 	private Semaphore leertaste ;
 	HBox hbox;
 	double max;
@@ -25,6 +25,7 @@ public class WuerfelStage {
 		this.max=max;
 		game = board;
 		try {
+			views = new ArrayList<ImageView>();
 			views.add(new ImageView(getClass().getResource("/wuerfel/1.png").toExternalForm()));
 			views.add(new ImageView(getClass().getResource("/wuerfel/2.png").toExternalForm()));
 			views.add(new ImageView(getClass().getResource("/wuerfel/3.png").toExternalForm()));

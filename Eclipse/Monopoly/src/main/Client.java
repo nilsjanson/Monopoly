@@ -64,7 +64,6 @@ public class Client extends Thread {
 			System.out.println("Wuerfeln starten");			
 			int playerNumber = in.readInt(); // erhalte den wuerfelnden SPieler
 			System.out.println(playerNumber+" ist am Zug");
-			Thread.sleep(5000);
 			if (playerNumber == ownPlayerNumber) { // ist der Client selber am Zug
 				System.out.println("Sie sind am Zug druecken sie die Leertaste zum wuerfeln!");
 				board.wuerfelStage.getLeertaste().acquire();

@@ -369,7 +369,8 @@ public class Board {
 		playerArr = new ImageView[player];
 		actionSeamphore.release(1);
 
-		createBoard();
+
+
 	}
 
 	private void textFieldStyle(TextField... x) {
