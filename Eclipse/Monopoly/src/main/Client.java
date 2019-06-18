@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.net.Socket;
 
 import gui.WuerfelStage;
+import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.stage.Stage;
 
 public class Client extends Thread {
@@ -18,7 +20,7 @@ public class Client extends Thread {
 	DataInputStream in;
 	DataOutputStream out;
 	int ownPlayerNumber;
-	String name ;
+	String name;
 
 	Client(gui.Board board, Stage stage) {
 		this.board = board;
@@ -35,16 +37,16 @@ public class Client extends Thread {
 			out.writeInt(board.spieler);
 			out.flush();
 			int ownPlayerNumber = in.readInt();
-			System.out.println("hier");
 			name = board.playerName;
 			out.writeUTF(name);
 			out.flush();
-			
+
 			int x = in.readInt();
+			System.out.println(x);
 			while (x != -1) {
 				switch (x) {
 				case 2:
-
+					wuerfel();
 				}
 
 			}
@@ -56,27 +58,36 @@ public class Client extends Thread {
 
 	// Starte den Wuerfelzuh
 	public void wuerfel() throws IOException {
-		try {
-			gui.WuerfelStage w = new WuerfelStage(board);
 
-			int playerNumber = in.readInt(); // erhalte den wuerfelnden SPieler
-			if (playerNumber == ownPlayerNumber) { // ist der Client selber am Zug
-				System.out.println("Sie sind am Zug druecken sie die Leertaste zum wuerfeln!");
-				w.getLeertaste().acquire();
-				out.writeBoolean(true);
-				out.flush();
+		System.out.println("Wuerfeln starten");
+		Platform.runLater(new Runnable() {
+			public void run() {
+				try {
+					gui.WuerfelStage w = new WuerfelStage(board);
+					w.start(new Stage());
+					int playerNumber = in.readInt(); // erhalte den wuerfelnden SPieler
+					if (playerNumber == ownPlayerNumber) { // ist der Client selber am Zug
+						System.out.println("Sie sind am Zug druecken sie die Leertaste zum wuerfeln!");
+						w.getLeertaste().acquire();
+						out.writeBoolean(true);
+						out.flush();
+						System.out.println("gewuerfelt");
 
-			} else { // ist ein anderer CLient am Zug
-				System.out.println("Spieler " + playerNumber + " ist am Zug. Warte auf wuerfeln...");
+					} else { // ist ein anderer CLient am Zug
+						System.out.println("Spieler " + playerNumber + " ist am Zug. Warte auf wuerfeln...");
+					}
+
+					int wuerfel1 = in.readInt();
+					int wuerfel2 = in.readInt();
+					System.out.println(wuerfel2);
+					w.showWuerfel(stage, wuerfel1, wuerfel2);
+					board.move(board.playerArr[playerNumber]);
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
 			}
 
-			int wuerfel1 = in.readInt();
-			int wuerfel2 = in.readInt();
-			w.showWuerfel(stage, wuerfel1, wuerfel2);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
+		});
 
 	}
-
 }

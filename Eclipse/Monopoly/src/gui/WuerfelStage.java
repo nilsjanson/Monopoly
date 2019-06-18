@@ -36,6 +36,7 @@ public class WuerfelStage extends Application {
 			views.add(new ImageView(getClass().getResource("/wuerfel/4.png").toExternalForm()));
 			views.add(new ImageView(getClass().getResource("/wuerfel/5.png").toExternalForm()));
 			views.add(new ImageView(getClass().getResource("/wuerfel/6.png").toExternalForm()));
+			leertaste = new Semaphore(0);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -58,7 +59,10 @@ public class WuerfelStage extends Application {
 				switch (event.getCode()) {
 				
 				case SPACE:
-					
+					leertaste.release();
+					break;
+				case W:
+					leertaste.release();
 					break;
 				case F1:
 					game.helpMe();
@@ -87,7 +91,8 @@ public class WuerfelStage extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		leertaste = new Semaphore(0);
 		HBox hbox = new HBox();
-		
+		hbox.getChildren().add(views.get(1));
+		hbox.getChildren().add(views.get((7)));
 		Scene scene = new Scene(hbox);
 		scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			@Override
@@ -95,6 +100,9 @@ public class WuerfelStage extends Application {
 				switch (event.getCode()) {
 				
 				case SPACE:
+					leertaste.release();
+					break;
+				case W:
 					leertaste.release();
 					break;
 				case F1:
