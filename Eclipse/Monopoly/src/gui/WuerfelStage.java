@@ -19,8 +19,10 @@ public class WuerfelStage {
 	ArrayList<ImageView> views = new ArrayList<ImageView>();
 	private Semaphore leertaste ;
 	HBox hbox;
+	double max;
 
-	public WuerfelStage(Board board) {
+	public WuerfelStage(Board board, double max) {
+		this.max=max;
 		game = board;
 		try {
 			views.add(new ImageView(getClass().getResource("/wuerfel/1.png").toExternalForm()));
@@ -114,9 +116,10 @@ public class WuerfelStage {
 		stage = new Stage();
 		stage.setScene(scene);
 		stage.initStyle(StageStyle.UNDECORATED);
-		stage.setX(0);
-		stage.setY(200);
 		stage.show();
+		stage.setAlwaysOnTop(true);
+		stage.setX((max/2)-stage.getWidth());
+		stage.setY(max/2);
 	}
 	
 	public void wuerfeln(int x,int y) {

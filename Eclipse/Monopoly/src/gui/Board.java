@@ -168,7 +168,7 @@ public class Board {
 		prime.setHeight(max);
 		prime.show();
 		
-		wuerfelStage= new WuerfelStage(me);
+		wuerfelStage= new WuerfelStage(me,max);
 		
 		playerArr[0] = createPlayer(max * 0.075, max * 0.075, "/playerIcons/bike.png");
 		playerArr[1] = createPlayer(max * 0.075, max * 0.075, "/playerIcons/dog.png");
@@ -488,14 +488,5 @@ public class Board {
 		});
 	}
 
-	public void startWuerfelStage() {
-
-		Platform.runLater(new Runnable() {
-			@Override
-			public void run() {
-				gui.WuerfelStage w = new WuerfelStage(me);
-			}
-		});
-	}
 
 }
