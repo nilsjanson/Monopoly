@@ -5,9 +5,7 @@ import java.util.ArrayList;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
-import javafx.animation.PathTransition;
 import javafx.animation.Timeline;
-import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -24,7 +22,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
 import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -52,94 +49,80 @@ public class Board {
 		this.prime = prime;
 		welcome();
 	}
-	
+
 	protected double getMax() {
 		return max;
 	}
 
-	 private void createPlayer1(double width, double height) {
-	
-	 ImageView icon =new ImageView(getClass().getResource("/playerIcons/bike.png").toExternalForm());
-	// height = height / 20;
-	// width = width / 20;
-	 icon.setFitHeight(height);
-	 icon.setFitWidth(width);
-	 parent.getChildren().add(icon);
-	 icon.setX(prime.getWidth() - width*1.76);
-	 icon.setY(prime.getHeight() - height);
-	 playerStartPositionX = icon.getX();
-	 playerStartPositionY = icon.getY();
-	 player1 = icon;
-	 }
-	 
-	 private void move(ImageView player) {
-		 try {
-		 Timeline timeline = new Timeline();
-		 
-		 double xValue = player.getX();
-		 double yValue = player.getY();
-		 
-		 double x = prime.getHeight()/12.3;
-		 System.out.print(player.getX());
-		
-		 if(player.getX()-x < 0) {
-			 if(player.getY()+x > max) {
-				x= x*1.7;
-				xValue-=(x*0.4);
-				 yValue-=x;
+	private void createPlayer1(double width, double height) {
+
+		ImageView icon = new ImageView(getClass().getResource("/playerIcons/bike.png").toExternalForm());
+		icon.setFitHeight(height);
+		icon.setFitWidth(width);
+		parent.getChildren().add(icon);
+		icon.setX(prime.getWidth() - width * 1.76);
+		icon.setY(prime.getHeight() - height);
+		playerStartPositionX = icon.getX();
+		playerStartPositionY = icon.getY();
+		player1 = icon;
+	}
+
+	private void move(ImageView player) {
+
+		Timeline timeline = new Timeline();
+
+		double xValue = player.getX();
+		double yValue = player.getY();
+
+		double x = prime.getHeight() / 12.3;
+		System.out.print(player.getX());
+
+		if (player.getX() - x < 0) {
+			if (player.getY() + x > max) {
+				x = x * 1.7;
+				xValue -= (x * 0.4);
+				yValue -= x;
 				player.setRotate(90);
-			 }else if(player.getY()-x <0) {
-				 x= x*1.7;
-				 yValue-=(x*0.4);
+			} else if (player.getY() - x < 0) {
+				x = x * 1.7;
+				yValue -= (x * 0.4);
 				player.setRotate(180);
-				 xValue+=x;
-			 }else {
-				  yValue-=x;
-				   }
-		 }else if(player.getY()+x > max){
-				  xValue-=x;
-		     System.out.println("links unten");
-		  
-	
-		 }else if(player.getY()-x < 0){
-			  if(player.getX()+(x*1.8)>max){
-				  x= x*1.7;
-				  xValue+=(x*0.4);
-				  yValue+=x;
-				  player.setRotate(270)	;  
-				  
-			  }
-			  else {
-				  xValue+=x;
-			  }
-		 }
-		 else {
-			 if(player.getY()+(x*3)>max) {
-				 player.setRotate(0);
-				xValue= playerStartPositionX;
+				xValue += x;
+			} else {
+				yValue -= x;
+			}
+		} else if (player.getY() + x > max) {
+			xValue -= x;
+			System.out.println("links unten");
+
+		} else if (player.getY() - x < 0) {
+			if (player.getX() + (x * 1.8) > max) {
+				x = x * 1.7;
+				xValue += (x * 0.4);
+				yValue += x;
+				player.setRotate(270);
+
+			} else {
+				xValue += x;
+			}
+		} else {
+			if (player.getY() + (x * 3) > max) {
+				player.setRotate(0);
+				xValue = playerStartPositionX;
 				yValue = playerStartPositionY;
-			 }
-			 else {
-				 yValue+=x;
-			 }
-			 
-			 
-		     System.out.println("rechts unten");
-		 }
-		 
-		 KeyFrame end = new KeyFrame(Duration.millis(500),
-	                new KeyValue(player.xProperty(), xValue),
-	                new KeyValue(player.yProperty(), yValue));
+			} else {
+				yValue += x;
+			}
+
+			System.out.println("rechts unten");
+		}
+
+		KeyFrame end = new KeyFrame(Duration.millis(500), new KeyValue(player.xProperty(), xValue),
+				new KeyValue(player.yProperty(), yValue));
 		timeline.getKeyFrames().add(end);
 		timeline.play();
-		
-		
-		 }catch(Exception ex) {
-			 ex.printStackTrace();
-		 }
-		 
-	 }
-	
+	}
+
 	// private void createPlayer2(double width, double height) {
 	//
 	// height = height / 20;
@@ -162,7 +145,6 @@ public class Board {
 		parent = pane;
 		pane.setStyle("-fx-background-color: lightgreen;" + "-fx-background-image: url(\"/icons/TH-Poly.jpg\");"
 				+ "    -fx-background-size: " + max + " " + max + ";");
-
 
 		HBox buttom = hButtonRow(true);
 		VBox left = vButtonRow(true);
@@ -384,16 +366,17 @@ public class Board {
 					break;
 				case E:
 					try {
-				//		new EmailStage(me,"Stupa Seminar","Studiensekreteriat","Wir laden Sie herzlichst zu unserem Stupa Seminar am 15.07 ein.").start(prime);
+						// new EmailStage(me,"Stupa Seminar","Studiensekreteriat","Wir laden Sie
+						// herzlichst zu unserem Stupa Seminar am 15.07 ein.").start(prime);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
 					break;
-				case B: 
-		//			new StreetStage(me,"AstaBuero"); 
+				case B:
+					// new StreetStage(me,"AstaBuero");
 					break;
-				case P: 
-					createPlayer1(max*0.075,max*0.075);
+				case P:
+					createPlayer1(max * 0.075, max * 0.075);
 					break;
 				case S:
 					move(player1);
@@ -422,14 +405,14 @@ public class Board {
 			}
 		});
 	}
-	
-//	public void eventFilter(Scene scene) {
-//		scene.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
-//	                public void handle(KeyEvent.) { 
-//	                	
-//	                };
-//	            });
-//	}
+
+	// public void eventFilter(Scene scene) {
+	// scene.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
+	// public void handle(KeyEvent.) {
+	//
+	// };
+	// });
+	// }
 
 	private void controlWelcome(Scene scene) {
 		scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
