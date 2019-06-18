@@ -39,17 +39,19 @@ public class Board {
 	protected Stage prime;
 	private Stage welcome;
 	public int spieler = 0;
-	public String playerName ;
+	public String playerName;
 	BorderPane parent;
 	private double max;
 	int buttonCount = 0;
-	ImageView player1;
 	double playerStartPositionX;
 	double playerStartPositionY;
 	public Semaphore actionSeamphore;
 
+	public ImageView[] playerArr;
+
 	public Board(Stage prime) {
-		mediaPlayer.play();
+		//mediaPlayer.play(); Musik ausgeschaltet, da wenn ich nocheinmal dieses Lied hoere meine rechte Halsschlagader platzt sollte man auf die Idee kommen das ganze mal mit drei Clients zu testen.
+		
 		actionSeamphore = new Semaphore(0);
 		this.prime = prime;
 		welcome();
@@ -59,9 +61,9 @@ public class Board {
 		return max;
 	}
 
-	private void createPlayer1(double width, double height) {
+	private ImageView createPlayer(double width, double height, String source) {
 
-		ImageView icon = new ImageView(getClass().getResource("/playerIcons/bike.png").toExternalForm());
+		ImageView icon = new ImageView(getClass().getResource(source).toExternalForm());
 		icon.setFitHeight(height);
 		icon.setFitWidth(width);
 		parent.getChildren().add(icon);
@@ -69,10 +71,10 @@ public class Board {
 		icon.setY(prime.getHeight() - height);
 		playerStartPositionX = icon.getX();
 		playerStartPositionY = icon.getY();
-		player1 = icon;
+		return icon;
 	}
 
-	private void move(ImageView player) {
+	public void move(ImageView player) {
 
 		Timeline timeline = new Timeline();
 
@@ -128,17 +130,6 @@ public class Board {
 		timeline.play();
 	}
 
-	// private void createPlayer2(double width, double height) {
-	//
-	// height = height / 20;
-	// width = width / 20;
-	// icon.setFitHeight(height);
-	// icon.setFitWidth(width);
-	// parent.getChildren().add(icon);
-	// icon.setX(prime.getWidth() - width);
-	// icon.setY(prime.getHeight() - (2 * height));
-	// }
-
 	private void createBoard() {
 		welcome.close();
 		Rectangle2D screen = Screen.getPrimary().getVisualBounds();
@@ -172,6 +163,17 @@ public class Board {
 		prime.setWidth(max);
 		prime.setHeight(max);
 		prime.show();
+		
+		playerArr[0] = createPlayer(max * 0.075, max * 0.075, "/playerIcons/bike.png");
+		playerArr[1] = createPlayer(max * 0.075, max * 0.075, "/playerIcons/dog.png");
+		if (spieler > 2) {
+			playerArr[2] = createPlayer(max * 0.075, max * 0.075, "/playerIcons/tank.png");
+		}
+		if (spieler > 3) {
+			playerArr[3] = createPlayer(max * 0.075, max * 0.075, "/playerIcons/misslex.png");
+		}
+		
+		
 		System.out.println("Maximale Groeße: " + max);
 	}
 
@@ -322,22 +324,22 @@ public class Board {
 		hbox.setSpacing(10);
 		hbox.setStyle("-fx-padding:1em");
 		hbox.setAlignment(Pos.CENTER);
-		
+
 		HBox playerNames = new HBox();
 		TextField name = new TextField();
-		name.setOnAction(e-> sendPlayerName(name.getText()));
+		name.setOnAction(e -> sendPlayerName(name.getText()));
 		Label playerName = new Label("Ihr Spielername:");
-		playerName.setStyle("-fx-background-color:lightgreen; -fx-padding:0.5em; -fx-text-fill: black; -fx-font-size:20px;");
+		playerName.setStyle(
+				"-fx-background-color:lightgreen; -fx-padding:0.5em; -fx-text-fill: black; -fx-font-size:20px;");
 		textFieldStyle(name);
-		playerNames.getChildren().addAll(playerName,name);
+		playerNames.getChildren().addAll(playerName, name);
 		playerNames.setAlignment(Pos.CENTER);
-		
-		zwei.setOnAction(e -> startGame(2,name.getText()));
-		drei.setOnAction(e -> startGame(3,name.getText()));
-		vier.setOnAction(e -> startGame(4,name.getText()));
-		
-		
-		vbox.getChildren().addAll(logo, hbox,playerNames);
+
+		zwei.setOnAction(e -> startGame(2, name.getText()));
+		drei.setOnAction(e -> startGame(3, name.getText()));
+		vier.setOnAction(e -> startGame(4, name.getText()));
+
+		vbox.getChildren().addAll(logo, hbox, playerNames);
 		Scene scene = new Scene(vbox);
 		vbox.autosize();
 		controlWelcome(scene);
@@ -347,19 +349,21 @@ public class Board {
 		welcome.show();
 		welcome.centerOnScreen();
 	}
-	
+
 	private void sendPlayerName(String name) {
-		System.out.println("SendNilsPlayerName("+name+");");
+		System.out.println("SendNilsPlayerName(" + name + ");");
 	}
 
-	private void startGame(int player,String playername) {
+	private void startGame(int player, String playername) {
 		spieler = player;
-		if(playername==null || playername.equals("")) {
-			this.playerName = "Player " +(int) (Math.random()*10000);
-		}else {
-			this.playerName=playername;
+		if (playername == null || playername.equals("")) {
+			this.playerName = "Player " + (int) (Math.random() * 10000);
+		} else {
+			this.playerName = playername;
 		}
+		playerArr = new ImageView[player];
 		actionSeamphore.release(1);
+
 		createBoard();
 	}
 
@@ -367,9 +371,10 @@ public class Board {
 		for (TextField field : x) {
 			field.setStyle("-fx-border-color: black; -fx-control-inner-background: lightgreen; -fx-font-size: 2em;");
 		}
-		// vbox.setStyle("-fx-background-color: rgb(" + 192 + "," + 254 + ", " + 213 + ");");
+		// vbox.setStyle("-fx-background-color: rgb(" + 192 + "," + 254 + ", " + 213 +
+		// ");");
 	}
-	
+
 	private void butStyle(Button... x) {
 		for (Button but : x) {
 			but.setStyle("-fx-border-color: black; -fx-background-color: lightgreen; ");
@@ -425,11 +430,9 @@ public class Board {
 				case B:
 					// new StreetStage(me,"AstaBuero");
 					break;
-				case P:
-					createPlayer1(max * 0.075, max * 0.075);
-					break;
-				case S:
-					move(player1);
+					
+				case X:
+					gui.WuerfelStage w = new WuerfelStage(me);
 					break;
 				case CONTROL:
 					parent.setRotate(parent.getRotate() - 90);

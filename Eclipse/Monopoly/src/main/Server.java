@@ -517,14 +517,15 @@ public class Server {
 			 * 
 			 * @throws IOException wenn der Client nicht erreichbar ist.
 			 */
-			public void wuerfeln() throws IOException {
-				out.write(2);
-				out.flush();
-				
+			public void wuerfeln(int playerNumber) throws IOException {
+				System.out.println("im wuerfeln drin");
+				broadcastInt(2);
+				broadcastInt(playerNumber);
+				list.get(playerNumber).in.readBoolean();
 				w1 = model.Board.wuerfeln();
 				w2 = model.Board.wuerfeln();
-				out.writeInt(w1);
-				out.writeInt(w2);
+				broadcastInt(w1);
+				broadcastInt(w2);
 			}
 		}
 
@@ -540,10 +541,10 @@ public class Server {
 
 		@Override
 		public void run() {
-			try {
+			//try {
 			System.out.println("Start game with " + list.size() + " players");
 			
-			// auswuerfeln wer anfaengt
+		/*	// auswuerfeln wer anfaengt
 			for (Client c : list) {
 				c.wuerfeln();
 			}} catch (IOException e) {
@@ -556,6 +557,8 @@ public class Server {
 					nextPlayer = i;
 				}
 			}
+			*/
+			int nextPlayer = 0;
 			// Main Loop
 			// solange mehr als ein Spieler uebrig ist
 			while (list.size() > 1) {
@@ -573,7 +576,7 @@ public class Server {
 							// bezahlen.
 						}
 					}
-					client.wuerfeln();
+					client.wuerfeln(nextPlayer);
 					client.walk(client.getW());
 					checkField(client);
 
@@ -709,7 +712,7 @@ public class Server {
 			for (int i = 0; i < list.size(); i++) {
 				Client c = list.get(i);
 				try {
-					c.wuerfeln();
+					c.wuerfeln(i);
 				} catch (IOException e) {
 					// Client entfernt wegen IOException
 					list.remove(i);
@@ -731,11 +734,10 @@ public class Server {
 		 * 
 		 * @param sList Liste der Sockets
 		 */
-		private void broadcastInt(int x, List<Socket> slist) throws IOException {
-			for(Socket s: slist) {
-				DataOutputStream out = new DataOutputStream(new BufferedOutputStream(s.getOutputStream()));
-				out.write(x);
-				out.flush();
+		private void broadcastInt(int x) throws IOException {
+			for(Client s: list) {
+				s.out.writeInt(x);
+				s.out.flush();
 			}
 		}
 		
@@ -780,8 +782,8 @@ public class Server {
 					}
 					// Jedem Client das Stargeld geben.
 					System.out.println(c.name + " "+ c.ID);
-					c.addGeld(1500);
-				} catch (IOException e) {
+				//	c.addGeld(1500);
+				} catch (Exception e) {
 					// Client entfernen der eine IOException geworfen hat.
 					list.remove(i);
 					// Karten versteigern
