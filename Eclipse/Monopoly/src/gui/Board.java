@@ -7,6 +7,7 @@ import java.util.concurrent.Semaphore;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -51,8 +52,10 @@ public class Board {
 	public ImageView[] playerArr;
 
 	public Board(Stage prime) {
-		//mediaPlayer.play(); Musik ausgeschaltet, da wenn ich nocheinmal dieses Lied hoere meine rechte Halsschlagader platzt sollte man auf die Idee kommen das ganze mal mit drei Clients zu testen.
-		
+		// mediaPlayer.play(); Musik ausgeschaltet, da wenn ich nocheinmal dieses Lied
+		// hoere meine rechte Halsschlagader platzt sollte man auf die Idee kommen das
+		// ganze mal mit drei Clients zu testen.
+
 		actionSeamphore = new Semaphore(0);
 		this.prime = prime;
 		welcome();
@@ -164,7 +167,7 @@ public class Board {
 		prime.setWidth(max);
 		prime.setHeight(max);
 		prime.show();
-		
+
 		playerArr[0] = createPlayer(max * 0.075, max * 0.075, "/playerIcons/bike.png");
 		playerArr[1] = createPlayer(max * 0.075, max * 0.075, "/playerIcons/dog.png");
 		if (spieler > 2) {
@@ -173,8 +176,7 @@ public class Board {
 		if (spieler > 3) {
 			playerArr[3] = createPlayer(max * 0.075, max * 0.075, "/playerIcons/misslex.png");
 		}
-		
-		
+
 		System.out.println("Maximale Groeﬂe: " + max);
 	}
 
@@ -424,14 +426,9 @@ public class Board {
 				case B:
 					// new StreetStage(me,"AstaBuero");
 					break;
-					
+
 				case X:
 					gui.WuerfelStage w = new WuerfelStage(me);
-					try {
-						w.start(prime);
-					}catch(Exception ex) {
-						ex.printStackTrace();
-					}
 					break;
 				case CONTROL:
 					parent.setRotate(parent.getRotate() - 90);
@@ -453,16 +450,6 @@ public class Board {
 				}
 			}
 		});
-	}
-	
-	public void wuerfelnStart() {
-		
-		WuerfelStage x = new WuerfelStage(me);	
-		try {
-			x.start(prime);
-		}catch(Exception ex) {
-			ex.printStackTrace();
-		}
 	}
 
 	// public void eventFilter(Scene scene) {
@@ -491,4 +478,15 @@ public class Board {
 			}
 		});
 	}
+
+	public void startWuerfelStage() {
+
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				gui.WuerfelStage w = new WuerfelStage(me);
+			}
+		});
+	}
+
 }

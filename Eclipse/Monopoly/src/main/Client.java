@@ -61,8 +61,8 @@ public class Client extends Thread {
 
 		try {
 			System.out.println("Wuerfeln starten");
-			board.wuerfelnStart();
-			
+			board.startWuerfelStage();
+			Thread.sleep(10000);
 			
 			int playerNumber = in.readInt(); // erhalte den wuerfelnden SPieler
 			if (playerNumber == ownPlayerNumber) { // ist der Client selber am Zug
@@ -79,7 +79,7 @@ public class Client extends Thread {
 			int wuerfel1 = in.readInt();
 			int wuerfel2 = in.readInt();
 			System.out.println(wuerfel2);
-			board.wuerfelStage.showWuerfel(stage, wuerfel1, wuerfel2);
+			//board.wuerfelStage.showWuerfel(stage, wuerfel1, wuerfel2);
 			board.move(board.playerArr[playerNumber]);
 		} catch (Exception ex) {
 			ex.printStackTrace();

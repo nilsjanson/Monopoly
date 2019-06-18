@@ -12,7 +12,7 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-public class WuerfelStage extends Application {
+public class WuerfelStage {
 	int x;
 	int y;
 	Stage stage;
@@ -37,6 +37,7 @@ public class WuerfelStage extends Application {
 			views.add(new ImageView(getClass().getResource("/wuerfel/5.png").toExternalForm()));
 			views.add(new ImageView(getClass().getResource("/wuerfel/6.png").toExternalForm()));
 			leertaste = new Semaphore(0);
+			run();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -44,7 +45,9 @@ public class WuerfelStage extends Application {
 
 	
 	
-	
+	public void run() {
+		startWuerfelStage();
+	}
 	
 	public void showWuerfel(Stage primaryStage,int wuerfel1 , int wuerfel2) {
 		HBox hbox = new HBox();
@@ -87,8 +90,8 @@ public class WuerfelStage extends Application {
 		return leertaste;
 	}
 
-	@Override
-	public void start(Stage primaryStage) throws Exception {
+	
+	public void startWuerfelStage()  {
 		leertaste = new Semaphore(0);
 		HBox hbox = new HBox();
 		hbox.getChildren().add(views.get(1));
