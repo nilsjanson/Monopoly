@@ -3,8 +3,6 @@ package gui;
 import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 
-import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
@@ -22,7 +20,7 @@ public class WuerfelStage {
 	double max;
 
 	public WuerfelStage(Board board, double max) {
-		this.max=max;
+		this.max = max;
 		game = board;
 		try {
 			views = new ArrayList<ImageView>();
@@ -39,7 +37,7 @@ public class WuerfelStage {
 			views.add(new ImageView(getClass().getResource("/wuerfel/4.png").toExternalForm()));
 			views.add(new ImageView(getClass().getResource("/wuerfel/5.png").toExternalForm()));
 			views.add(new ImageView(getClass().getResource("/wuerfel/6.png").toExternalForm()));
-			
+
 			views.add(new ImageView(getClass().getResource("/wuerfel/0.png").toExternalForm()));
 			views.add(new ImageView(getClass().getResource("/wuerfel/0.png").toExternalForm()));
 			leertaste = new Semaphore(0);
@@ -48,13 +46,12 @@ public class WuerfelStage {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public Semaphore getLeertaste() {
 		return leertaste;
 	}
 
-	
-	public void startWuerfelStage()  {
+	public void startWuerfelStage() {
 		leertaste = new Semaphore(0);
 		HBox hbox = new HBox();
 		hbox.getChildren().add(views.get(1));
@@ -64,7 +61,6 @@ public class WuerfelStage {
 			@Override
 			public void handle(KeyEvent event) {
 				switch (event.getCode()) {
-				
 				case SPACE:
 					leertaste.release();
 					break;
@@ -83,15 +79,13 @@ public class WuerfelStage {
 		stage.setScene(scene);
 		stage.initStyle(StageStyle.UNDECORATED);
 		stage.show();
-		
+
 	}
-
-
 
 	public void start() {
 		hbox = new HBox();
-		hbox.getChildren().add(views.get(views.size()-2));
-		hbox.getChildren().add(views.get(views.size()-1));
+		hbox.getChildren().add(views.get(views.size() - 2));
+		hbox.getChildren().add(views.get(views.size() - 1));
 		Scene scene = new Scene(hbox);
 		scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			@Override
@@ -119,19 +113,15 @@ public class WuerfelStage {
 		stage.initStyle(StageStyle.UNDECORATED);
 		stage.show();
 		stage.setAlwaysOnTop(true);
-		stage.setX((max/2)-stage.getWidth());
-		stage.setY(max/2);
+		stage.setX((max / 2) - (stage.getWidth()+(stage.getWidth()*.35)));
+		stage.setY(max / 2);
 	}
-	
-	public void wuerfeln(int x,int y) {
-		
-            	hbox.getChildren().remove(0);
-        		hbox.getChildren().remove(0);
-        		
-        		hbox.getChildren().add(views.get(x - 1));
-        		hbox.getChildren().add(views.get((y + 6) - 1));
-            	
-           
-	
+
+	public void wuerfeln(int x, int y) {
+		hbox.getChildren().remove(0);
+		hbox.getChildren().remove(0);
+		hbox.getChildren().add(views.get(x - 1));
+		hbox.getChildren().add(views.get((y + 6) - 1));
+
 	}
 }
