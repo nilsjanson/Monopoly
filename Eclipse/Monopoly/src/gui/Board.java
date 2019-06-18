@@ -167,7 +167,9 @@ public class Board {
 		prime.setWidth(max);
 		prime.setHeight(max);
 		prime.show();
-
+		
+		wuerfelStage= new WuerfelStage(me);
+		
 		playerArr[0] = createPlayer(max * 0.075, max * 0.075, "/playerIcons/bike.png");
 		playerArr[1] = createPlayer(max * 0.075, max * 0.075, "/playerIcons/dog.png");
 		if (spieler > 2) {
@@ -435,7 +437,7 @@ public class Board {
 					break;
 
 				case X:
-					gui.WuerfelStage w = new WuerfelStage(me);
+	
 					break;
 				case CONTROL:
 					parent.setRotate(parent.getRotate() - 90);

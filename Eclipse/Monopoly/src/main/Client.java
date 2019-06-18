@@ -60,10 +60,7 @@ public class Client extends Thread {
 	public void wuerfel() throws IOException {
 
 		try {
-			System.out.println("Wuerfeln starten");
-			board.startWuerfelStage();
-			Thread.sleep(10000);
-			
+			System.out.println("Wuerfeln starten");			
 			int playerNumber = in.readInt(); // erhalte den wuerfelnden SPieler
 			if (playerNumber == ownPlayerNumber) { // ist der Client selber am Zug
 				System.out.println("Sie sind am Zug druecken sie die Leertaste zum wuerfeln!");
@@ -71,15 +68,13 @@ public class Client extends Thread {
 				out.writeBoolean(true);
 				out.flush();
 				System.out.println("gewuerfelt");
-
 			} else { // ist ein anderer CLient am Zug
 				System.out.println("Spieler " + playerNumber + " ist am Zug. Warte auf wuerfeln...");
 			}
-
 			int wuerfel1 = in.readInt();
 			int wuerfel2 = in.readInt();
 			System.out.println(wuerfel2);
-			//board.wuerfelStage.showWuerfel(stage, wuerfel1, wuerfel2);
+			board.wuerfelStage.wuerfeln(wuerfel1, wuerfel2);
 			board.move(board.playerArr[playerNumber]);
 		} catch (Exception ex) {
 			ex.printStackTrace();

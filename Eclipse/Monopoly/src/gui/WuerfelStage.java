@@ -13,12 +13,11 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 public class WuerfelStage {
-	int x;
-	int y;
 	Stage stage;
 	Board game;
 	ArrayList<ImageView> views = new ArrayList<ImageView>();
 	private Semaphore leertaste ;
+	HBox hbox;
 
 	public WuerfelStage(Board board) {
 		game = board;
@@ -36,56 +35,16 @@ public class WuerfelStage {
 			views.add(new ImageView(getClass().getResource("/wuerfel/4.png").toExternalForm()));
 			views.add(new ImageView(getClass().getResource("/wuerfel/5.png").toExternalForm()));
 			views.add(new ImageView(getClass().getResource("/wuerfel/6.png").toExternalForm()));
+			
+			views.add(new ImageView(getClass().getResource("/wuerfel/0.png").toExternalForm()));
+			views.add(new ImageView(getClass().getResource("/wuerfel/0.png").toExternalForm()));
 			leertaste = new Semaphore(0);
-			run();
+			start();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-
 	
-	
-	public void run() {
-		startWuerfelStage();
-	}
-	
-	public void showWuerfel(Stage primaryStage,int wuerfel1 , int wuerfel2) {
-		HBox hbox = new HBox();
-		int x=wuerfel1;
-		int y=wuerfel2;
-		hbox.getChildren().add(views.get(x - 1));
-		hbox.getChildren().add(views.get((y + 6) - 1));
-		Scene scene = new Scene(hbox);
-		scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
-			@Override
-			public void handle(KeyEvent event) {
-				switch (event.getCode()) {
-				
-				case SPACE:
-					leertaste.release();
-					break;
-				case W:
-					leertaste.release();
-					break;
-				case F1:
-					game.helpMe();
-					break;
-				case ENTER:
-					stage.close();
-					break;
-				default:
-					break;
-				}
-			}
-		});
-		stage = new Stage();
-		stage.setScene(scene);
-		stage.initStyle(StageStyle.UNDECORATED);
-		stage.show();
-	}
-
-
-
 	public Semaphore getLeertaste() {
 		return leertaste;
 	}
@@ -121,5 +80,47 @@ public class WuerfelStage {
 		stage.initStyle(StageStyle.UNDECORATED);
 		stage.show();
 		
+	}
+
+
+
+	public void start() {
+		hbox = new HBox();
+		hbox.getChildren().add(views.get(views.size()-2));
+		hbox.getChildren().add(views.get(views.size()-1));
+		Scene scene = new Scene(hbox);
+		scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent event) {
+				switch (event.getCode()) {
+				case SPACE:
+					leertaste.release();
+					break;
+				case W:
+					leertaste.release();
+					break;
+				case F1:
+					game.helpMe();
+					break;
+				case ENTER:
+					stage.close();
+					break;
+				default:
+					break;
+				}
+			}
+		});
+		stage = new Stage();
+		stage.setScene(scene);
+		stage.initStyle(StageStyle.UNDECORATED);
+		stage.setX(0);
+		stage.setY(200);
+		stage.show();
+	}
+	
+	public void wuerfeln(int x,int y) {
+		hbox.getChildren().remove(0, 1);
+		hbox.getChildren().add(views.get(x - 1));
+		hbox.getChildren().add(views.get((y + 6) - 1));
 	}
 }
