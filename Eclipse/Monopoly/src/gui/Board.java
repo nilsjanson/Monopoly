@@ -44,12 +44,14 @@ public class Board {
 	BorderPane parent;
 	private double max;
 	private double width;
+	private Scene scene;
 	int buttonCount = 0;
 	double playerStartPositionX;
 	double playerStartPositionY;
 	public Semaphore actionSeamphore;
 	public WuerfelStage wuerfelStage;
 	public Semaphore boardReady= new Semaphore(0);
+	
 
 	public ImageView[] playerArr;
 
@@ -159,7 +161,7 @@ public class Board {
 		BorderPane.setAlignment(left, Pos.CENTER);
 		BorderPane.setAlignment(right, Pos.CENTER);
 
-		Scene scene = new Scene(pane);
+		scene = new Scene(pane);
 		prime.initStyle(StageStyle.UNDECORATED);
 		controlBoard(scene);
 		prime.setScene(scene);
@@ -178,7 +180,7 @@ public class Board {
 			playerArr[3] = createPlayer(max * 0.075, max * 0.075, "/playerIcons/misslex.png");
 		}
 
-		System.out.println("Maximale Groe�e: " + max);
+		System.out.println("Maximale Groesse: " + max);
 		boardReady.release();
 	}
 
@@ -435,7 +437,9 @@ public class Board {
 				case B:
 					// new StreetStage(me,"AstaBuero");
 					break;
-
+				case A:
+					new Auktion(prime,me,"Mensa","Lars","Nils","Florian");
+					break;
 				case X:
 					new Lobby();
 					break;
@@ -486,6 +490,10 @@ public class Board {
 				}
 			}
 		});
+	}
+	
+	public Scene getScene() {
+		return scene;
 	}
 
 
