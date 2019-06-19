@@ -43,6 +43,7 @@ public class Board {
 	public String playerName;
 	BorderPane parent;
 	private double max;
+	private double width;
 	int buttonCount = 0;
 	double playerStartPositionX;
 	double playerStartPositionY;
@@ -137,7 +138,7 @@ public class Board {
 	private void createBoard() {
 		welcome.close();
 		Rectangle2D screen = Screen.getPrimary().getVisualBounds();
-		double width = screen.getMaxX();
+		width = screen.getMaxX();
 		double height = screen.getMaxY();
 		max = Math.min(width, height);
 		BorderPane pane = new BorderPane();
@@ -168,7 +169,7 @@ public class Board {
 		prime.setHeight(max);
 		prime.show();
 		
-		wuerfelStage= new WuerfelStage(me,max);
+		wuerfelStage= new WuerfelStage(me,Math.min(width,height),Math.max(width, height));
 		
 		playerArr[0] = createPlayer(max * 0.075, max * 0.075, "/playerIcons/bike.png");
 		playerArr[1] = createPlayer(max * 0.075, max * 0.075, "/playerIcons/dog.png");

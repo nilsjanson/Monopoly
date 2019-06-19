@@ -17,9 +17,11 @@ public class WuerfelStage {
 	ArrayList<ImageView> views ;
 	private Semaphore leertaste ;
 	HBox hbox;
+	double min;
 	double max;
 
-	public WuerfelStage(Board board, double max) {
+	public WuerfelStage(Board board,double min, double max) {
+		this.min=min;
 		this.max = max;
 		game = board;
 		try {
@@ -51,41 +53,13 @@ public class WuerfelStage {
 		return leertaste;
 	}
 
-	public void startWuerfelStage() {
-		leertaste = new Semaphore(0);
-		HBox hbox = new HBox();
-		hbox.getChildren().add(views.get(1));
-		hbox.getChildren().add(views.get((7)));
-		Scene scene = new Scene(hbox);
-		scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
-			@Override
-			public void handle(KeyEvent event) {
-				switch (event.getCode()) {
-				case SPACE:
-					leertaste.release();
-					break;
-				case W:
-					leertaste.release();
-					break;
-				case F1:
-					game.helpMe();
-					break;
-				default:
-					break;
-				}
-			}
-		});
-		stage = new Stage();
-		stage.setScene(scene);
-		stage.initStyle(StageStyle.UNDECORATED);
-		stage.show();
-
-	}
 
 	public void start() {
 		hbox = new HBox();
-		hbox.getChildren().add(views.get(views.size() - 2));
-		hbox.getChildren().add(views.get(views.size() - 1));
+		ImageView eins = views.get(views.size() - 1);
+		ImageView zwei = views.get(views.size() - 2);
+		hbox.getChildren().add(eins);
+		hbox.getChildren().add(zwei);
 		Scene scene = new Scene(hbox);
 		scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			@Override
@@ -103,6 +77,9 @@ public class WuerfelStage {
 				case ENTER:
 					stage.close();
 					break;
+				case ESCAPE:
+				System.exit(0);
+				break;
 				default:
 					break;
 				}
@@ -113,8 +90,14 @@ public class WuerfelStage {
 		stage.initStyle(StageStyle.UNDECORATED);
 		stage.show();
 		stage.setAlwaysOnTop(true);
-		stage.setX((max / 2) - (stage.getWidth()+(stage.getWidth()*.35)));
-		stage.setY(max / 2);
+		eins.setFitHeight(min*.2);
+		zwei.setFitHeight(min*.2);
+		eins.setFitWidth(((max-min)/2)/2);
+		zwei.setFitWidth(((max-min)/2)/2);
+		stage.setWidth((max-min)/2);
+		stage.setHeight(min*.2);
+		stage.setX(0);
+		stage.setY((min / 2)-(stage.getHeight()/2));
 	}
 
 	public void wuerfeln(int x, int y) {
