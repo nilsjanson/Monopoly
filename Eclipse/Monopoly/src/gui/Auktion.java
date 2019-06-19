@@ -37,18 +37,19 @@ public class Auktion {
 			hbox.getChildren().add(name);
 		}
 		VBox bieten = new VBox();
-		gebot.setMaxHeight(prime.getHeight() / 10);
+		gebot.setStyle("-fx-font-size:10px;");
 		gebot.setMaxWidth(prime.getWidth() / 10);
 		Label akt = new Label("Aktuelles Gebot");
 		aktGebot = new Label("0€");
 		Label ihrGebot = new Label("Ihr Gebot?");
 		labelStyle(akt, ihrGebot);
-		aktGebot.setTextFill(Color.RED);
-		aktGebot.setStyle("-fx-text-size:40px;");
+		aktGebot.setStyle("-fx-font-size:30px; -fx-text-fill: red;");
 		hbox.setAlignment(Pos.CENTER);
 		HBox buttons = new HBox();
 		Button bestaetigen = new Button("Bestaetigen");
+		bestaetigen.setOnAction(e-> bieten());
 		Button aussteigen = new Button("Aussteigen");
+		aussteigen.setOnAction(e -> aussteigen());
 		buttons.setAlignment(Pos.CENTER);
 		butStyle(bestaetigen, aussteigen);
 		buttons.setSpacing(20);
@@ -88,9 +89,17 @@ public class Auktion {
 	private void bieten() {
 		System.out.println("Hier koennte man ein Gebot abgeben. Eingegebenes Gebot " + gebot.getText() + "€");
 	}
+	
+	private void aussteigen() {
+		System.out.println("Spieler: "+ "" +"ist aus der Auktion ausgestiegen.");
+	}
 
 	public void neuesGebot(int x) {
 		this.aktGebot.setText("" + x);
+	}
+	
+	public int getGebot() {
+		return Integer.parseInt(aktGebot.getText());
 	}
 
 	private void butStyle(Button... buttons) {
