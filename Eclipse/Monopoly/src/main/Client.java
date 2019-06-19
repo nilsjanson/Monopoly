@@ -135,7 +135,7 @@ public class Client extends Thread {
 	// Starte den Wuerfelzuh
 
 	public void changeMoney(int playerNumber, int money) {
-		System.out.println("Spieler " + playerNumber + " hat jetzt " + money + "€");
+		System.out.println("Spieler " + playerNumber + " hat jetzt " + money + "ï¿½");
 	}
 
 	public void wuerfel(int ownPlayerNumber) throws IOException {
@@ -167,7 +167,11 @@ public class Client extends Thread {
 				Thread.sleep(800);
 			}
 
+			board.wuerfelStage.wuerfeln(wuerfel1, wuerfel2);
+
+			board.move(board.playerArr[playerNumber]);
 		} catch (Exception ex) {
+			System.out.println("An error occured");
 			ex.printStackTrace();
 		}
 	}

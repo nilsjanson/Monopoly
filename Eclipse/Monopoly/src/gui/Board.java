@@ -44,12 +44,14 @@ public class Board {
 	BorderPane parent;
 	private double max;
 	private double width;
+	private Scene scene;
 	int buttonCount = 0;
 	double playerStartPositionX;
 	double playerStartPositionY;
 	public Semaphore actionSeamphore;
 	public WuerfelStage wuerfelStage;
 	public Semaphore boardReady= new Semaphore(0);
+	
 
 	public ImageView[] playerArr;
 
@@ -124,7 +126,7 @@ public class Board {
 			} else {
 				yValue += x;
 			}
-	
+
 		}
 
 		KeyFrame end = new KeyFrame(Duration.millis(500), new KeyValue(player.xProperty(), xValue),
@@ -159,16 +161,16 @@ public class Board {
 		BorderPane.setAlignment(left, Pos.CENTER);
 		BorderPane.setAlignment(right, Pos.CENTER);
 
-		Scene scene = new Scene(pane);
+		scene = new Scene(pane);
 		prime.initStyle(StageStyle.UNDECORATED);
 		controlBoard(scene);
 		prime.setScene(scene);
 		prime.setWidth(max);
 		prime.setHeight(max);
 		prime.show();
-		
+
 		wuerfelStage= new WuerfelStage(me,Math.min(width,height),Math.max(width, height));
-		
+
 		playerArr[0] = createPlayer(max * 0.075, max * 0.075, "/playerIcons/bike.png");
 		playerArr[1] = createPlayer(max * 0.075, max * 0.075, "/playerIcons/dog.png");
 		if (spieler > 2) {
@@ -178,7 +180,7 @@ public class Board {
 			playerArr[3] = createPlayer(max * 0.075, max * 0.075, "/playerIcons/misslex.png");
 		}
 
-		System.out.println("Maximale Groeﬂe: " + max);
+		System.out.println("Maximale Groesse: " + max);
 		boardReady.release();
 	}
 
@@ -382,10 +384,10 @@ public class Board {
 
 	private void butStyle(Button... x) {
 		for (Button but : x) {
-			but.setStyle("-fx-border-color: black; -fx-background-color: lightgreen; -fx-font-size: 2em;");
+			but.setStyle("-fx-border-color: black; -fx-background-color: lightgreen; -fx-border-color: black; -fx-font-size: 2em;");
 		}
 	}
-	
+
 	private void helpLabelStyle(ArrayList<Label> help) {
 		for (Label x: help) {
 			x.setStyle("-fx-font-size: 2em;");
@@ -435,9 +437,11 @@ public class Board {
 				case B:
 					// new StreetStage(me,"AstaBuero");
 					break;
-
+				case A:
+					new Auktion(prime,me,"Mensa","Lars","Nils","Florian");
+					break;
 				case X:
-	
+					new Lobby();
 					break;
 				case CONTROL:
 					parent.setRotate(parent.getRotate() - 90);
@@ -488,7 +492,6 @@ public class Board {
 		});
 	}
 	
-
 
 
 }
