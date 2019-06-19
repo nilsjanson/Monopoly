@@ -491,6 +491,10 @@ public class Board {
 			}
 		});
 	}
+
+	public Scene getScene() {
+		return scene;
+	}
 	
 
 
