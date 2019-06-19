@@ -11,13 +11,15 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class Auktion {
 
 	Board board;
-	TextField gebot=new TextField();
+	TextField gebot = new TextField();
+	Label aktGebot;
 
 	Auktion(Stage prime, Board board, String strassenName, String... playerNames) {
 		VBox vbox = new VBox();
@@ -25,8 +27,8 @@ public class Auktion {
 		vbox.setStyle("-fx-background-color:rgb(" + 192 + "," + 254 + ", " + 213 + ");");
 		ImageView icon = new ImageView(
 				getClass().getResource("/besitzkarten/" + strassenName + ".jpg").toExternalForm());
-		icon.setFitHeight(prime.getHeight()/2);
-		icon.setFitWidth(prime.getWidth()/2);
+		icon.setFitHeight(prime.getHeight() / 2);
+		icon.setFitWidth(prime.getWidth() / 2);
 		vbox.getChildren().add(icon);
 		HBox hbox = new HBox();
 		for (String x : playerNames) {
@@ -35,20 +37,24 @@ public class Auktion {
 			hbox.getChildren().add(name);
 		}
 		VBox bieten = new VBox();
-		gebot.setMaxHeight(prime.getHeight()/10);
-		gebot.setMaxWidth(prime.getWidth()/10);
+		gebot.setMaxHeight(prime.getHeight() / 10);
+		gebot.setMaxWidth(prime.getWidth() / 10);
+		Label akt = new Label("Aktuelles Gebot");
+		aktGebot = new Label("0€");
 		Label ihrGebot = new Label("Ihr Gebot?");
-		ihrGebot.setStyle("-fx-font-size:30px; -fx-font-weight: bold;");
+		labelStyle(akt, ihrGebot);
+		aktGebot.setTextFill(Color.RED);
+		aktGebot.setStyle("-fx-text-size:40px;");
 		hbox.setAlignment(Pos.CENTER);
 		HBox buttons = new HBox();
 		Button bestaetigen = new Button("Bestaetigen");
 		Button aussteigen = new Button("Aussteigen");
 		buttons.setAlignment(Pos.CENTER);
-		butStyle(bestaetigen,aussteigen);
+		butStyle(bestaetigen, aussteigen);
 		buttons.setSpacing(20);
-		buttons.getChildren().addAll(bestaetigen,aussteigen);
-		
-		vbox.getChildren().addAll(hbox,ihrGebot,bieten,gebot,buttons);
+		buttons.getChildren().addAll(bestaetigen, aussteigen);
+
+		vbox.getChildren().addAll(hbox, akt, aktGebot, ihrGebot, bieten, gebot, buttons);
 		vbox.setSpacing(10);
 		Scene scene = new Scene(vbox);
 		scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
@@ -78,14 +84,25 @@ public class Auktion {
 		});
 		prime.setScene(scene);
 	}
-	
+
 	private void bieten() {
-		System.out.println("Hier koennte man ein Gebot abgeben. Eingegebenes Gebot "+gebot.getText()+"€");
+		System.out.println("Hier koennte man ein Gebot abgeben. Eingegebenes Gebot " + gebot.getText() + "€");
 	}
-	
-	private void butStyle(Button...buttons) {
-		for (Button but: buttons) {
-			but.setStyle("-fx-border-color: black; -fx-background-color: lightgreen; -fx-border-color: black; -fx-font-size: 2em;");
+
+	public void neuesGebot(int x) {
+		this.aktGebot.setText("" + x);
+	}
+
+	private void butStyle(Button... buttons) {
+		for (Button but : buttons) {
+			but.setStyle(
+					"-fx-border-color: black; -fx-background-color: lightgreen; -fx-border-color: black; -fx-font-size: 2em;");
+		}
+	}
+
+	private void labelStyle(Label... labels) {
+		for (Label lab : labels) {
+			lab.setStyle("-fx-font-size:30px; -fx-font-weight: bold;");
 		}
 	}
 
