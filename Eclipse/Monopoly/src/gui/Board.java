@@ -49,6 +49,7 @@ public class Board {
 	double playerStartPositionY;
 	public Semaphore actionSeamphore;
 	public WuerfelStage wuerfelStage;
+	public Semaphore boardReady= new Semaphore(0);
 
 	public ImageView[] playerArr;
 
@@ -87,7 +88,6 @@ public class Board {
 		double yValue = player.getY();
 
 		double x = prime.getHeight() / 12.3;
-		System.out.print(player.getX());
 
 		if (player.getX() - x < 0) {
 			if (player.getY() + x > max) {
@@ -105,7 +105,6 @@ public class Board {
 			}
 		} else if (player.getY() + x > max) {
 			xValue -= x;
-			System.out.println("links unten");
 
 		} else if (player.getY() - x < 0) {
 			if (player.getX() + (x * 1.8) > max) {
@@ -125,8 +124,7 @@ public class Board {
 			} else {
 				yValue += x;
 			}
-
-			System.out.println("rechts unten");
+	
 		}
 
 		KeyFrame end = new KeyFrame(Duration.millis(500), new KeyValue(player.xProperty(), xValue),
@@ -181,6 +179,7 @@ public class Board {
 		}
 
 		System.out.println("Maximale Groeﬂe: " + max);
+		boardReady.release();
 	}
 
 	private Pane createCardFields() {

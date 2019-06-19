@@ -6,6 +6,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.concurrent.Semaphore;
 
 import gui.WuerfelStage;
 import javafx.application.Application;
@@ -19,7 +20,7 @@ public class Client extends Thread {
 	Socket server;
 	DataInputStream in;
 	DataOutputStream out;
-	int ownPlayerNumber;
+	private int ownPlayerNumber;
 	String name;
 
 	Client(gui.Board board, Stage stage) {
@@ -40,15 +41,18 @@ public class Client extends Thread {
 			name = board.playerName;
 			out.writeUTF(name);
 			out.flush();
+			board.boardReady.acquire();
 
 			int x = in.readInt();
 			System.out.println(x);
 			while (x != -1) {
 				switch (x) {
 				case 2:
-					wuerfel();
+					wuerfel(ownPlayerNumber);
 					break;
 				}
+				
+				x = in.readInt();
 
 			}
 		} catch (Exception ex) {
@@ -56,15 +60,18 @@ public class Client extends Thread {
 		}
 
 	}
+	
 
 	// Starte den Wuerfelzuh
-	public void wuerfel() throws IOException {
+	public void wuerfel(int ownPlayerNumber) throws IOException {
 
 		try {
+			board.actionSeamphore = new Semaphore(0);
 			System.out.println("Wuerfeln starten");			
 			int playerNumber = in.readInt(); // erhalte den wuerfelnden SPieler
 			System.out.println(playerNumber+" ist am Zug");
 			if (playerNumber == ownPlayerNumber) { // ist der Client selber am Zug
+				board.wuerfelStage.getLeertaste().acquire(board.wuerfelStage.getLeertaste().availablePermits());
 				System.out.println("Sie sind am Zug druecken sie die Leertaste zum wuerfeln!");
 				board.wuerfelStage.getLeertaste().acquire();
 				out.writeBoolean(true);
@@ -78,10 +85,13 @@ public class Client extends Thread {
 			System.out.println(wuerfel1);
 			System.out.println(wuerfel2);
 			
-                	board.wuerfelStage.wuerfeln(wuerfel1, wuerfel2);
+            board.wuerfelStage.wuerfeln(wuerfel1, wuerfel2);
                 	
-           
-			board.move(board.playerArr[playerNumber]);
+           for(int i = 1; i<= wuerfel1+wuerfel2 ; i++) {
+        	   board.move(board.playerArr[playerNumber]);
+        	   Thread.sleep(800);
+           }
+
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}

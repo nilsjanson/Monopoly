@@ -518,7 +518,6 @@ public class Server {
 			 * @throws IOException wenn der Client nicht erreichbar ist.
 			 */
 			public void wuerfeln(int playerNumber) throws IOException {
-				System.out.println("im wuerfeln drin");
 				broadcastInt(2);
 				broadcastInt(playerNumber);
 				list.get(playerNumber).in.readBoolean();
@@ -577,8 +576,8 @@ public class Server {
 						}
 					}
 					client.wuerfeln(nextPlayer);
-					client.walk(client.getW());
-					checkField(client);
+			//	client.walk(client.getW());
+				//	checkField(client);
 
 					// naechster Spieler
 					nextPlayer++;
@@ -752,7 +751,7 @@ public class Server {
 				//	String needPlayerName = "need Playername expects {" + String.class.toString() + "}";
 				//	out.writeUTF(needPlayerName);
 					// Spielername gelesen
-					System.out.println("Spieler " + i +"erzeugt");
+					System.out.println("Spieler " + i +" erzeugt");
 					out.writeInt(i);
 					out.flush();
 					name = in.readUTF();
