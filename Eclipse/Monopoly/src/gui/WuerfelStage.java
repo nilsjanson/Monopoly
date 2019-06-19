@@ -106,8 +106,14 @@ public class WuerfelStage {
              @Override public void run() {
             	 hbox.getChildren().remove(0);
          		hbox.getChildren().remove(0);
-         		hbox.getChildren().add(views.get(x - 1));
-         		hbox.getChildren().add(views.get((y + 6) - 1));
+         		ImageView eins = views.get(x-1);
+         		ImageView zwei = views.get((y+6)-1);
+        		eins.setFitHeight(min*.15);
+        		zwei.setFitHeight(min*.15);
+        		eins.setFitWidth(((max-min)/2)/2);
+        		zwei.setFitWidth(((max-min)/2)/2);
+         		hbox.getChildren().add(eins);
+         		hbox.getChildren().add(zwei);
              }
          });
 
