@@ -366,6 +366,7 @@ public class Board {
 		} else {
 			this.playerName = playername;
 		}
+		sendPlayerName(playername);
 		playerArr = new ImageView[player];
 		actionSeamphore.release(1);
 		createBoard();
