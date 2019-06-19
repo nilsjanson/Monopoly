@@ -90,12 +90,12 @@ public class WuerfelStage {
 		stage.initStyle(StageStyle.UNDECORATED);
 		stage.show();
 		stage.setAlwaysOnTop(true);
-		eins.setFitHeight(min*.2);
-		zwei.setFitHeight(min*.2);
+		eins.setFitHeight(min*.15);
+		zwei.setFitHeight(min*.15);
 		eins.setFitWidth(((max-min)/2)/2);
 		zwei.setFitWidth(((max-min)/2)/2);
 		stage.setWidth((max-min)/2);
-		stage.setHeight(min*.2);
+		stage.setHeight(min*.15);
 		stage.setX(0);
 		stage.setY((min / 2)-(stage.getHeight()/2));
 	}
