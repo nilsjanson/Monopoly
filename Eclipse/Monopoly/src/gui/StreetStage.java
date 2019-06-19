@@ -1,5 +1,7 @@
 package gui;
 
+import java.util.concurrent.Semaphore;
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -20,9 +22,25 @@ public class StreetStage extends Application {
 	Board board;
 	Stage stage;
 	ImageView img;
+	boolean kaufbar;
+	boolean versteigerbar;
+	boolean hausKaufbar;
+	boolean aktionErforderlich;
+	int playerNumber;
+	public Semaphore readySem = new Semaphore(0);
+	public Semaphore actionSem = new Semaphore(0);
+	int action;
+	
+	
 
 	
-	StreetStage(Board board, String name) {
+	public StreetStage(Board board, String name, int playerNumber,boolean kaufbar, boolean versteigerbar, boolean hausKaufbar,boolean aktionErforderlich) {
+		System.out.println("Streetstage gestartet");
+		this.kaufbar= kaufbar;
+		this.versteigerbar= versteigerbar;
+		this.hausKaufbar = hausKaufbar;
+		this.playerNumber= playerNumber;
+		this.aktionErforderlich = aktionErforderlich;
 		img = new ImageView(getClass().getResource("/besitzkarten/"+name+".jpg").toExternalForm());
 		this.board= board;
 		img.setFitWidth(board.getMax()*0.55);
@@ -43,16 +61,22 @@ public class StreetStage extends Application {
 		HBox hbox = new HBox();
 		VBox vbox = new VBox();
 		Button kaufen = new Button("Straﬂe Kaufen");
-		Button versteigern = new Button("Versteigern");
-		Button haus = new Button("Haus kaufen");
-		Label player = new Label("");
+		kaufen.setVisible(kaufbar);
 		
+		Button versteigern = new Button("Versteigern");
+		versteigern.setVisible(versteigerbar);
+		Button haus = new Button("Haus kaufen");
+		haus.setVisible(hausKaufbar);
+		Label player = new Label("Spieler " + playerNumber);
+		if(aktionErforderlich) {
 		kaufen.setOnAction( new EventHandler<ActionEvent>() {
 			
 			@Override
 			public void handle(ActionEvent arg0) {
-				System.out.println("Hier koennte man eine Strasse kaufen.");
-				player.setText("Spieler 1");
+				System.out.println("Sie haben die Straﬂe gekauft");
+				action = 1;
+				actionSem.release();
+				
 			}
 		});
 		
@@ -60,7 +84,9 @@ public class StreetStage extends Application {
 			
 			@Override
 			public void handle(ActionEvent arg0) {
-				System.out.println("Hier koennte man eine Versteigerung starten.");
+				System.out.println("Versteigerung starten");
+				action = 2;
+				actionSem.release();
 			}
 		});
 		
@@ -68,10 +94,13 @@ public class StreetStage extends Application {
 			
 			@Override
 			public void handle(ActionEvent arg0) {
-				System.out.println("Hier koennte man ein Haus kaufen.");
+				System.out.println("Haus gekauft.");
+				action = 3;
+				actionSem.release();
 			}
 		});
 		
+		}
 		player.setStyle("-fx-font-size: 2em; -fx-text-fill: red;");
 		
 		buttonStyle(kaufen,versteigern,haus);		
@@ -112,6 +141,8 @@ public class StreetStage extends Application {
 		stage.initModality(Modality.APPLICATION_MODAL);
 		stage.show();
 		stage.centerOnScreen();
+		readySem.release();
+		
 	}
 	
 	private void buttonStyle(Button...buttons) {
