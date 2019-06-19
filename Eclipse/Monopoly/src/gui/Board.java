@@ -43,11 +43,13 @@ public class Board {
 	public String playerName;
 	BorderPane parent;
 	private double max;
+	private double width;
 	int buttonCount = 0;
 	double playerStartPositionX;
 	double playerStartPositionY;
 	public Semaphore actionSeamphore;
 	public WuerfelStage wuerfelStage;
+	public Semaphore boardReady= new Semaphore(0);
 
 	public ImageView[] playerArr;
 
@@ -86,7 +88,6 @@ public class Board {
 		double yValue = player.getY();
 
 		double x = prime.getHeight() / 12.3;
-		System.out.print(player.getX());
 
 		if (player.getX() - x < 0) {
 			if (player.getY() + x > max) {
@@ -104,7 +105,6 @@ public class Board {
 			}
 		} else if (player.getY() + x > max) {
 			xValue -= x;
-			System.out.println("links unten");
 
 		} else if (player.getY() - x < 0) {
 			if (player.getX() + (x * 1.8) > max) {
@@ -125,7 +125,6 @@ public class Board {
 				yValue += x;
 			}
 
-			System.out.println("rechts unten");
 		}
 
 		KeyFrame end = new KeyFrame(Duration.millis(500), new KeyValue(player.xProperty(), xValue),
@@ -137,7 +136,7 @@ public class Board {
 	private void createBoard() {
 		welcome.close();
 		Rectangle2D screen = Screen.getPrimary().getVisualBounds();
-		double width = screen.getMaxX();
+		width = screen.getMaxX();
 		double height = screen.getMaxY();
 		max = Math.min(width, height);
 		BorderPane pane = new BorderPane();
@@ -167,9 +166,9 @@ public class Board {
 		prime.setWidth(max);
 		prime.setHeight(max);
 		prime.show();
-		
-		wuerfelStage= new WuerfelStage(me,max);
-		
+
+		wuerfelStage= new WuerfelStage(me,Math.min(width,height),Math.max(width, height));
+
 		playerArr[0] = createPlayer(max * 0.075, max * 0.075, "/playerIcons/bike.png");
 		playerArr[1] = createPlayer(max * 0.075, max * 0.075, "/playerIcons/dog.png");
 		if (spieler > 2) {
@@ -179,7 +178,8 @@ public class Board {
 			playerArr[3] = createPlayer(max * 0.075, max * 0.075, "/playerIcons/misslex.png");
 		}
 
-		System.out.println("Maximale Groeße: " + max);
+		System.out.println("Maximale Groeï¿½e: " + max);
+		boardReady.release();
 	}
 
 	private Pane createCardFields() {
@@ -366,9 +366,9 @@ public class Board {
 		} else {
 			this.playerName = playername;
 		}
+		sendPlayerName(playername);
 		playerArr = new ImageView[player];
 		actionSeamphore.release(1);
-
 		createBoard();
 	}
 
@@ -385,7 +385,7 @@ public class Board {
 			but.setStyle("-fx-border-color: black; -fx-background-color: lightgreen; -fx-border-color: black; -fx-font-size: 2em;");
 		}
 	}
-	
+
 	private void helpLabelStyle(ArrayList<Label> help) {
 		for (Label x: help) {
 			x.setStyle("-fx-font-size: 2em;");

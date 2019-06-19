@@ -22,15 +22,15 @@ import java.util.List;
 
 /**
  * Klasse mit der Main Methode des Servers.
- * 
+ *
  * @author lucastheiss
  * @version 0.1
- * 
+ *
  */
 public class Server {
 
 	/**
-	 * 
+	 *
 	 * @param args
 	 *            optional kann der Port als Argument angegeben werden.<br>
 	 *            Es darf dafuer nur 1 Argument angegeben werden, welches ein
@@ -63,7 +63,7 @@ public class Server {
 //		Frame frame = createServerGui(listOfLists);
 //		frame.setSize(200, 200);					AWT GUI? Nur ein Gedanke
 //		frame.setVisible(true);
-		
+
 		 if (args.length == 1 && args[0].matches("[0-9]{1,5}") &&
 		 !args[0].matches("[0]")) {
 		 int arg = Integer.parseInt(args[0]);
@@ -86,7 +86,7 @@ public class Server {
 		 listOfLists.set(i, new LinkedList<Socket>());
 		 }
 		 }
-		
+
 		 } catch (IOException e) {
 		 e.printStackTrace();
 		 }
@@ -178,7 +178,7 @@ public class Server {
 	 * Clients werden in eine Wartequeue gepackt. <br>
 	 * Client antwortet mit einem Integer[2-4] um passend mit anderen Clients
 	 * sortiert zu werden.
-	 * 
+	 *
 	 * @param client
 	 *            der wartende Client.
 	 * @param list
@@ -203,7 +203,7 @@ public class Server {
 
 	/**
 	 * Prueft ob ein Spiel gestartet werden kann.
-	 * 
+	 *
 	 * @param list
 	 *            die Liste der Queues die ueberprueft werden soll.
 	 * @return -1 wenn kein Spielstart moeglich ist, <br>
@@ -220,7 +220,7 @@ public class Server {
 
 	/**
 	 * Erstellt einen neuen Thread und startet das Spiel
-	 * 
+	 *
 	 * @param q
 	 *            Die wartenden Clients
 	 */
@@ -231,7 +231,7 @@ public class Server {
 
 	/**
 	 * Ein laufendes Spiel
-	 * 
+	 *
 	 * @author lucastheiss
 	 * @version 0.1
 	 *
@@ -257,7 +257,7 @@ public class Server {
 
 		/**
 		 * Ein Grundstueck.
-		 * 
+		 *
 		 * @author lucastheiss
 		 * @version 0.1
 		 *
@@ -284,7 +284,7 @@ public class Server {
 
 			/**
 			 * Initialisierung des Grundstuecks.
-			 * 
+			 *
 			 * @param miete
 			 *            Mietkosten je nach Bebauung.
 			 * @param preis
@@ -319,7 +319,7 @@ public class Server {
 			}
 
 			/**
-			 * 
+			 *
 			 * @return Kosten pro neues Haus.
 			 */
 			public int getHausKosten() {
@@ -328,7 +328,7 @@ public class Server {
 
 			/**
 			 * Aendern des Besitzers.
-			 * 
+			 *
 			 * @param c
 			 *            der neue Besitzer.
 			 * @throws IOException
@@ -341,7 +341,7 @@ public class Server {
 			}
 
 			/**
-			 * 
+			 *
 			 * @return den aktuellen Besitzer des Grundstuecks.
 			 */
 			public Client getBesitzer() {
@@ -349,7 +349,7 @@ public class Server {
 			}
 
 			/**
-			 * 
+			 *
 			 * @return die aktuelle Miete.
 			 */
 			public int getMiete() {
@@ -357,7 +357,7 @@ public class Server {
 			}
 
 			/**
-			 * 
+			 *
 			 * @return Kaufpreis des Grundstuecks.
 			 */
 			public int getPreis() {
@@ -365,7 +365,7 @@ public class Server {
 			}
 
 			/**
-			 * 
+			 *
 			 * @param haeuser
 			 *            neue Anzahl an Haeusern.
 			 */
@@ -381,7 +381,7 @@ public class Server {
 		/**
 		 * Der Client.<br>
 		 * Sammlung von Werten und Methoden die einen Spieler beschreiben.
-		 * 
+		 *
 		 * @author lucastheiss
 		 * @version 0.1
 		 *
@@ -424,7 +424,7 @@ public class Server {
 
 			/**
 			 * Client initialisieren.
-			 * 
+			 *
 			 * @param s
 			 *            Socket des Spielers.
 			 * @param name
@@ -444,7 +444,7 @@ public class Server {
 			}
 
 			/**
-			 * 
+			 *
 			 * @return <b>true</b><br>
 			 *         wenn er eine Gefaengnisfreikarte aus dem ersten Stapel hat.
 			 *         <b>false</b> wenn er keine Gefaengnisfreikarte aus dem ersten Stapel
@@ -455,7 +455,7 @@ public class Server {
 			}
 
 			/**
-			 * 
+			 *
 			 * @param hasFreeCard1
 			 *            besitz der Gefaengnisfreikarte aus dem ersten Stapel.
 			 */
@@ -464,7 +464,7 @@ public class Server {
 			}
 
 			/**
-			 * 
+			 *
 			 * @return <b>true</b><br>
 			 *         wenn er eine Gefaengnisfreikarte aus dem zweiten Stapel hat.
 			 *         <b>false</b> wenn er keine Gefaengnisfreikarte aus dem zweiten Stapel
@@ -475,7 +475,7 @@ public class Server {
 			}
 
 			/**
-			 * 
+			 *
 			 * @param hasFreeCard2
 			 *            besitz der Gefaengnisfreikarte aus dem zweiten Stapel.
 			 */
@@ -484,7 +484,7 @@ public class Server {
 			}
 
 			/**
-			 * 
+			 *
 			 * @return die ID des Clients.
 			 */
 			public int getID() {
@@ -492,7 +492,7 @@ public class Server {
 			}
 
 			/**
-			 * 
+			 *
 			 * @return den Namen des Clients.
 			 */
 			public String getName() {
@@ -500,7 +500,7 @@ public class Server {
 			}
 
 			/**
-			 * 
+			 *
 			 * @return die bisherigen Versuche einen Pasch zu wuerfeln, wenn ein Spieler im
 			 *         Gefaengis ist.
 			 */
@@ -509,7 +509,7 @@ public class Server {
 			}
 
 			/**
-			 * 
+			 *
 			 * @return <b>true</b> wenn der Spieler im Gefaengis ist.<br>
 			 *         <b>false</b> wenn der Spieler nicht im Gefaengnis ist.
 			 */
@@ -518,7 +518,7 @@ public class Server {
 			}
 
 			/**
-			 * 
+			 *
 			 * @return den aktuellen Stand des Geldes des Clients.
 			 */
 			public int getGeld() {
@@ -526,7 +526,7 @@ public class Server {
 			}
 
 			/**
-			 * 
+			 *
 			 * @param change
 			 *            Aenderung des Geldes, Positiv oder Negativ.
 			 * @throws IOException
@@ -539,7 +539,7 @@ public class Server {
 			}
 
 			/**
-			 * 
+			 *
 			 * @return die aktuelle Position auf dem Spielfeld des Clients.
 			 */
 			public int getPos() {
@@ -548,7 +548,7 @@ public class Server {
 
 			/**
 			 * Bewegt den Client und sendet dem Client die Anzahl.
-			 * 
+			 *
 			 * @param count
 			 *            Anzahl Augen auf dem Wuerfel.
 			 * @throws IOException
@@ -567,7 +567,7 @@ public class Server {
 
 			/**
 			 * Kann der Client Karten verkaufen?
-			 * 
+			 *
 			 * @return <b>true</b> wenn Client noch Gefaengnisfreikarten hat oder
 			 *         Grundstuecke verkaufen kann.<br>
 			 *         <b>false</b> wenn er nichts mehr hat.
@@ -586,7 +586,7 @@ public class Server {
 			}
 
 			/**
-			 * 
+			 *
 			 * @return der Socket des Spielers.
 			 */
 			public Socket getSocket() {
@@ -594,7 +594,7 @@ public class Server {
 			}
 
 			/**
-			 * 
+			 *
 			 * @return der DataInputStream des Spielers.
 			 */
 			public DataInputStream getIn() {
@@ -602,7 +602,7 @@ public class Server {
 			}
 
 			/**
-			 * 
+			 *
 			 * @return der DataOutputStream des Spielers.
 			 */
 			public DataOutputStream getOut() {
@@ -610,7 +610,7 @@ public class Server {
 			}
 
 			/**
-			 * 
+			 *
 			 * @return die Augenzahl des ersten Wuerfels.
 			 */
 			public int getW1() {
@@ -618,7 +618,7 @@ public class Server {
 			}
 
 			/**
-			 * 
+			 *
 			 * @return die Augenzahl des zweiten Wuerfels.
 			 */
 			public int getW2() {
@@ -626,7 +626,7 @@ public class Server {
 			}
 
 			/**
-			 * 
+			 *
 			 * @return die Summe der Augenzahlen der beiden Wuerfel.
 			 */
 			public int getW() {
@@ -635,12 +635,11 @@ public class Server {
 
 			/**
 			 * Spieler wuerfelt. Sendet die beiden Integer Werte an den Client.
-			 * 
+			 *
 			 * @throws IOException
 			 *             wenn der Client nicht erreichbar ist.
 			 */
 			public void wuerfeln(int playerNumber) throws IOException {
-				System.out.println("im wuerfeln drin");
 				broadcastInt(2);
 				broadcastInt(playerNumber);
 				list.get(playerNumber).in.readBoolean();
@@ -653,7 +652,7 @@ public class Server {
 
 		/**
 		 * Initialisierung eines neuen Spiels.
-		 * 
+		 *
 		 * @param sList
 		 *            Liste der Sockets der Mitspieler
 		 */
@@ -670,7 +669,7 @@ public class Server {
 			/*
 			 * // auswuerfeln wer anfaengt for (Client c : list) { c.wuerfeln(); }} catch
 			 * (IOException e) { e.printStackTrace(); }
-			 * 
+			 *
 			 * int nextPlayer = setBeginner(); for (int i = 0; i < list.size(); i++) { if
 			 * (list.get(i).getW() > list.get(nextPlayer).getW()) { nextPlayer = i; } }
 			 */
@@ -693,8 +692,8 @@ public class Server {
 						}
 					}
 					client.wuerfeln(nextPlayer);
-					client.walk(client.getW());
-					checkField(client);
+			//	client.walk(client.getW());
+				//	checkField(client);
 
 					// naechster Spieler
 					nextPlayer++;
@@ -715,7 +714,7 @@ public class Server {
 
 		/**
 		 * Prueft das Feld auf dem der Spieler ist.
-		 * 
+		 *
 		 * @param c
 		 *            der Client der an der reihe ist.
 		 * @throws IOException
@@ -822,7 +821,7 @@ public class Server {
 
 		/**
 		 * Entscheidet welcher Spieler beginnt.
-		 * 
+		 *
 		 * @return den Index des Spielers der Liste list der die höechste Augenzahl
 		 *         geworfen hat.
 		 */
@@ -849,7 +848,7 @@ public class Server {
 		/**
 		 * Initialsetup der Spieler<br>
 		 * Clients in der Liste speichern und allen Spielern das Startgeld geben
-		 * 
+		 *
 		 * @param sList
 		 *            Liste der Sockets
 		 */
@@ -872,7 +871,7 @@ public class Server {
 					// + "}";
 					// out.writeUTF(needPlayerName);
 					// Spielername gelesen
-					System.out.println("Spieler " + i + "erzeugt");
+					System.out.println("Spieler " + i +" erzeugt");
 					out.writeInt(i);
 					out.flush();
 					name = in.readUTF();
