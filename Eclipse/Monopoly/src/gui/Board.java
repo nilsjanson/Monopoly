@@ -50,12 +50,12 @@ public class Board {
 	double playerStartPositionY;
 	public Semaphore actionSeamphore;
 	public WuerfelStage wuerfelStage;
-	public Semaphore boardReady= new Semaphore(0);
+	public InfoStage infoStage;
+	public Semaphore boardReady = new Semaphore(0);
 	public StreetStage streetStageOpen;
 	public Semaphore streetStageOpenSemaphore = new Semaphore(0);
 	public Auktion auktionStageOpen;
 	public Semaphore auktionStageOpenSemaphore = new Semaphore(0);
-	
 
 	public ImageView[] playerArr;
 
@@ -173,8 +173,8 @@ public class Board {
 		prime.setHeight(max);
 		prime.show();
 
-		wuerfelStage= new WuerfelStage(me,Math.min(width,height),Math.max(width, height));
-
+		wuerfelStage = new WuerfelStage(me, Math.min(width, height), Math.max(width, height));
+		infoStage = new InfoStage(Math.min(width, height),Math.max(width, height));
 		playerArr[0] = createPlayer(max * 0.075, max * 0.075, "/playerIcons/bike.png");
 		playerArr[1] = createPlayer(max * 0.075, max * 0.075, "/playerIcons/dog.png");
 		if (spieler > 2) {
@@ -388,12 +388,13 @@ public class Board {
 
 	private void butStyle(Button... x) {
 		for (Button but : x) {
-			but.setStyle("-fx-border-color: black; -fx-background-color: lightgreen; -fx-border-color: black; -fx-font-size: 2em;");
+			but.setStyle(
+					"-fx-border-color: black; -fx-background-color: lightgreen; -fx-border-color: black; -fx-font-size: 2em;");
 		}
 	}
 
 	private void helpLabelStyle(ArrayList<Label> help) {
-		for (Label x: help) {
+		for (Label x : help) {
 			x.setStyle("-fx-font-size: 2em;");
 		}
 	}
@@ -431,19 +432,15 @@ public class Board {
 					helpMe();
 					break;
 				case E:
-					try {
-						// new EmailStage(me,"Stupa Seminar","Studiensekreteriat","Wir laden Sie
-						// herzlichst zu unserem Stupa Seminar am 15.07 ein.").start(prime);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
+					new EmailStage(me, "Stupa Seminar", "Studiensekreteriat",
+							"Wir laden Sie herzlichst zu unserem Stupa Seminar am 15.07 ein.");
 					break;
 				case B:
 					// new StreetStage(me,"AstaBuero");
 					break;
 				case A:
-				//	new Auktion(prime,me,"Mensa","Lars","Nils","Florian");
-					//Auktion auk = new Auktion(prime,me,"Mensa","Nils");
+					// new Auktion(prime,me,"Mensa","Lars","Nils","Florian");
+					// Auktion auk = new Auktion(prime,me,"Mensa","Nils");
 					break;
 				case X:
 					new Lobby();
@@ -460,7 +457,7 @@ public class Board {
 				case WINDOWS:
 					break;
 				case ESCAPE:
-					System.exit(0);
+					new ExitStage(prime);
 					break;
 				default:
 					System.out.println(event.getCode() + " erkannt!");
@@ -500,7 +497,5 @@ public class Board {
 	public Scene getScene() {
 		return scene;
 	}
-	
-
 
 }

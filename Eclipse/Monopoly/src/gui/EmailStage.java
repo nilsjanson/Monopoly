@@ -24,18 +24,20 @@ public class EmailStage extends Application {
 		this.betreff = betreff;
 		this.von = von;
 		this.inhalt = inhalt;
-		this.board=board;
+		this.board = board;
+		start(board.prime);
 	}
 
 	@Override
-	public void start(Stage primaryStage) throws Exception {
+	public void start(Stage primaryStage) {
 		Stage email = new Stage();
 		VBox vbox = new VBox();
 		vbox.setAlignment(Pos.CENTER);
 		Scene scene = new Scene(vbox);
 		Label betref = new Label(betreff);
 		Label vo = new Label(von);
-		Label inhal=new Label(inhalt);
+		Label inhal = new Label(inhalt);
+		vbox.autosize();
 		Rectangle rahmen = new Rectangle();
 		rahmen.setStroke(Color.BLACK);
 		rahmen.setWidth(email.getWidth() - 10);
@@ -45,7 +47,6 @@ public class EmailStage extends Application {
 		email.initStyle(StageStyle.UNDECORATED);
 		email.initModality(Modality.APPLICATION_MODAL);
 		email.show();
-		
 
 		scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			@Override
