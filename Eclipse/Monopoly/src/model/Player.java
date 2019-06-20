@@ -1,5 +1,8 @@
 package model;
 
+import java.util.ArrayList;
+
+import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 
 public class Player {
@@ -9,7 +12,29 @@ public class Player {
 	private int bilanz;
 	private int id ;
 	private String name;
+	private boolean[] streets = new boolean [28];
+	private ArrayList<Button> streetBut;
 	
+	public void setButtons(ArrayList<Button> buttons) {
+		this.streetBut=buttons;
+	}
+	
+	public ArrayList<Button> getButtons() {
+		return streetBut;
+	}
+	public boolean [] getStreets () {
+		return streets;
+	}
+	
+	public void setStreet(int y, boolean x) {
+		streets[y]=x;
+	}
+	
+	public void init () {
+		for (int i=0;i<streets.length;i++) {
+			streets[i]=false;
+		}
+	}
 	
 	public String getName () {
 		return name;
@@ -20,6 +45,7 @@ public class Player {
 	}
 	
 	Player() {
+		init();
 		img = new ImageView(getClass().getResource("").toExternalForm());
 	}
 	

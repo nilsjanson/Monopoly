@@ -51,7 +51,7 @@ public class StreetStage extends Application {
 			e.printStackTrace();
 		}
 	}
-	
+		
 	StreetStage(Board board, ImageView img) {
 		this.img = img;
 		this.board = board;

@@ -1,11 +1,16 @@
 package gui;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -36,26 +41,58 @@ public class InfoStage {
 		Label infoSt = new Label("InfoStage");
 		infoSt.setStyle("-fx-font-size: 20;");
 		info = new Stage();
-		HBox names = new HBox();
-		HBox money = new HBox();
-		for (Player x : players) {
-			Label name = new Label(x.getName());
-			Label geld = new Label(x.getBilanz() + "€");
+		HBox ihbox = new HBox();
+		ihbox.setAlignment(Pos.CENTER);
+		ihbox.setSpacing(20);
+		for (Player player : players) {
+			VBox playerBox = new VBox();
+			Label name = new Label(player.getName());
+			Label geld = new Label(player.getBilanz() + "€");
 			labelStyle(name, geld);
-			names.getChildren().add(name);
-			money.getChildren().add(geld);
+			playerBox.getChildren().add(name);
+			playerBox.getChildren().add(geld);
 			playerCount++;
+			ihbox.getChildren().add(playerBox);
+			GridPane grid = new GridPane();
+			grid.setAlignment(Pos.CENTER);
+			grid.setHgap(1);
+			grid.setVgap(2);
+			playerBox.getChildren().add(grid);
+
+			HashMap<String, Button> streets = createButtons(player);
+			ArrayList<String> names = getNames();
+			int x = 0;
+			int y = 0;
+			int counter = 0;
+			for (int i = 0; i < player.getButtons().size(); i++) {
+				grid.add(streets.get(names.get(i)), x, y);
+				x++;
+				if (counter < 23) {
+					if (x == 3 || counter == 1 || counter == 21) {
+						x = 0;
+						y += 1;
+					}
+					counter++;
+				} else {
+					if (x==4) {
+						x=0;
+						y++;
+					} 					
+					
+					counter++;
+				}
+
+			}
+
+			grid.autosize();
 		}
-		hboxStyle(names, money);
-		VBox ivbox = new VBox();
-		ivbox.setStyle("-fx-background-color: rgb(" + 192 + "," + 254 + ", " + 213 + ");");
-		ivbox.setAlignment(Pos.CENTER);
-		ivbox.getChildren().addAll(names, money);
+		ihbox.setStyle("-fx-background-color: rgb(" + 192 + "," + 254 + ", " + 213 + ");");
+		ihbox.setAlignment(Pos.CENTER);
 		BorderPane bpane = new BorderPane();
 		borderPaneStyle(bpane);
 		BorderPane.setAlignment(infoSt, Pos.CENTER);
 		bpane.setTop(infoSt);
-		bpane.setCenter(ivbox);
+		bpane.setCenter(ihbox);
 		scene = new Scene(bpane);
 		keyHandler(scene);
 		info.initStyle(StageStyle.UNDECORATED);
@@ -99,4 +136,110 @@ public class InfoStage {
 		});
 	}
 
+	private HashMap<String, Button> createButtons(Player player) {
+		HashMap<String, Button> street = new HashMap<String, Button>();
+		street.put("KesselHaus", initBut("purple", new Button(), info));
+		street.put("AstaBuero", initBut("purple", new Button(), info));
+
+		street.put("PflanzenLabor", initBut("lightblue", new Button(), info));
+		street.put("GewaechsHaus", initBut("lightblue", new Button(), info));
+		street.put("DemonstrationsFeld", initBut("lightblue", new Button(), info));
+
+		street.put("MotorenPruefstand", initBut("magenta", new Button(), info));
+		street.put("FahrzeugLabors", initBut("magenta", new Button(), info));
+		street.put("SolarTankstelle", initBut("magenta", new Button(), info));
+
+		street.put("TrvRhenania", initBut("ORANGERED", new Button(), info));
+		street.put("BingerBeasts", initBut("ORANGERED", new Button(), info));
+		street.put("BingenImpulse", initBut("ORANGERED", new Button(), info));
+
+		street.put("NetzwerkLabor", initBut("red", new Button(), info));
+		street.put("PcPool236", initBut("red", new Button(), info));
+		street.put("PcPool237", initBut("red", new Button(), info));
+
+		street.put("StudienBeratung", initBut("yellow", new Button(), info));
+		street.put("StudienSekretariat", initBut("yellow", new Button(), info));
+		street.put("DekanBuero", initBut("yellow", new Button(), info));
+
+		street.put("RhenoTeutonia", initBut("lime", new Button(), info));
+		street.put("Holsatia", initBut("lime", new Button(), info));
+		street.put("Markomannia", initBut("lime", new Button(), info));
+
+		street.put("Mensa", initBut("mediumblue", new Button(), info));
+		street.put("Bibliothek", initBut("mediumblue", new Button(), info));
+
+		street.put("BingenBahnhof", initBut("black", new Button(), info));
+		street.put("KreuznachBahnhof", initBut("black", new Button(), info));
+		street.put("WormsBahnhof", initBut("black", new Button(), info));
+		street.put("MainzBahnhof", initBut("black", new Button(), info));
+
+		street.put("Rechenzentrum", initBut("snow", new Button(), info));
+		street.put("Zollamt", initBut("snow", new Button(), info));
+
+		ArrayList<Button> buttons = new ArrayList<Button>();
+
+		for (Button button : street.values()) {
+			butStyle(button);
+			buttons.add(button);
+		}
+		player.setButtons(buttons);
+		return street;
+	}
+
+	private ArrayList<String> getNames() {
+		ArrayList<String> names = new ArrayList<String>();
+		names.add("KesselHaus");
+		names.add("AstaBuero");
+		names.add("PflanzenLabor");
+		names.add("GewaechsHaus");
+		names.add("DemonstrationsFeld");
+		names.add("MotorenPruefstand");
+		names.add("FahrzeugLabors");
+		names.add("SolarTankstelle");
+		names.add("TrvRhenania");
+		names.add("BingerBeasts");
+		names.add("BingenImpulse");
+		names.add("NetzwerkLabor");
+		names.add("PcPool236");
+		names.add("PcPool237");
+		names.add("StudienBeratung");
+		names.add("StudienSekretariat");
+		names.add("DekanBuero");
+		names.add("RhenoTeutonia");
+		names.add("Holsatia");
+		names.add("Markomannia");
+		names.add("Mensa");
+		names.add("Bibliothek");
+		names.add("BingenBahnhof");
+		names.add("KreuznachBahnhof");
+		names.add("WormsBahnhof");
+		names.add("MainzBahnhof");
+		names.add("Rechenzentrum");
+		names.add("Zollamt");
+		return names;
+	}
+
+	private Button initBut(String color, Button x, Stage prime) {
+		x.prefHeightProperty().bind(prime.heightProperty().divide(28 / 10));
+		x.prefWidthProperty().bind(prime.widthProperty().divide(28 / 10));
+		x.setStyle("-fx-background-color: grey; -fx-border-color: black;  -fx-background-radius:1;");
+		x.setOnAction(e -> changeColor(x, color));
+		return x;
+	}
+
+	private void changeColor(Button x, String color) {
+		if (x.getStyle() == "-fx-background-color: grey") {
+			x.setStyle("-fx-background-color:" + color);
+		} else {
+			x.setStyle("-fx-background-color: grey");
+		}
+	}
+
+	void butStyle(Button x) {
+		x.setStyle("-fx-background-color: grey");
+	}
+
+	Scene getScene() {
+		return scene;
+	}
 }
