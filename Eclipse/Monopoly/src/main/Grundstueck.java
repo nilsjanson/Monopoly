@@ -35,7 +35,7 @@ public class Grundstueck {
 	/**
 	 * Name des Grundstuecks
 	 */
-	private String name;
+	String name;
 	/**
 	 * Index der anderen Grundstuecke die zu dieser Strasse gehoeren.
 	 */
