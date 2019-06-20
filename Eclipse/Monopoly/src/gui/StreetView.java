@@ -9,7 +9,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class StreetView {
-	StreetView(Stage info, String name) {
+	public StreetView(Stage info, String name) {
 		VBox vbox = new VBox();
 		ImageView img = new ImageView(getClass().getResource("/besitzkarten/" + name + ".jpg").toExternalForm());
 		HBox buttons = new HBox();
@@ -21,6 +21,8 @@ public class StreetView {
 		vbox.getChildren().addAll(img, buttons);
 		vbox.setAlignment(Pos.CENTER);
 		Scene scene = new Scene(vbox);
+		scene.setOnKeyPressed(e-> info.setScene(info.getScene()));
+		info.setScene(scene);
 	}
 
 	private void butStyle(Button... buttons) {
