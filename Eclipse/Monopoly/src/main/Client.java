@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.concurrent.Semaphore;
 
+import gui.Auktion;
 import gui.Board;
 import gui.StreetStage;
 import gui.WuerfelStage;
@@ -49,71 +50,90 @@ public class Client extends Thread {
 			System.out.println(x);
 			while (x != -1) {
 				switch (x) {
-				case 2:
+				case 2: // wuerfeln
 					wuerfel(ownPlayerNumber);
 					break;
 
-				case 3:
+				case 3: // geld updaten
 					int player = in.readInt();
 					int money = in.readInt();
 					changeMoney(player, money);
 					break;
 
-				case 4:
+				case 4: // Feld checken
 					StreetStage s;
 					int actualPlayer = in.readInt();
 					System.out.println("auf feld gekommen");
 					if (in.readBoolean()) { // ist ein Grundstueck
 						String streetName = in.readUTF();
-						System.out.println("hahahahaha");
 						if (in.readBoolean()) { // hat keinen Besitzer
-							System.out.println("zweite if");
 							if (in.readBoolean()) {
 								if (actualPlayer == ownPlayerNumber) {
-									System.out.println("Da musste was gehen");
-									
-									showStreetStage(board, streetName, actualPlayer, true, true, false,true);
+									showStreetStage(board, streetName, actualPlayer, true, true, false, true);
+									waitForStreetAction();
+
+								} else {
+									showStreetStage(board, streetName, actualPlayer, true, true, false, false);
 								}
-								else {
-									System.out.println("sp en drekc");
-									showStreetStage(board, streetName, actualPlayer, true, true, false,false);
-								}
-									
+
 							} else {
 								if (actualPlayer == ownPlayerNumber) {
-									showStreetStage(board, streetName, actualPlayer, false, true, false,true);
-								}
-								else {
+									showStreetStage(board, streetName, actualPlayer, false, true, false, true);
+									waitForStreetAction();
+								} else {
 									System.out.println("sp en drekc");
-									showStreetStage(board, streetName, actualPlayer, false, true, false,false);
+									showStreetStage(board, streetName, actualPlayer, false, true, false, false);
 								}
 							}
 						} else { // Besitzer existiert
 							int owner = in.readInt();
-							if(owner == ownPlayerNumber ) {
-								showStreetStage(board, streetName, actualPlayer, false, true, false,false);
-							}else {
-								showStreetStage(board, streetName, actualPlayer, false, false, false,false);
+							if (owner == ownPlayerNumber) {
+								showStreetStage(board, streetName, actualPlayer, false, true, false, false);
+							} else {
+								showStreetStage(board, streetName, actualPlayer, false, false, false, false);
 							}
 
 						}
 
 					} else { // ist kein Grundstueck
-						 int value = in.readInt();
-						 switch(value) {
-						 case 1:
-							 System.out.println("Ziehe eine Karte von Stapel 1");
-							 break;
-						 case 2:
-							 System.out.println("Ziehe eine Karte von Stapel 2");
-							 break;
-						 case 3:
-							 System.out.println("Gehe in das Gefaengnis");
-							 break;
-						 }
+						int value = in.readInt();
+						switch (value) {
+						case 1:
+							System.out.println("Ziehe eine Karte von Stapel 1");
+							break;
+						case 2:
+							System.out.println("Ziehe eine Karte von Stapel 2");
+							break;
+						case 3:
+							System.out.println("Gehe in das Gefaengnis");
+							break;
+						}
 
 					}
 					break;
+
+				case 5: // Straﬂe kaufen
+						System.out.println(in.readUTF());
+					break;
+
+				case 6: //Auktion starten
+					String name = in.readUTF();
+					showAuctionStage(board, name);
+					board.auktionStageOpenSemaphore.acquire();
+					Auktion a = board.auktionStageOpen;
+					int actual = in.readInt();
+					a.neuesGebot(in.readInt());
+					if(actual == ownPlayerNumber) {
+						a.yourTurn();
+						a.gebotAbgegeben.acquire();
+						a.getGebot();
+					}else if(actual == -1) { //auktion beendet
+						System.out.println(in.readUTF());
+					}else {
+						a.disableButtons();
+					}
+					break;
+
 				}
 				x = in.readInt();
 			}
@@ -123,13 +143,57 @@ public class Client extends Thread {
 
 	}
 	
-	private void showStreetStage(Board board, String name, int playerNumber,boolean kaufbar, boolean versteigerbar, boolean hausKaufbar,boolean aktionErforderlich) {
-		Platform.runLater(new Runnable() {
-            @Override public void run() {
-            	StreetStage s = new StreetStage(board, name, playerNumber, kaufbar, versteigerbar, hausKaufbar,aktionErforderlich);
-            }
-        });
+	private void auctionYourTurn(Auktion a) {
 		
+			
+	}
+	
+	private void showAuctionStage(Board board, String name) {
+		try {
+			board.auktionStageOpenSemaphore.acquire(board.auktionStageOpenSemaphore.availablePermits());
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				Auktion auk = new Auktion(board,name,"Nils");
+			}
+		});
+	}
+
+	private void waitForStreetAction() {
+		try {
+			System.out.println("Warte auf Aktion");
+			board.streetStageOpenSemaphore.acquire();
+			StreetStage streetStage = board.streetStageOpen;
+			streetStage.actionSem.acquire();
+			int erg = streetStage.action;
+			System.out.println("die kacke geht raus " + erg);
+			out.writeInt(erg);
+			out.flush();
+
+		} catch (Exception ex) {
+
+		}
+
+	}
+
+	private void showStreetStage(Board board, String name, int playerNumber, boolean kaufbar, boolean versteigerbar,
+			boolean hausKaufbar, boolean aktionErforderlich) {
+		try {
+			board.streetStageOpenSemaphore.acquire(board.streetStageOpenSemaphore.availablePermits());
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				StreetStage s = new StreetStage(board, name, playerNumber, kaufbar, versteigerbar, hausKaufbar,
+						aktionErforderlich);
+			}
+		});
+
 	}
 
 	// Starte den Wuerfelzuh
@@ -169,7 +233,6 @@ public class Client extends Thread {
 
 			board.wuerfelStage.wuerfeln(wuerfel1, wuerfel2);
 
-			board.move(board.playerArr[playerNumber]);
 		} catch (Exception ex) {
 			System.out.println("An error occured");
 			ex.printStackTrace();

@@ -51,6 +51,10 @@ public class Board {
 	public Semaphore actionSeamphore;
 	public WuerfelStage wuerfelStage;
 	public Semaphore boardReady= new Semaphore(0);
+	public StreetStage streetStageOpen;
+	public Semaphore streetStageOpenSemaphore = new Semaphore(0);
+	public Auktion auktionStageOpen;
+	public Semaphore auktionStageOpenSemaphore = new Semaphore(0);
 	
 
 	public ImageView[] playerArr;
@@ -438,7 +442,8 @@ public class Board {
 					// new StreetStage(me,"AstaBuero");
 					break;
 				case A:
-					new Auktion(prime,me,"Mensa","Lars","Nils","Florian");
+				//	new Auktion(prime,me,"Mensa","Lars","Nils","Florian");
+					//Auktion auk = new Auktion(prime,me,"Mensa","Nils");
 					break;
 				case X:
 					new Lobby();

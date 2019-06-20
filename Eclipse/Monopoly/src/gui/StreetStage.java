@@ -29,13 +29,13 @@ public class StreetStage extends Application {
 	int playerNumber;
 	public Semaphore readySem = new Semaphore(0);
 	public Semaphore actionSem = new Semaphore(0);
-	int action;
+	public int action;
 	
 	
 
 	
 	public StreetStage(Board board, String name, int playerNumber,boolean kaufbar, boolean versteigerbar, boolean hausKaufbar,boolean aktionErforderlich) {
-		System.out.println("Streetstage gestartet");
+		board.streetStageOpen = this;
 		this.kaufbar= kaufbar;
 		this.versteigerbar= versteigerbar;
 		this.hausKaufbar = hausKaufbar;
@@ -75,7 +75,8 @@ public class StreetStage extends Application {
 			public void handle(ActionEvent arg0) {
 				System.out.println("Sie haben die Straﬂe gekauft");
 				action = 1;
-				actionSem.release();
+				actionSem.release();	
+				stage.close();
 				
 			}
 		});
@@ -87,6 +88,7 @@ public class StreetStage extends Application {
 				System.out.println("Versteigerung starten");
 				action = 2;
 				actionSem.release();
+				stage.close();
 			}
 		});
 		
@@ -141,7 +143,7 @@ public class StreetStage extends Application {
 		stage.initModality(Modality.APPLICATION_MODAL);
 		stage.show();
 		stage.centerOnScreen();
-		readySem.release();
+		board.streetStageOpenSemaphore.release();
 		
 	}
 	

@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -832,6 +833,50 @@ public class Server {
 					break;
 				}
 			}
+			
+			if(waitForAction) {
+				int erg = c.in.readInt();
+				switch(erg) {
+				case 1:
+					broadcastInt(5);
+					broadcastUTF(c.getName() + " hat die Strasse " + grundstueck.getName() + " gekauft");
+					grundstueck.besitzer = c;
+					break;
+				case 2:
+					versteigerung(grundstueck , c);
+					break;
+				}
+			}
+		}
+		
+		
+		private void versteigerung(Grundstueck g , Client c) throws IOException {
+			System.out.println("Versteigerung starten");
+			broadcastUTF(g.name);
+			int beginner = list.lastIndexOf(c);
+			ArrayList<Client> auctionList = new ArrayList<Client>();
+			auctionList.addAll(list);
+			broadcastInt(6); //Auktion starten
+			Client hoechstbieter = c;
+			int aktuellesGebot = 0;
+			while(auctionList.size()>1) {
+				beginner = beginner %auctionList.size();
+				Client actual = auctionList.get(beginner);
+				broadcastInt(actual.getID());
+				broadcastInt(aktuellesGebot);
+				int gebotNeu = actual.in.readInt();
+				if(gebotNeu ==-1) {
+					auctionList.remove(actual);
+				}else {
+					aktuellesGebot = gebotNeu;
+					hoechstbieter = actual;
+				}
+				beginner++;
+			}
+			broadcastInt(-1);
+			broadcastUTF(hoechstbieter.getName() + " hat die Strasse " + g.getName() + " fuer " + aktuellesGebot + " ersteigert");
+			g.besitzer= hoechstbieter;
+			
 		}
 
 		/**
