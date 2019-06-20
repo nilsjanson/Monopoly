@@ -113,25 +113,33 @@ public class Client extends Thread {
 					break;
 
 				case 5: // Straﬂe kaufen
-						System.out.println(in.readUTF());
+					System.out.println(in.readUTF());
 					break;
 
-				case 6: //Auktion starten
+				case 6: // Auktion starten
 					String name = in.readUTF();
+					System.out.println("Auktionmain noch ");
 					showAuctionStage(board, name);
 					board.auktionStageOpenSemaphore.acquire();
 					Auktion a = board.auktionStageOpen;
 					int actual = in.readInt();
-					a.neuesGebot(in.readInt());
-					if(actual == ownPlayerNumber) {
-						a.yourTurn();
-						a.gebotAbgegeben.acquire();
-						a.getGebot();
-					}else if(actual == -1) { //auktion beendet
-						System.out.println(in.readUTF());
-					}else {
-						a.disableButtons();
+					while (actual != -1) {
+
+						a.neuesGebot(in.readInt());
+						if (actual == ownPlayerNumber) {
+							a.yourTurn();
+							board.gebotAbgegeben.acquire();
+							int gebot = a.getGebot();
+							System.out.println(gebot + "wird abgegeben");
+							out.writeInt(gebot);
+							out.flush();
+
+						} else {
+							a.disableButtons();
+						}
+						actual = in.readInt();
 					}
+
 					break;
 
 				}
@@ -142,22 +150,20 @@ public class Client extends Thread {
 		}
 
 	}
-	
-	private void auctionYourTurn(Auktion a) {
-		
-			
-	}
-	
+
 	private void showAuctionStage(Board board, String name) {
 		try {
+			System.out.println("Auktionfenster starten");
 			board.auktionStageOpenSemaphore.acquire(board.auktionStageOpenSemaphore.availablePermits());
+			System.out.println("name: " + name);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
-				Auktion auk = new Auktion(board,name,"Nils");
+				System.out.println(name);
+				Auktion auk = new Auktion(board, name, "Nils");
 			}
 		});
 	}
@@ -169,7 +175,6 @@ public class Client extends Thread {
 			StreetStage streetStage = board.streetStageOpen;
 			streetStage.actionSem.acquire();
 			int erg = streetStage.action;
-			System.out.println("die kacke geht raus " + erg);
 			out.writeInt(erg);
 			out.flush();
 
@@ -183,6 +188,7 @@ public class Client extends Thread {
 			boolean hausKaufbar, boolean aktionErforderlich) {
 		try {
 			board.streetStageOpenSemaphore.acquire(board.streetStageOpenSemaphore.availablePermits());
+
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}

@@ -55,6 +55,7 @@ public class Board {
 	public Semaphore streetStageOpenSemaphore = new Semaphore(0);
 	public Auktion auktionStageOpen;
 	public Semaphore auktionStageOpenSemaphore = new Semaphore(0);
+	public Semaphore gebotAbgegeben = new Semaphore(0); 
 	
 
 	public ImageView[] playerArr;

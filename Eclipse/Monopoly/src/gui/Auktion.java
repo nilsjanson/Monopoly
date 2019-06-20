@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -31,17 +32,18 @@ public class Auktion extends Application {
 	String[] playerNames;
 	
 	public int meinGebot;
-	public Semaphore gebotAbgegeben = new Semaphore(0); 
 	
 	
 
 	public Auktion( Board board, String strassenName, String... playerNames) {
-		
+		this.board= board;
 		icon = new ImageView(
 				getClass().getResource("/besitzkarten/" + strassenName + ".jpg").toExternalForm());
 		this.playerNames = playerNames;
+		board.auktionStageOpen = this;
+		
 		try {
-			start(stage);
+			start(board.prime);
 		}catch(Exception ex) {
 			ex.printStackTrace();
 		}
@@ -49,9 +51,17 @@ public class Auktion extends Application {
 	}
 
 	private void bieten() {
-		meinGebot = Integer.parseInt(gebot.getText());
-		System.out.println("Eingegebenes Gebot " + meinGebot + "€");
-		gebotAbgegeben.release();
+		
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				meinGebot = Integer.parseInt(gebot.getText());
+				board.gebotAbgegeben.release(1);
+				System.out.println("Eingegebenes Gebot " + meinGebot + "€");
+			
+				
+			}
+		});
 	}
 	
 	private void aussteigen() {
@@ -59,23 +69,48 @@ public class Auktion extends Application {
 	}
 
 	public void neuesGebot(int x) {
-		this.aktGebot.setText("" + x);
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				aktGebot.setText("" + x);
+			}
+		});
 	}
 	
 	public void disableButtons() {
-		aussteigen.setVisible(false);
-		bestaetigen.setVisible(false);
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				aussteigen.setVisible(false);
+				bestaetigen.setVisible(false);
+			}
+		});
+	
 		
 	}
 	
 	public void yourTurn() {
-		gebotAbgegeben = new Semaphore(0); 
-		aussteigen.setVisible(true);
-		bestaetigen.setVisible(true);
+		
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				board.gebotAbgegeben = new Semaphore(0); 
+				aussteigen.setVisible(true);
+				bestaetigen.setVisible(true);
+				
+			}
+		});
+		
 		
 	}
 	
 	public int getGebot() {
+		try {
+
+		}catch(Exception ex) {
+			ex.printStackTrace();
+		}
+		
 		return Integer.parseInt(aktGebot.getText());
 	}
 
@@ -141,8 +176,10 @@ public class Auktion extends Application {
 		HBox buttons = new HBox();
 		bestaetigen = new Button("Bestaetigen");
 		bestaetigen.setOnAction(e-> bieten());
+		bestaetigen.setVisible(false);
 		aussteigen = new Button("Aussteigen");
 		aussteigen.setOnAction(e -> aussteigen());
+		aussteigen.setVisible(false);
 		buttons.setAlignment(Pos.CENTER);
 		butStyle(bestaetigen, aussteigen);
 		buttons.setSpacing(20);
@@ -183,7 +220,6 @@ public class Auktion extends Application {
 		stage.initModality(Modality.APPLICATION_MODAL);
 		stage.show();
 		stage.centerOnScreen();
-		board.auktionStageOpen = this;
 		board.auktionStageOpenSemaphore.release();
 		
 	}

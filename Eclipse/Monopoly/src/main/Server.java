@@ -852,11 +852,11 @@ public class Server {
 		
 		private void versteigerung(Grundstueck g , Client c) throws IOException {
 			System.out.println("Versteigerung starten");
-			broadcastUTF(g.name);
 			int beginner = list.lastIndexOf(c);
 			ArrayList<Client> auctionList = new ArrayList<Client>();
 			auctionList.addAll(list);
 			broadcastInt(6); //Auktion starten
+			broadcastUTF(g.name);
 			Client hoechstbieter = c;
 			int aktuellesGebot = 0;
 			while(auctionList.size()>1) {
@@ -865,6 +865,7 @@ public class Server {
 				broadcastInt(actual.getID());
 				broadcastInt(aktuellesGebot);
 				int gebotNeu = actual.in.readInt();
+				System.out.println(gebotNeu);
 				if(gebotNeu ==-1) {
 					auctionList.remove(actual);
 				}else {
