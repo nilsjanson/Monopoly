@@ -14,17 +14,17 @@ import javafx.stage.StageStyle;
 
 public class WuerfelStage {
 	Stage stage;
-	Board game;
-	ArrayList<ImageView> views ;
-	private Semaphore leertaste ;
+	Board board;
+	ArrayList<ImageView> views;
+	private Semaphore leertaste;
 	HBox hbox;
 	double min;
 	double max;
 
-	public WuerfelStage(Board board,double min, double max) {
-		this.min=min;
+	public WuerfelStage(Board board, double min, double max) {
+		this.min = min;
 		this.max = max;
-		game = board;
+		this.board = board;
 		try {
 			views = new ArrayList<ImageView>();
 			views.add(new ImageView(getClass().getResource("/wuerfel/1.png").toExternalForm()));
@@ -54,7 +54,6 @@ public class WuerfelStage {
 		return leertaste;
 	}
 
-
 	public void start() {
 		hbox = new HBox();
 		ImageView eins = views.get(views.size() - 1);
@@ -62,60 +61,62 @@ public class WuerfelStage {
 		hbox.getChildren().add(eins);
 		hbox.getChildren().add(zwei);
 		Scene scene = new Scene(hbox);
-		scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
-			@Override
-			public void handle(KeyEvent event) {
-				switch (event.getCode()) {
-				case SPACE:
-					leertaste.release();
-					break;
-				case W:
-					leertaste.release();
-					break;
-				case F1:
-					game.helpMe();
-					break;
-				case ENTER:
-					stage.close();
-					break;
-				case ESCAPE:
-				System.exit(0);
-				break;
-				default:
-					break;
-				}
-			}
-		});
 		stage = new Stage();
+		keyHandler(scene);
 		stage.setScene(scene);
 		stage.initStyle(StageStyle.UNDECORATED);
 		stage.show();
 		stage.setAlwaysOnTop(true);
-		eins.setFitHeight(min*.15);
-		zwei.setFitHeight(min*.15);
-		eins.setFitWidth(((max-min)/2)/2);
-		zwei.setFitWidth(((max-min)/2)/2);
-		stage.setWidth(((max-min)/2)-5);
-		stage.setHeight(min*.15);
+		eins.setFitHeight(min * .15);
+		zwei.setFitHeight(min * .15);
+		eins.setFitWidth(((max - min) / 2) / 2);
+		zwei.setFitWidth(((max - min) / 2) / 2);
+		stage.setWidth(((max - min) / 2) - 5);
+		stage.setHeight(min * .15);
 		stage.setX(0);
-		stage.setY((min / 2)-(stage.getHeight()/2));
+		stage.setY((min / 2) - (stage.getHeight() / 2));
 	}
 
 	public void wuerfeln(int x, int y) {
-		 Platform.runLater(new Runnable() {
-             @Override public void run() {
-            	 hbox.getChildren().remove(0);
-         		hbox.getChildren().remove(0);
-         		ImageView eins = views.get(x-1);
-         		ImageView zwei = views.get((y+6)-1);
-        		eins.setFitHeight(min*.15);
-        		zwei.setFitHeight(min*.15);
-        		eins.setFitWidth(((max-min)/2)/2);
-        		zwei.setFitWidth(((max-min)/2)/2);
-         		hbox.getChildren().add(eins);
-         		hbox.getChildren().add(zwei);
-             }
-         });
-
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				hbox.getChildren().remove(0);
+				hbox.getChildren().remove(0);
+				ImageView eins = views.get(x - 1);
+				ImageView zwei = views.get((y + 6) - 1);
+				eins.setFitHeight(min * .15);
+				zwei.setFitHeight(min * .15);
+				eins.setFitWidth(((max - min) / 2) / 2);
+				zwei.setFitWidth(((max - min) / 2) / 2);
+				hbox.getChildren().add(eins);
+				hbox.getChildren().add(zwei);
+			}
+		});
 	}
+
+	void keyHandler(Scene scene) {
+		scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+
+			@Override
+			public void handle(KeyEvent event) {
+				switch (event.getCode()) {
+				case F1:
+					board.helpMe();
+					break;
+				case SPACE:
+					leertaste.release();
+					break;
+				case ESCAPE:
+					new ExitStage(board.prime);
+					break;
+				default:
+					board.prime.toFront();
+					break;
+				}
+
+			}
+		});
+	}
+
 }

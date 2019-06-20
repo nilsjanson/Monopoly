@@ -58,7 +58,6 @@ public class Board {
 	public Semaphore auktionStageOpenSemaphore = new Semaphore(0);
 	public Semaphore gebotAbgegeben = new Semaphore(0);
 
-
 	public ImageView[] playerArr;
 
 	public Board(Stage prime) {
@@ -176,7 +175,7 @@ public class Board {
 		prime.show();
 
 		wuerfelStage = new WuerfelStage(me, Math.min(width, height), Math.max(width, height));
-		infoStage = new InfoStage(Math.min(width, height),Math.max(width, height));
+		infoStage = new InfoStage(me,Math.min(width, height), Math.max(width, height));
 		playerArr[0] = createPlayer(max * 0.075, max * 0.075, "/playerIcons/bike.png");
 		playerArr[1] = createPlayer(max * 0.075, max * 0.075, "/playerIcons/dog.png");
 		if (spieler > 2) {
@@ -412,10 +411,27 @@ public class Board {
 		helpfull.add(new Label("ESC = Beendet das Programm"));
 		helpLabelStyle(helpfull);
 		vbox.getChildren().addAll(helpfull);
-		vbox.setStyle("-fx-background-color: rgb(" + 192 + "," + 254 + ", " + 213 + ");");
+		vbox.setStyle("-fx-background-color: rgb(" + 192 + "," + 254 + ", " + 213 + "); -fx-border-color: black;");
 		Scene scene = new Scene(vbox);
+		scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+
+			@Override
+			public void handle(KeyEvent event) {
+				switch (event.getCode()) {
+				case ESCAPE:
+					help.close();
+					break;
+				case ENTER:
+					help.close();
+					break;
+				default:
+					break;
+				}
+			}
+		});
 		help.setScene(scene);
 		help.initModality(Modality.APPLICATION_MODAL);
+		help.initStyle(StageStyle.UNDECORATED);
 		help.show();
 	}
 

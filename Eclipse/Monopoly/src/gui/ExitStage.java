@@ -46,6 +46,7 @@ public class ExitStage {
 		vbox.setAlignment(Pos.CENTER);
 		Scene scene = new Scene(vbox);
 		exit.setScene(scene);
+		exit.setAlwaysOnTop(true);
 		exit.show();
 	}
 	
