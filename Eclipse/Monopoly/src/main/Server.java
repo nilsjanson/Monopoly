@@ -32,11 +32,10 @@ public class Server {
 
 	/**
 	 *
-	 * @param args
-	 *            optional kann der Port als Argument angegeben werden.<br>
-	 *            Es darf dafuer nur 1 Argument angegeben werden, welches ein
-	 *            Positiver Integer < 49152 sein muss. <br>
-	 *            Sonst wird der Defaultwert 1337 genommen.
+	 * @param args optional kann der Port als Argument angegeben werden.<br>
+	 *             Es darf dafuer nur 1 Argument angegeben werden, welches ein
+	 *             Positiver Integer < 49152 sein muss. <br>
+	 *             Sonst wird der Defaultwert 1337 genommen.
 	 */
 	public static void main(String[] args) {
 		/**
@@ -65,32 +64,31 @@ public class Server {
 //		frame.setSize(200, 200);					AWT GUI? Nur ein Gedanke
 //		frame.setVisible(true);
 
-		 if (args.length == 1 && args[0].matches("[0-9]{1,5}") &&
-		 !args[0].matches("[0]")) {
-		 int arg = Integer.parseInt(args[0]);
-		 // Ab 49152 fuer Dynamische Port-Adressen reserviert.
-		 if (arg < 49152) {
-		 port = arg;
-		 }
-		 }
-		 System.out.println("Port:\t" + port);
-		 try (ServerSocket server = new ServerSocket(port)) {
-		 while (true) {
-		 System.out.println("Waiting for client ...");
-		 Socket client = server.accept();
-		 System.out.println("Client" + client.getInetAddress() + "connected");
-		 sortClientInQueue(client, listOfLists);
-		 int i = isStartPossible(listOfLists);
-		 if (i != -1) {
-		 startGame(listOfLists.get(i));
-		 // Gestartete Queue ersetzen
-		 listOfLists.set(i, new LinkedList<Socket>());
-		 }
-		 }
+		if (args.length == 1 && args[0].matches("[0-9]{1,5}") && !args[0].matches("[0]")) {
+			int arg = Integer.parseInt(args[0]);
+			// Ab 49152 fuer Dynamische Port-Adressen reserviert.
+			if (arg < 49152) {
+				port = arg;
+			}
+		}
+		System.out.println("Port:\t" + port);
+		try (ServerSocket server = new ServerSocket(port)) {
+			while (true) {
+				System.out.println("Waiting for client ...");
+				Socket client = server.accept();
+				System.out.println("Client" + client.getInetAddress() + "connected");
+				sortClientInQueue(client, listOfLists);
+				int i = isStartPossible(listOfLists);
+				if (i != -1) {
+					startGame(listOfLists.get(i));
+					// Gestartete Queue ersetzen
+					listOfLists.set(i, new LinkedList<Socket>());
+				}
+			}
 
-		 } catch (IOException e) {
-		 e.printStackTrace();
-		 }
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 //	private static Frame createServerGui(List<List<Socket>> listOfLists) {		Mal nur eine Idee und da AWT fuer sowas perfekt ist.. mal ein Gedanke..?
@@ -180,10 +178,8 @@ public class Server {
 	 * Client antwortet mit einem Integer[2-4] um passend mit anderen Clients
 	 * sortiert zu werden.
 	 *
-	 * @param client
-	 *            der wartende Client.
-	 * @param list
-	 *            Liste der Client Queues.
+	 * @param client der wartende Client.
+	 * @param list   Liste der Client Queues.
 	 * @throws IOException
 	 */
 	private static void sortClientInQueue(Socket client, List<List<Socket>> list) throws IOException {
@@ -203,8 +199,7 @@ public class Server {
 	/**
 	 * Prueft ob ein Spiel gestartet werden kann.
 	 *
-	 * @param list
-	 *            die Liste der Queues die ueberprueft werden soll.
+	 * @param list die Liste der Queues die ueberprueft werden soll.
 	 * @return -1 wenn kein Spielstart moeglich ist, <br>
 	 *         sonst den Index der Queue die aus der Liste gestartet werden kann.
 	 */
@@ -220,8 +215,7 @@ public class Server {
 	/**
 	 * Erstellt einen neuen Thread und startet das Spiel
 	 *
-	 * @param q
-	 *            Die wartenden Clients
+	 * @param q Die wartenden Clients
 	 */
 	private static void startGame(List<Socket> q) {
 		System.out.println("Neuer Server wird gestartet");
@@ -254,134 +248,6 @@ public class Server {
 		 */
 		private String leaveMessage = "\nPlayer has left because of IOException.\n";
 
-		/**
-		 * Ein Grundstueck.
-		 *
-		 * @author lucastheiss
-		 * @version 0.1
-		 *
-		 */
-		protected class Grundstueck {
-			/**
-			 * Mietkosten je nach Bebauung.
-			 */
-			private int[] miete;
-			/**
-			 * Kosten des Grundstueckes.
-			 */
-			private int preis;
-			/**
-			 * Grad der Bebauung.
-			 */
-			private int haeuser = 0;
-			/**
-			 * Der aktuelle Besitzer des Grundstuecks.
-			 */
-			private Client besitzer = null;
-			private int stelle;
-			private int hausKosten;
-			private String name;
-
-			/**
-			 * Initialisierung des Grundstuecks.
-			 *
-			 * @param miete
-			 *            Mietkosten je nach Bebauung.
-			 * @param preis
-			 *            Kosten des Grundstuecks.
-			 * @param hausKosten
-			 *            Kosten pro neues Haus.
-			 * @param stelle
-			 *            Stelle auf dem Spielfeld.
-			 */
-			public Grundstueck(String name, int[] miete, int preis, int hausKosten, int stelle) {
-				this.name= name;
-				this.miete = miete;
-				this.preis = preis;
-				this.hausKosten = hausKosten;
-				this.stelle = stelle;
-			}
-
-			public boolean equals(Object o) {
-				if (o == null) {
-					return false;
-				}
-				if (!o.getClass().equals(this.getClass())) {
-					return false;
-				}
-				if (((Grundstueck) o).getStelle() != this.getStelle()) {
-					return false;
-				}
-				return true;
-			}
-			
-			public String getName() {
-				return name;
-			}
-
-			public int getStelle() {
-				return stelle;
-			}
-
-			/**
-			 *
-			 * @return Kosten pro neues Haus.
-			 */
-			public int getHausKosten() {
-				return hausKosten;
-			}
-
-			/**
-			 * Aendern des Besitzers.
-			 *
-			 * @param c
-			 *            der neue Besitzer.
-			 * @throws IOException
-			 *             keine Antwort vom Client.
-			 */
-			public void setBesitzer(Client c) throws IOException {
-				c.getOut().writeUTF(
-						"Grundstueck gekauft Sending(Stelle auf dem Spielfeld) {" + Integer.class.toString() + "}");
-				this.besitzer = c;
-			}
-
-			/**
-			 *
-			 * @return den aktuellen Besitzer des Grundstuecks.
-			 */
-			public Client getBesitzer() {
-				return besitzer;
-			}
-
-			/**
-			 *
-			 * @return die aktuelle Miete.
-			 */
-			public int getMiete() {
-				return miete[haeuser];
-			}
-
-			/**
-			 *
-			 * @return Kaufpreis des Grundstuecks.
-			 */
-			public int getPreis() {
-				return preis;
-			}
-
-			/**
-			 *
-			 * @param haeuser
-			 *            neue Anzahl an Haeusern.
-			 */
-			public void setHaeuser(int haeuser) {
-				if (haeuser < 0 || haeuser > 5) {
-					throw new IllegalArgumentException();
-				} else {
-					this.haeuser = haeuser;
-				}
-			}
-		}
 
 		/**
 		 * Der Client.<br>
@@ -430,14 +296,10 @@ public class Server {
 			/**
 			 * Client initialisieren.
 			 *
-			 * @param s
-			 *            Socket des Spielers.
-			 * @param name
-			 *            Name des Spielers.
-			 * @param ID
-			 *            eine <b>eindeutige</b> Nummer des Spielers.
-			 * @throws IOException
-			 *             wenn Spieler nichtmehr antwortet.
+			 * @param s    Socket des Spielers.
+			 * @param name Name des Spielers.
+			 * @param ID   eine <b>eindeutige</b> Nummer des Spielers.
+			 * @throws IOException wenn Spieler nichtmehr antwortet.
 			 */
 			public Client(Socket s, String name, int ID) throws IOException {
 				this.s = s;
@@ -461,8 +323,7 @@ public class Server {
 
 			/**
 			 *
-			 * @param hasFreeCard1
-			 *            besitz der Gefaengnisfreikarte aus dem ersten Stapel.
+			 * @param hasFreeCard1 besitz der Gefaengnisfreikarte aus dem ersten Stapel.
 			 */
 			public void setFree1(boolean hasFreeCard1) {
 				this.hasFreeCard1 = hasFreeCard1;
@@ -481,8 +342,7 @@ public class Server {
 
 			/**
 			 *
-			 * @param hasFreeCard2
-			 *            besitz der Gefaengnisfreikarte aus dem zweiten Stapel.
+			 * @param hasFreeCard2 besitz der Gefaengnisfreikarte aus dem zweiten Stapel.
 			 */
 			public void setFree2(boolean hasFreeCard2) {
 				this.hasFreeCard2 = hasFreeCard2;
@@ -532,10 +392,8 @@ public class Server {
 
 			/**
 			 *
-			 * @param change
-			 *            Aenderung des Geldes, Positiv oder Negativ.
-			 * @throws IOException
-			 *             Client antwortet nicht.
+			 * @param change Aenderung des Geldes, Positiv oder Negativ.
+			 * @throws IOException Client antwortet nicht.
 			 */
 			public void addGeld(int change) throws IOException {
 				geld += change;
@@ -555,10 +413,8 @@ public class Server {
 			/**
 			 * Bewegt den Client und sendet dem Client die Anzahl.
 			 *
-			 * @param count
-			 *            Anzahl Augen auf dem Wuerfel.
-			 * @throws IOException
-			 *             Keine Verbindung zum Client.
+			 * @param count Anzahl Augen auf dem Wuerfel.
+			 * @throws IOException Keine Verbindung zum Client.
 			 */
 			public void walk(int count) throws IOException {
 				position += count;
@@ -640,8 +496,7 @@ public class Server {
 			/**
 			 * Spieler wuerfelt. Sendet die beiden Integer Werte an den Client.
 			 *
-			 * @throws IOException
-			 *             wenn der Client nicht erreichbar ist.
+			 * @throws IOException wenn der Client nicht erreichbar ist.
 			 */
 			public void wuerfeln(int playerNumber) throws IOException {
 				broadcastInt(2);
@@ -657,8 +512,7 @@ public class Server {
 		/**
 		 * Initialisierung eines neuen Spiels.
 		 *
-		 * @param sList
-		 *            Liste der Sockets der Mitspieler
+		 * @param sList Liste der Sockets der Mitspieler
 		 */
 		public GameThread(List<Socket> sList) {
 			init(sList);
@@ -719,30 +573,28 @@ public class Server {
 		/**
 		 * Prueft das Feld auf dem der Spieler ist.
 		 *
-		 * @param c
-		 *            der Client der an der reihe ist.
-		 * @throws IOException
-		 *             Client antwortet nicht.
+		 * @param c der Client der an der reihe ist.
+		 * @throws IOException Client antwortet nicht.
 		 */
 		private void checkField(Client c) throws IOException {
 			System.out.println("Standort: " + c.getPos());
-			boolean waitForAction= false;
+			boolean waitForAction = false;
 			broadcastInt(4); // modus 4 starten
 			broadcastInt(c.ID); // aktuellen Spieler miteilen
 			Grundstueck grundstueck = feld[c.getPos()];
-			//broadcastInt(c.getPos()); // Position miteilen
+			// broadcastInt(c.getPos()); // Position miteilen
 			if (grundstueck != null) {
 				broadcastBoolean(true);
-				System.out.println("Standort: " + c.getPos() + grundstueck.name);
-				broadcastUTF(grundstueck.name); // Position miteilen
+				System.out.println("Standort: " + c.getPos() + grundstueck.getName());
+				broadcastUTF(grundstueck.getName()); // Position miteilen
 				if (grundstueck.getBesitzer() == null) {
 					broadcastBoolean(true);
-					broadcastBoolean(c.getGeld()>= grundstueck.preis);
+					broadcastBoolean(c.getGeld() >= grundstueck.getPreis());
 					waitForAction = true;
 
 				} else {
 					broadcastBoolean(false);
-					
+
 					Client besitzer = grundstueck.getBesitzer();
 					broadcastInt(besitzer.getID());
 					if (!besitzer.equals(c)) { // Feld gehoert einem anderen Spieler -> Spieler zahlt Miete an anderen
@@ -784,9 +636,8 @@ public class Server {
 								list.remove(c.getID()); // Stimmt die Reihenfolge der Spieler (naechsterSpieler) noch?
 							}
 						}
-					}
-					else {
-						//Haus kauf moeglich?
+					} else {
+						// Haus kauf moeglich?
 					}
 					// Feld gehoert dem Spieler -> nichts
 				}
@@ -794,7 +645,7 @@ public class Server {
 				broadcastBoolean(false);
 				int steuern = 0;
 				switch (c.getPos()) {
-				case 0: 
+				case 0:
 					broadcastInt(0);
 					c.addGeld(400);
 					break;
@@ -833,50 +684,51 @@ public class Server {
 					break;
 				}
 			}
-			
-			if(waitForAction) {
+
+			if (waitForAction) {
 				int erg = c.in.readInt();
-				switch(erg) {
+				switch (erg) {
 				case 1:
 					broadcastInt(5);
 					broadcastUTF(c.getName() + " hat die Strasse " + grundstueck.getName() + " gekauft");
-					grundstueck.besitzer = c;
+					grundstueck.setBesitzer(c);
 					break;
 				case 2:
-					versteigerung(grundstueck , c);
+					versteigerung(grundstueck, c);
 					break;
 				}
 			}
 		}
-		
-		
-		private void versteigerung(Grundstueck g , Client c) throws IOException {
+
+		private void versteigerung(Grundstueck g, Client c) throws IOException {
 			System.out.println("Versteigerung starten");
-			broadcastUTF(g.name);
 			int beginner = list.lastIndexOf(c);
 			ArrayList<Client> auctionList = new ArrayList<Client>();
 			auctionList.addAll(list);
 			broadcastInt(6); //Auktion starten
+			broadcastUTF(g.name);
 			Client hoechstbieter = c;
 			int aktuellesGebot = 0;
-			while(auctionList.size()>1) {
-				beginner = beginner %auctionList.size();
+			while (auctionList.size() > 1) {
+				beginner = beginner % auctionList.size();
 				Client actual = auctionList.get(beginner);
 				broadcastInt(actual.getID());
 				broadcastInt(aktuellesGebot);
 				int gebotNeu = actual.in.readInt();
+				System.out.println(gebotNeu);
 				if(gebotNeu ==-1) {
 					auctionList.remove(actual);
-				}else {
+				} else {
 					aktuellesGebot = gebotNeu;
 					hoechstbieter = actual;
 				}
 				beginner++;
 			}
 			broadcastInt(-1);
-			broadcastUTF(hoechstbieter.getName() + " hat die Strasse " + g.getName() + " fuer " + aktuellesGebot + " ersteigert");
-			g.besitzer= hoechstbieter;
-			
+			broadcastUTF(hoechstbieter.getName() + " hat die Strasse " + g.getName() + " fuer " + aktuellesGebot
+					+ " ersteigert");
+			g.setBesitzer(hoechstbieter);
+
 		}
 
 		/**
@@ -905,13 +757,6 @@ public class Server {
 			return erg;
 		}
 
-		/**
-		 * Initialsetup der Spieler<br>
-		 * Clients in der Liste speichern und allen Spielern das Startgeld geben
-		 *
-		 * @param sList
-		 *            Liste der Sockets
-		 */
 		private void broadcastInt(int x) throws IOException {
 			for (Client s : list) {
 				s.out.writeInt(x);
@@ -925,14 +770,20 @@ public class Server {
 				s.out.flush();
 			}
 		}
-		
-		private void broadcastUTF(String x) throws IOException{
+
+		private void broadcastUTF(String x) throws IOException {
 			for (Client s : list) {
 				s.out.writeUTF(x);
 				s.out.flush();
 			}
 		}
 
+		/**
+		 * Initialsetup der Spieler<br>
+		 * Clients in der Liste speichern und allen Spielern das Startgeld geben
+		 *
+		 * @param sList Liste der Sockets
+		 */
 		private void init(List<Socket> sList) {
 			for (int i = 0; i < sList.size(); i++) {
 				Socket s = sList.get(i);
@@ -985,45 +836,45 @@ public class Server {
 			}
 			// Felder initialisieren
 			feld[0] = null; // Los
-			feld[1] = new Grundstueck("Kesselhaus",new int[] { 2, 10, 30, 90, 160, 250 }, 60, 50, 1);
+			feld[1] = new Grundstueck("Kesselhaus", new int[] { 2, 10, 30, 90, 160, 250 }, 60, 1, new int[] {1, 3});
 			feld[2] = null; // Kartenstapel 1
-			feld[3] = new Grundstueck("AstaBuero",new int[] { 4, 20, 60, 180, 320, 450 }, 60, 50, 3);
+			feld[3] = new Grundstueck("AstaBuero", new int[] { 4, 20, 60, 180, 320, 450 }, 60, 3, new int[] {1, 3});
 			feld[4] = null; // Steuern 200
-			feld[5] = new Grundstueck("BingenBahnhof",new int[] { 25, 50, 100, 200 }, 200, -1, 5); // Bahnhof
-			feld[6] = new Grundstueck("PflanzenLabor",new int[] { 6, 30, 90, 270, 400, 550 }, 100, 50, 6);
+			feld[5] = new Grundstueck("BingenBahnhof", new int[] { 25, 50, 100, 200 }, 200, 5, null); // Bahnhof
+			feld[6] = new Grundstueck("PflanzenLabor", new int[] { 6, 30, 90, 270, 400, 550 }, 100, 6, new int[] {6, 8, 9});
 			feld[7] = null; // Kartenstapel 2
-			feld[8] = new Grundstueck("GewaechsHaus",new int[] { 6, 30, 90, 270, 400, 550 }, 100, 50, 8);
-			feld[9] = new Grundstueck("DemonstrationsFeld",new int[] { 8, 40, 100, 300, 450, 600 }, 120, 50, 9);
+			feld[8] = new Grundstueck("GewaechsHaus", new int[] { 6, 30, 90, 270, 400, 550 }, 100, 8, new int[] {6, 8, 9});
+			feld[9] = new Grundstueck("DemonstrationsFeld", new int[] { 8, 40, 100, 300, 450, 600 }, 120, 9, new int[] {6, 8, 9});
 			feld[10] = null; // Gefaengnis
-			feld[11] = new Grundstueck("MotorenPruefstand",new int[] { 10, 50, 150, 450, 625, 750 }, 140, 100, 11);
+			feld[11] = new Grundstueck("MotorenPruefstand", new int[] { 10, 50, 150, 450, 625, 750 }, 140, 11, new int[] {11, 13, 14});
 			feld[12] = null; // Rechenzentrum, evtl als Grundstueck behandeln
-			feld[13] = new Grundstueck("FahrzeugLabor",new int[] { 10, 50, 150, 450, 625, 750 }, 140, 100, 13);
-			feld[14] = new Grundstueck("SolarTankstelle",new int[] { 12, 60, 180, 500, 700, 900 }, 160, 100, 14);
-			feld[15] = new Grundstueck("KreuznachBahnhof",new int[] { 25, 50, 100, 200 }, 200, -1, 15); // Bahnhof
-			feld[16] = new Grundstueck("TrvRhenania",new int[] { 14, 70, 200, 550, 750, 950 }, 180, 100, 16);
+			feld[13] = new Grundstueck("FahrzeugLabor", new int[] { 10, 50, 150, 450, 625, 750 }, 140, 13, new int[] {11, 13, 14});
+			feld[14] = new Grundstueck("SolarTankstelle", new int[] { 12, 60, 180, 500, 700, 900 }, 160, 14, new int[] {11, 13, 14});
+			feld[15] = new Grundstueck("KreuznachBahnhof", new int[] { 25, 50, 100, 200 }, 200, 15, null); // Bahnhof
+			feld[16] = new Grundstueck("TrvRhenania", new int[] { 14, 70, 200, 550, 750, 950 }, 180, 16, new int[] {16, 18, 19});
 			feld[17] = null; // Kartenstapel 1
-			feld[18] = new Grundstueck("BingerBeasts",new int[] { 14, 70, 200, 550, 750, 950 }, 180, 100, 18);
-			feld[19] = new Grundstueck("BingenImpulse",new int[] { 16, 80, 220, 600, 800, 1000 }, 200, 100, 19);
+			feld[18] = new Grundstueck("BingerBeasts", new int[] { 14, 70, 200, 550, 750, 950 }, 180, 18, new int[] {16, 18, 19});
+			feld[19] = new Grundstueck("BingenImpulse", new int[] { 16, 80, 220, 600, 800, 1000 }, 200, 19, new int[] {16, 18, 19});
 			feld[20] = null; // Frei parken
-			feld[21] = new Grundstueck("NetzwerkLabor",new int[] { 18, 90, 250, 700, 875, 1050 }, 220, 150, 21);
+			feld[21] = new Grundstueck("NetzwerkLabor", new int[] { 18, 90, 250, 700, 875, 1050 }, 220, 21, new int[] {21, 23, 24});
 			feld[22] = null; // Kartenstapel 2
-			feld[23] = new Grundstueck("PcPool236",new int[] { 18, 90, 250, 700, 875, 1050 }, 220, 150, 23);
-			feld[24] = new Grundstueck("PcPool237",new int[] { 20, 100, 300, 750, 925, 1100 }, 240, 150, 24);
-			feld[25] = new Grundstueck("MainzBahnhof",new int[] { 25, 50, 100, 200 }, 200, -1, 25); // Bahnhof
-			feld[26] = new Grundstueck("StudienBeratung",new int[] { 22, 110, 330, 800, 975, 1150 }, 260, 150, 26);
-			feld[27] = new Grundstueck("StudienSekretariat",new int[] { 22, 110, 330, 800, 975, 1150 }, 260, 150, 27);
+			feld[23] = new Grundstueck("PcPool236", new int[] { 18, 90, 250, 700, 875, 1050 }, 220, 23, new int[] {21, 23, 24});
+			feld[24] = new Grundstueck("PcPool237", new int[] { 20, 100, 300, 750, 925, 1100 }, 240, 24, new int[] {21, 23, 24});
+			feld[25] = new Grundstueck("MainzBahnhof", new int[] { 25, 50, 100, 200 }, 200, 25, null); // Bahnhof
+			feld[26] = new Grundstueck("StudienBeratung", new int[] { 22, 110, 330, 800, 975, 1150 }, 260, 26, new int[] {26, 27, 29});
+			feld[27] = new Grundstueck("StudienSekretariat", new int[] { 22, 110, 330, 800, 975, 1150 }, 260, 27, new int[] {26, 27, 29});
 			feld[28] = null; // Zollamt
-			feld[29] = new Grundstueck("DekanBuero",new int[] { 24, 120, 360, 850, 1025, 1200 }, 280, 150, 29);
+			feld[29] = new Grundstueck("DekanBuero", new int[] { 24, 120, 360, 850, 1025, 1200 }, 280, 29, new int[] {26, 27, 29});
 			feld[30] = null; // gehe in das Gefaengnis
-			feld[31] = new Grundstueck("RhenoTeutonia",new int[] { 26, 130, 390, 900, 1100, 1275 }, 300, 200, 31);
-			feld[32] = new Grundstueck("Holsatia",new int[] { 26, 130, 390, 900, 1100, 1275 }, 300, 200, 32);
+			feld[31] = new Grundstueck("RhenoTeutonia", new int[] { 26, 130, 390, 900, 1100, 1275 }, 300, 31, new int[] {31, 32, 34});
+			feld[32] = new Grundstueck("Holsatia", new int[] { 26, 130, 390, 900, 1100, 1275 }, 300, 32, new int[] {31, 32, 34});
 			feld[33] = null; // Kartenstapel 1
-			feld[34] = new Grundstueck("Markomannia",new int[] { 28, 150, 450, 1000, 1200, 1400 }, 320, 200, 34);
-			feld[35] = new Grundstueck("WormsBahnhof",new int[] { 25, 50, 100, 200 }, 200, -1, 35); // Bahnhof
+			feld[34] = new Grundstueck("Markomannia", new int[] { 28, 150, 450, 1000, 1200, 1400 }, 320, 34, new int[] {31, 32, 34});
+			feld[35] = new Grundstueck("WormsBahnhof", new int[] { 25, 50, 100, 200 }, 200, 35, null); // Bahnhof
 			feld[36] = null; // Kartenstapel 2
-			feld[37] = new Grundstueck("Mensa",new int[] { 35, 175, 500, 1100, 1300, 1500 }, 350, 200, 37);
+			feld[37] = new Grundstueck("Mensa", new int[] { 35, 175, 500, 1100, 1300, 1500 }, 350, 37, new int[] {37, 39});
 			feld[38] = null; // Steuern 100
-			feld[39] = new Grundstueck("Bibliothek",new int[] { 50, 200, 600, 1400, 1700, 2000 }, 400, 200, 39);
+			feld[39] = new Grundstueck("Bibliothek", new int[] { 50, 200, 600, 1400, 1700, 2000 }, 400, 39, new int[] {37, 39});
 		}
 	}
 }
