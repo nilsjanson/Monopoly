@@ -450,8 +450,8 @@ public class Board {
 					helpMe();
 					break;
 				case E:
-					new EmailStage(me, "Stupa Seminar", "Studiensekreteriat",
-							"Wir laden Sie herzlichst zu unserem Stupa Seminar am 15.07 ein.");
+					new EmailStage(me, "Schoenheitswettbewerb", "Schoenheit Ohne Grenzen",
+							"Sie haben einen Schoenheitswettbewerb gewonnen, kassieren Sie 100€.");
 					break;
 				case B:
 					// new StreetStage(me,"AstaBuero");
@@ -461,7 +461,7 @@ public class Board {
 					// Auktion auk = new Auktion(prime,me,"Mensa","Nils");
 					break;
 				case X:
-					new Lobby();
+					System.exit(0);
 					break;
 				case CONTROL:
 					parent.setRotate(parent.getRotate() - 90);
