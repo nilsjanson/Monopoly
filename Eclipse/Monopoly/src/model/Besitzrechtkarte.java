@@ -104,6 +104,17 @@ public class Besitzrechtkarte {
 	}
 	
 	
+	public static Besitzrechtkarte findByPosition(int position) {
+		for(Besitzrechtkarte x : liste) {
+			if(x.getPosition()==position) {
+				return x;
+			}
+			
+		}
+		return null;
+	}
+	
+	
 	
 	
 	

@@ -32,6 +32,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
+import model.Besitzrechtkarte;
 import model.Player;
 
 public class Board {
@@ -314,6 +315,11 @@ public class Board {
 				@Override
 				public void handle(ActionEvent arg0) {
 					System.out.println("Street " + x.getText());
+					Platform.runLater(new Runnable() {
+						@Override
+						public void run() {
+							streetStageOpen = new StreetStage(me, Besitzrechtkarte.findByName(x.getText()), false , false, false, false);
+					}});
 				}
 			});
 		}
@@ -335,6 +341,11 @@ public class Board {
 				@Override
 				public void handle(ActionEvent arg0) {
 					System.out.println("Street " + x.getText());
+					Platform.runLater(new Runnable() {
+						@Override
+						public void run() {
+							streetStageOpen = new StreetStage(me, Besitzrechtkarte.findByName(x.getText()), false , false, false, false);
+					}});
 				}
 			});
 		}

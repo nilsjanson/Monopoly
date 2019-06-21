@@ -273,8 +273,17 @@ public class InfoStage {
 	private Button initBut(String color, Button x, Stage prime,Player player) {
 		x.setMaxSize(5, 5);
 		x.setStyle("-fx-background-color: grey;");
-		
+		x.setOnAction(e -> erzeugeStreetStage(x));
 		return x;
+	}
+	
+	public void erzeugeStreetStage(Button x) {
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				board.streetStageOpen = null;
+				board.streetStageOpen = new StreetStage(board, Besitzrechtkarte.findByName(x.getText()), false , false, false, false);
+		}});
 	}
 
 	public void changeColor(Besitzrechtkarte x) {
@@ -284,15 +293,12 @@ public class InfoStage {
 				Player p = x.getOwner();
 				Button b = p.getStreetsButton(x.getName());
 				if (b.getStyle().equals("-fx-background-color: grey;")) {
-					b.setStyle("-fx-background-color:" + x.getColor());
-					b.setOnAction(e -> {
-					System.out.println("clicked infostage");
-					//new StreetStage(board, x, false , false, false, false);
-					});
+					b.setStyle("-fx-background-color:" + x.getColor() + ";");
+					
 					
 				} else {
 					b.setStyle("-fx-background-color: grey;");
-					b.setOnAction(null);
+
 				}
 				
 			}

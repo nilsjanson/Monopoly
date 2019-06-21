@@ -49,6 +49,8 @@ public class StreetStage extends Application {
 		img.setFitHeight(board.getMax()*0.55);
 		try {
 			this.start(board.prime);
+			
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -69,6 +71,7 @@ public class StreetStage extends Application {
 		versteigern.setVisible(versteigerbar);
 		Button haus = new Button("Haus kaufen");
 		haus.setVisible(hausKaufbar);
+	
 		Label player = new Label("Spieler " + playerNumber);
 		if(aktionErforderlich) {
 		kaufen.setOnAction( new EventHandler<ActionEvent>() {
@@ -128,7 +131,9 @@ public class StreetStage extends Application {
 					stage.close();
 					break;
 				case ESCAPE:
-					stage.close();
+					close();
+					
+					
 					break;
 				case C:
 					stage.centerOnScreen();
@@ -155,8 +160,15 @@ public class StreetStage extends Application {
 				
 				stage.close();
 				
+				
 			}
 		});
+		try {
+			this.stop();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	private void buttonStyle(Button...buttons) {
 		for (Button x: buttons) {
