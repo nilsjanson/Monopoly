@@ -96,7 +96,7 @@ public class InfoStage {
 		info.initStyle(StageStyle.UNDECORATED);
 		info.setScene(scene);
 		info.setWidth(((max - min) / 2) - 5);
-		info.setHeight(min * .4);
+		info.setHeight(min * .5);
 		info.show();
 		info.setX((min + info.getWidth() + 10));
 		info.setY((min / 2) - (info.getHeight() / 2));
@@ -218,7 +218,7 @@ public class InfoStage {
 	}
 
 	private Button initBut(String color, Button x, Stage prime,Player player) {
-		x.prefHeightProperty().bind(prime.heightProperty().divide(28 / 10));
+		x.prefHeightProperty().bind(prime.heightProperty().divide(28 / 20));
 		x.prefWidthProperty().bind(prime.widthProperty().divide(28 / 10));
 		x.setStyle("-fx-background-color: grey; -fx-border-color: black;");
 		x.setOnAction(e -> changeColor(x, color));
