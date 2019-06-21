@@ -136,8 +136,8 @@ public class InfoStage {
 
 	private HashMap<String, Button> createButtons(Player player) {
 		HashMap<String, Button> street = new HashMap<String, Button>();
-		street.put("KesselHaus", initBut("purple", new Button(), info, player));
-		street.put("AstaBuero", initBut("purple", new Button(), info, player));
+		street.put("KesselHaus", initBut("purple", new Button("Kesselhaus"), info, player));
+		street.put("AstaBuero", initBut("purple", new Button("AstaBuero"), info, player));
 
 		street.put("PflanzenLabor", initBut("lightblue", new Button(), info, player));
 		street.put("GewaechsHaus", initBut("lightblue", new Button(), info, player));
