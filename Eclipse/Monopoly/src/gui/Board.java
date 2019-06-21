@@ -465,6 +465,10 @@ public class Board {
 					new EmailStage(me, "Schoenheitswettbewerb", "Schoenheit Ohne Grenzen",
 							"Sie haben einen Schoenheitswettbewerb gewonnen, kassieren Sie 100€.");
 					break;
+					
+				case W:
+					wuerfelStage.getLeertaste().release();
+					break;
 				case B:
 					// new StreetStage(me,"AstaBuero");
 					break;

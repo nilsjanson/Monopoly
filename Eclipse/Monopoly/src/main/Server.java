@@ -829,16 +829,20 @@ public class Server {
 					System.out.println(leaveMessage);
 				}
 			}
+			for (Client other : list) {
+				try {
+					broadcastUTF(other.name);
+					broadcastInt(other.ID);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
 			for (int i = 0; i < list.size(); i++) {
 				Client c = list.get(i);
 				try {
-					// Jedem Client die anderen Mitspieler mitteilen.
-					for (Client other : list) {
-					broadcastUTF(other.name);
-					broadcastInt(other.ID);
-					}
-					// Jedem Client das Stargeld geben.
-					System.out.println(c.name + " " + c.ID);
+			
 					c.addGeld(1500);
 				} catch (Exception e) {
 					// Client entfernen der eine IOException geworfen hat.

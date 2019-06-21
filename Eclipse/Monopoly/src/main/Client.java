@@ -130,7 +130,6 @@ public class Client extends Thread {
 
 				case 6: // Auktion starten
 					String name = in.readUTF();
-					System.out.println("Auktionmain noch ");
 					showAuctionStage(board, name);
 					board.auktionStageOpenSemaphore.acquire();
 					Auktion a = board.auktionStageOpen;
@@ -229,7 +228,7 @@ public class Client extends Thread {
 	// Starte den Wuerfelzuh
 
 	public void changeMoney(int playerNumber, int money) {
-		System.out.println("Spieler " + playerNumber + " hat jetzt " + money + "�");
+		System.out.println("Spieler " + playerNumber + " hat jetzt " + money + " Euro");
 	}
 
 	public void wuerfel(int ownPlayerNumber) throws IOException {
@@ -241,6 +240,7 @@ public class Client extends Thread {
 			System.out.println(playerNumber + " ist am Zug");
 			if (playerNumber == ownPlayerNumber) { // ist der Client selber am Zug
 				board.wuerfelStage.getLeertaste().acquire(board.wuerfelStage.getLeertaste().availablePermits());
+			//	board.wuerfelStage.yourTurn();
 				System.out.println("Sie sind am Zug druecken sie die Leertaste zum wuerfeln!");
 				board.wuerfelStage.getLeertaste().acquire();
 				out.writeBoolean(true);

@@ -135,6 +135,10 @@ public class WuerfelStage {
 			}
 		});
 	}
+	
+	public void yourTurn() {
+		new WuerfelAnimation(views,stage);
+	}
 
 }
 
