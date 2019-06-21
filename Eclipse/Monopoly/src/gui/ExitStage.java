@@ -47,6 +47,7 @@ public class ExitStage {
 		Scene scene = new Scene(vbox);
 		exit.setScene(scene);
 		exit.setAlwaysOnTop(true);
+		exit.initModality(Modality.APPLICATION_MODAL);
 		exit.show();
 	}
 	
