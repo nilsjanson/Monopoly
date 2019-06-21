@@ -139,40 +139,40 @@ public class InfoStage {
 		street.put("KesselHaus", initBut("purple", new Button("Kesselhaus"), info, player));
 		street.put("AstaBuero", initBut("purple", new Button("AstaBuero"), info, player));
 
-		street.put("PflanzenLabor", initBut("lightblue", new Button(), info, player));
-		street.put("GewaechsHaus", initBut("lightblue", new Button(), info, player));
-		street.put("DemonstrationsFeld", initBut("lightblue", new Button(), info, player));
+		street.put("PflanzenLabor", initBut("lightblue", new Button("PflanzenLabor"), info, player));
+		street.put("GewaechsHaus", initBut("lightblue", new Button("GewaechsHaus"), info, player));
+		street.put("DemonstrationsFeld", initBut("lightblue", new Button("DemonstrationsFeld"), info, player));
 
-		street.put("MotorenPruefstand", initBut("magenta", new Button(), info, player));
-		street.put("FahrzeugLabors", initBut("magenta", new Button(), info, player));
-		street.put("SolarTankstelle", initBut("magenta", new Button(), info, player));
+		street.put("MotorenPruefstand", initBut("magenta", new Button("MotorenPruefstand"), info, player));
+		street.put("FahrzeugLabor", initBut("magenta", new Button("FahrzeugLabor"), info, player));
+		street.put("SolarTankstelle", initBut("magenta", new Button("SolarTankstelle"), info, player));
 
-		street.put("TrvRhenania", initBut("ORANGERED", new Button(), info, player));
-		street.put("BingerBeasts", initBut("ORANGERED", new Button(), info, player));
-		street.put("BingenImpulse", initBut("ORANGERED", new Button(), info, player));
+		street.put("TrvRhenania", initBut("ORANGERED", new Button("TrvRhenania"), info, player));
+		street.put("BingerBeasts", initBut("ORANGERED", new Button("BingerBeasts"), info, player));
+		street.put("BingenImpulse", initBut("ORANGERED", new Button("BingenImpulse"), info, player));
 
-		street.put("NetzwerkLabor", initBut("red", new Button(), info, player));
-		street.put("PcPool236", initBut("red", new Button(), info, player));
-		street.put("PcPool237", initBut("red", new Button(), info, player));
+		street.put("NetzwerkLabor", initBut("red", new Button("NetzwerkLabor"), info, player));
+		street.put("PcPool236", initBut("red", new Button("PcPool236"), info, player));
+		street.put("PcPool237", initBut("red", new Button("PcPool237"), info, player));
 
-		street.put("StudienBeratung", initBut("yellow", new Button(), info, player));
-		street.put("StudienSekretariat", initBut("yellow", new Button(), info, player));
-		street.put("DekanBuero", initBut("yellow", new Button(), info, player));
+		street.put("StudienBeratung", initBut("yellow", new Button("StudienBeratung"), info, player));
+		street.put("StudienSekretariat", initBut("yellow", new Button("StudienSekretariat"), info, player));
+		street.put("DekanBuero", initBut("yellow", new Button("DekanBuero"), info, player));
 
-		street.put("RhenoTeutonia", initBut("lime", new Button(), info, player));
-		street.put("Holsatia", initBut("lime", new Button(), info, player));
-		street.put("Markomannia", initBut("lime", new Button(), info, player));
+		street.put("RhenoTeutonia", initBut("lime", new Button("RhenoTeutonia"), info, player));
+		street.put("Holsatia", initBut("lime", new Button("Holsatia"), info, player));
+		street.put("Markomannia", initBut("lime", new Button("Markomannia"), info, player));
 
-		street.put("Mensa", initBut("mediumblue", new Button(), info, player));
-		street.put("Bibliothek", initBut("mediumblue", new Button(), info, player));
+		street.put("Mensa", initBut("mediumblue", new Button("Mensa"), info, player));
+		street.put("Bibliothek", initBut("mediumblue", new Button("Bibliothek"), info, player));
 
-		street.put("BingenBahnhof", initBut("black", new Button(), info, player));
-		street.put("KreuznachBahnhof", initBut("black", new Button(), info, player));
-		street.put("WormsBahnhof", initBut("black", new Button(), info, player));
-		street.put("MainzBahnhof", initBut("black", new Button(), info, player));
+		street.put("BingenBahnhof", initBut("black", new Button("BingenBahnhof"), info, player));
+		street.put("KreuznachBahnhof", initBut("black", new Button("KreuznachBahnhof"), info, player));
+		street.put("WormsBahnhof", initBut("black", new Button("WormsBahnhof"), info, player));
+		street.put("MainzBahnhof", initBut("black", new Button("MainzBahnhof"), info, player));
 
-		street.put("Rechenzentrum", initBut("snow", new Button(), info, player));
-		street.put("Zollamt", initBut("snow", new Button(), info, player));
+		street.put("Rechenzentrum", initBut("snow", new Button("Rechenzentrum"), info, player));
+		street.put("Zollamt", initBut("snow", new Button("Zollamt"), info, player));
 
 		ArrayList<Button> buttons = new ArrayList<Button>();
 
@@ -192,7 +192,7 @@ public class InfoStage {
 		names.add("GewaechsHaus");
 		names.add("DemonstrationsFeld");
 		names.add("MotorenPruefstand");
-		names.add("FahrzeugLabors");
+		names.add("FahrzeugLabor");
 		names.add("SolarTankstelle");
 		names.add("TrvRhenania");
 		names.add("BingerBeasts");
@@ -230,7 +230,6 @@ public class InfoStage {
 			x.setStyle("-fx-background-color:" + color);
 		} else {
 			x.setStyle("-fx-background-color: grey");
-
 		}
 	}
 

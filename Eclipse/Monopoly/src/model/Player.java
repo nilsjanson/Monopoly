@@ -133,7 +133,7 @@ public class Player {
 		names.add("GewaechsHaus");
 		names.add("DemonstrationsFeld");
 		names.add("MotorenPruefstand");
-		names.add("FahrzeugLabors");
+		names.add("FahrzeugLabor");
 		names.add("SolarTankstelle");
 		names.add("TrvRhenania");
 		names.add("BingerBeasts");
