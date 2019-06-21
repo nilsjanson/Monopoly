@@ -1,6 +1,7 @@
 package gui;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.concurrent.Semaphore;
 
 import javafx.application.Platform;
@@ -9,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -56,6 +58,7 @@ public class WuerfelStage {
 
 	public void start() {
 		hbox = new HBox();
+		hbox.setStyle("-fx-background-color: red;");
 		ImageView eins = views.get(views.size() - 1);
 		ImageView zwei = views.get(views.size() - 2);
 		hbox.getChildren().add(eins);
@@ -66,14 +69,16 @@ public class WuerfelStage {
 		stage.setScene(scene);
 		stage.initStyle(StageStyle.UNDECORATED);
 		stage.show();
-		eins.setFitHeight(min * .15);
-		zwei.setFitHeight(min * .15);
-		eins.setFitWidth(((max - min) / 2) / 2);
-		zwei.setFitWidth(((max - min) / 2) / 2);
 		stage.setWidth(((max - min) / 2) - 5);
 		stage.setHeight(min * .15);
+		eins.setFitHeight(stage.getHeight());
+		zwei.setFitHeight(stage.getHeight());
+		eins.setFitWidth(stage.getWidth() / 2);
+		zwei.setFitWidth(stage.getWidth() / 2);
 		stage.setX(0);
 		stage.setY((min / 2) - (stage.getHeight() / 2));
+		boolean gewuerfelt = false;
+		new WuerfelAnimation(hbox, views, gewuerfelt);
 	}
 
 	public void wuerfeln(int x, int y) {
@@ -116,6 +121,34 @@ public class WuerfelStage {
 
 			}
 		});
+	}
+
+}
+
+class WuerfelAnimation extends Thread {
+	HBox hbox;
+	ArrayList<ImageView> imgs;
+	boolean gewuerfelt;
+
+	WuerfelAnimation(HBox hbox, ArrayList<ImageView> imgs, boolean gewuerfelt) {
+		start();
+	}
+
+	@Override
+	public void run() {
+		while (!gewuerfelt) {
+			hbox.getChildren().remove(0);
+			hbox.getChildren().remove(0);
+			Collections.shuffle(imgs);
+			imgs.get(0);
+			Collections.shuffle(imgs);
+			imgs.get(0);
+			try {
+				sleep(5000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 }

@@ -166,6 +166,7 @@ public class Board {
 		BorderPane.setAlignment(right, Pos.CENTER);
 
 		scene = new Scene(pane);
+		
 		prime.initStyle(StageStyle.UNDECORATED);
 		controlBoard(scene);
 		prime.setScene(scene);

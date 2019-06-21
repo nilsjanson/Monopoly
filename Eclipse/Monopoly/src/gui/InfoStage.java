@@ -126,7 +126,6 @@ public class InfoStage {
 		}
 		info.setY((min / 2) - (info.getHeight() / 2));
 		info.setOnCloseRequest(e->System.exit(0));
-		System.out.println("info:"+info.getWidth());
 	}
 
 	void borderPaneStyle(BorderPane pane) {
