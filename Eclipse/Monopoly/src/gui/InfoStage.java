@@ -107,12 +107,12 @@ public class InfoStage {
 		ivbox.setMaxWidth(((max - min) / 2) - 5);
 		
 		
-		scene = new Scene(ivbox,((max - min) / 2),min * .5);
+		scene = new Scene(ivbox);
 		keyHandler(scene);
 //		info.initStyle(StageStyle.UNDECORATED);
 		info.setScene(scene);
 		info.setWidth(((max - min) / 2));
-		info.setHeight(min * .5);
+		info.setHeight(min * .8);
 		info.show();
 		info.setX((min + info.getWidth()));
 		info.setY((min / 2) - (info.getHeight() / 2));
