@@ -10,7 +10,6 @@ import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -77,8 +76,6 @@ public class WuerfelStage {
 		zwei.setFitWidth(stage.getWidth() / 2);
 		stage.setX(0);
 		stage.setY((min / 2) - (stage.getHeight() / 2));
-		boolean gewuerfelt = false;
-		new WuerfelAnimation(hbox, views, gewuerfelt);
 	}
 
 	public void wuerfeln(int x, int y) {
@@ -108,6 +105,9 @@ public class WuerfelStage {
 				case F1:
 					board.helpMe();
 					break;
+				case F2:
+					new WuerfelAnimation(views, stage);
+					break;
 				case SPACE:
 					leertaste.release();
 					break;
@@ -126,29 +126,45 @@ public class WuerfelStage {
 }
 
 class WuerfelAnimation extends Thread {
-	HBox hbox;
 	ArrayList<ImageView> imgs;
 	boolean gewuerfelt;
+	Stage stage;
 
-	WuerfelAnimation(HBox hbox, ArrayList<ImageView> imgs, boolean gewuerfelt) {
+	WuerfelAnimation(ArrayList<ImageView> imgs, Stage stage) {
+		this.imgs = imgs;
+		this.stage = stage;
 		start();
 	}
 
-	@Override
 	public void run() {
-		while (!gewuerfelt) {
-			hbox.getChildren().remove(0);
-			hbox.getChildren().remove(0);
-			Collections.shuffle(imgs);
-			imgs.get(0);
-			Collections.shuffle(imgs);
-			imgs.get(0);
-			try {
-				sleep(5000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+		wuerfeln();
+	}
+
+	void wuerfeln() {
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				HBox hbox = new HBox();
+				hbox.setStyle("-fx-background-color: red");
+				Collections.shuffle(imgs);
+				ImageView img1 = imgs.get(0);
+				img1.setFitHeight(stage.getHeight());
+				img1.setFitWidth(stage.getWidth() / 2);
+				hbox.getChildren().add(img1);
+				Collections.shuffle(imgs);
+				ImageView img2 = imgs.get(0);
+				img2.setFitHeight(stage.getHeight());
+				img2.setFitWidth(stage.getWidth() / 2);
+				hbox.getChildren().add(img2);
+				Scene scene = new Scene(hbox);
+				stage.setScene(scene);
+				try {
+					sleep(3000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
-		}
+		});
 	}
 
 }
