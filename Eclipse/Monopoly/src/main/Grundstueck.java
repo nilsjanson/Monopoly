@@ -128,7 +128,6 @@ public class Grundstueck {
 	 * @throws IOException keine Antwort vom Client.
 	 */
 	public void setBesitzer(Client c) throws IOException {
-		c.getOut().writeUTF("Grundstueck gekauft Sending(Stelle auf dem Spielfeld) {" + Integer.class.toString() + "}");
 		this.besitzer = c;
 	}
 
@@ -167,4 +166,6 @@ public class Grundstueck {
 			this.haeuser = haeuser;
 		}
 	}
+	
+	
 }
