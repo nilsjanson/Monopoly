@@ -8,25 +8,9 @@ public class Player {
 	private int position;
 	private int bilanz;
 	private int id ;
-	private String name;
-	
-	
-	public String getName () {
-		return name;
-	}
-	
-	public int getBilanz() {
-		return bilanz;
-	}
 	
 	Player() {
 		img = new ImageView(getClass().getResource("").toExternalForm());
-	}
-	
-	public Player(String name, String iconName,int money) {
-		this.name=name;
-		img = new ImageView(getClass().getResource("").toExternalForm());
-		bilanz=money;
 	}
 	
 	public ImageView getIcon () {
