@@ -3,6 +3,8 @@ package gui;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -126,6 +128,16 @@ public class InfoStage {
 		}
 		info.setY((min / 2) - (info.getHeight() / 2));
 		info.setOnCloseRequest(e->System.exit(0));
+		info.focusedProperty().addListener(new ChangeListener<Boolean>() {
+			@Override
+			public void changed(ObservableValue<? extends Boolean> ov, Boolean hidden, Boolean shown) {
+				if (shown) {
+					board.wuerfelStage.stage.toFront();
+					info.toFront();
+					board.prime.toFront();
+				}
+			}
+		});
 	}
 
 	void borderPaneStyle(BorderPane pane) {
@@ -144,6 +156,7 @@ public class InfoStage {
 			public void handle(KeyEvent event) {
 				switch (event.getCode()) {
 				default:
+					board.wuerfelStage.stage.toFront();
 					board.prime.toFront();
 					break;
 				}
@@ -238,16 +251,14 @@ public class InfoStage {
 		x.setMaxSize(5, 5);
 		x.setStyle("-fx-background-color: grey;");
 		x.setOnAction(e -> changeColor(x, color));
-		x.disarm();
 		return x;
 	}
 
 	private void changeColor(Button x, String color) {
-		if (x.isArmed()) {
+		if (x.getStyle().equals("-fx-background-color: grey;")) {
 			x.setStyle("-fx-background-color:" + color);
 		} else {
-			x.disarm();
-			x.setStyle("-fx-background-color: grey");
+			x.setStyle("-fx-background-color: grey;");
 //			new StreetStage(board.prime,x.getText(),Street);		
 		}
 	}

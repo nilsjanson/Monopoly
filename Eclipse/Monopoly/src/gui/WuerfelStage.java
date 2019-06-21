@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.concurrent.Semaphore;
 
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
@@ -76,6 +78,16 @@ public class WuerfelStage {
 		zwei.setFitWidth(stage.getWidth() / 2);
 		stage.setX(0);
 		stage.setY((min / 2) - (stage.getHeight() / 2));
+		stage.focusedProperty().addListener(new ChangeListener<Boolean>() {
+			@Override
+			public void changed(ObservableValue<? extends Boolean> ov, Boolean hidden, Boolean shown) {
+				if (shown) {
+					stage.toFront();
+					board.infoStage.info.toFront();
+					board.prime.toFront();
+				}
+			}
+		});
 	}
 
 	public void wuerfeln(int x, int y) {
@@ -144,15 +156,20 @@ class WuerfelAnimation extends Thread {
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
+				ArrayList<ImageView> img = imgs;
 				HBox hbox = new HBox();
 				hbox.setStyle("-fx-background-color: red");
+				img.remove(img.size()-1);
+				img.remove(img.size()-1);
 				Collections.shuffle(imgs);
-				ImageView img1 = imgs.get(0);
+				ImageView img1 = img.get(0);
+				img.remove(0);
 				img1.setFitHeight(stage.getHeight());
 				img1.setFitWidth(stage.getWidth() / 2);
 				hbox.getChildren().add(img1);
 				Collections.shuffle(imgs);
-				ImageView img2 = imgs.get(0);
+				ImageView img2 = img.get(0);
+				img.remove(0);
 				img2.setFitHeight(stage.getHeight());
 				img2.setFitWidth(stage.getWidth() / 2);
 				hbox.getChildren().add(img2);
@@ -163,6 +180,7 @@ class WuerfelAnimation extends Thread {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
+				
 			}
 		});
 	}

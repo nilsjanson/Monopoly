@@ -7,6 +7,8 @@ import java.util.concurrent.Semaphore;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -187,6 +189,16 @@ public class Board {
 
 		System.out.println("Maximale Groesse: " + width +" "+ max);
 		boardReady.release();
+		prime.focusedProperty().addListener(new ChangeListener<Boolean>() {
+			@Override
+			public void changed(ObservableValue<? extends Boolean> ov, Boolean hidden, Boolean shown) {
+				if (shown) {
+					wuerfelStage.stage.toFront();
+					infoStage.info.toFront();
+					prime.toFront();
+				}
+			}
+		});
 	}
 
 	private Pane createCardFields() {
