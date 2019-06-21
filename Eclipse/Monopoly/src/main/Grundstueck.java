@@ -8,7 +8,7 @@ import main.Server.GameThread.Client;
  * Ein Grundstueck.
  *
  * @author lucastheiss
- * @version 0.1
+ * @version 0.2
  *
  */
 public class Grundstueck {
@@ -35,7 +35,7 @@ public class Grundstueck {
 	/**
 	 * Name des Grundstuecks
 	 */
-	private String name;
+	String name;
 	/**
 	 * Index der anderen Grundstuecke die zu dieser Strasse gehoeren.
 	 */
@@ -48,6 +48,7 @@ public class Grundstueck {
 	 * @param miete  Mietkosten je nach Bebauung.
 	 * @param preis  Kosten des Grundstuecks.
 	 * @param stelle Stelle auf dem Spielfeld.
+	 * @param street Index der anderen Grundstuecke die zu dieser Strasse gehoeren.
 	 */
 	public Grundstueck(String name, int[] miete, int preis, int stelle, int[] street) {
 		this.name = name;
@@ -74,18 +75,25 @@ public class Grundstueck {
 		return name;
 	}
 
+	/**
+	 * 
+	 * @return der Index des Grundstuecks auf dem Feld.
+	 */
 	public int getStelle() {
 		return stelle;
 	}
+
 	/**
 	 * 
 	 * @param feld Das Feld der Grundstuecke mit dem gerade gespielt wird.
-	 * @return <b>true</b>, wenn ein Spieler alle Grundstuecke einer Strasse besitzt<br><b>false</b>, sonst.
+	 * @return <b>true</b>, wenn ein Spieler alle Grundstuecke einer Strasse
+	 *         besitzt<br>
+	 *         <b>false</b>, sonst.
 	 */
 	public boolean kannBebautWerden(Grundstueck[] feld) {
 		Client c = this.getBesitzer();
-		for(int i : this.street) {
-			if(!feld[i].getBesitzer().equals(c)) {
+		for (int i : this.street) {
+			if (!feld[i].getBesitzer().equals(c)) {
 				return false;
 			}
 		}
@@ -94,10 +102,11 @@ public class Grundstueck {
 
 	/**
 	 *
-	 * @return Kosten pro neues Haus.<br>im Falle eines Bahnhofs wird <b>-1</b> zurueckgegeben.
+	 * @return Kosten pro neues Haus.<br>
+	 *         im Falle eines Bahnhofs wird <b>-1</b> zurueckgegeben.
 	 */
 	public int getHausKosten() {
-		if(this.stelle == 5 || this.stelle == 15 || this.stelle == 25 || this.stelle == 35) {
+		if (this.stelle == 5 || this.stelle == 15 || this.stelle == 25 || this.stelle == 35) {
 			return -1;
 		}
 		if (this.stelle < 10) {
@@ -119,7 +128,6 @@ public class Grundstueck {
 	 * @throws IOException keine Antwort vom Client.
 	 */
 	public void setBesitzer(Client c) throws IOException {
-		c.getOut().writeUTF("Grundstueck gekauft Sending(Stelle auf dem Spielfeld) {" + Integer.class.toString() + "}");
 		this.besitzer = c;
 	}
 
@@ -158,4 +166,6 @@ public class Grundstueck {
 			this.haeuser = haeuser;
 		}
 	}
+	
+	
 }

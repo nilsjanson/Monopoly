@@ -25,8 +25,8 @@ public class EmailStage extends Application {
 	final URL resource = getClass().getResource("/sounds/mailSound.wav");
 	final Media media = new Media(resource.toString());
 	final MediaPlayer mediaPlayer = new MediaPlayer(media);
-	
-	
+
+
 	EmailStage(Board board, String betreff, String von, String inhalt) {
 		this.betreff = betreff;
 		this.von = von;
@@ -50,6 +50,7 @@ public class EmailStage extends Application {
 		Label inhal = new Label(inhalt);
 		labelStyle(betref, vo, inhal);
 		vboxStyle(vbox);
+		inhal.setAlignment(Pos.CENTER);
 		vbox.autosize();
 		vbox.getChildren().addAll(head,betref, vo, absatz, inhal);
 		email.setScene(scene);
