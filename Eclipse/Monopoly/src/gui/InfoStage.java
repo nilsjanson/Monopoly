@@ -14,6 +14,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import model.Player;
 
 public class InfoStage {
@@ -83,7 +84,6 @@ public class InfoStage {
 				}
 			}
 		}
-		VBox colum = new VBox();
 		ArrayList<VBox> player = playerBoxes;
 		while (playerBoxes.size()!=0) {
 			HBox hbox = new HBox();
@@ -99,22 +99,28 @@ public class InfoStage {
 					player.remove(0);
 				}	
 				ivbox.getChildren().add(hbox);
+			} else {
+				if (!(player.size()==0)) {
+					hbox.getChildren().add(player.get(0));
+					player.remove(0);			
+				}
+				ivbox.getChildren().add(hbox);
 			}
-			
 		}
 		
 		ivbox.setStyle("-fx-background-color: rgb(" + 192 + "," + 254 + ", " + 213 + ");");
-		ivbox.setMaxWidth(((max - min) / 2) - 5);
-		
-		
+		ivbox.autosize();
 		scene = new Scene(ivbox);
 		keyHandler(scene);
-//		info.initStyle(StageStyle.UNDECORATED);
+		info.initStyle(StageStyle.UNDECORATED);
 		info.setScene(scene);
-		info.setWidth(((max - min) / 2));
-		info.setHeight(min * .8);
+		info.setMaxWidth(((max - min) / 2)-5);
+		info.setMaxHeight(min * .8);
 		info.show();
-		info.setX((min + info.getWidth()));
+		info.setWidth(ivbox.getWidth());
+		info.setHeight(ivbox.getHeight());
+
+		info.setX((max-info.getWidth()));
 		info.setY((min / 2) - (info.getHeight() / 2));
 		info.setOnCloseRequest(e->System.exit(0));
 		System.out.println("info:"+info.getWidth());
@@ -122,13 +128,6 @@ public class InfoStage {
 
 	void borderPaneStyle(BorderPane pane) {
 		pane.setStyle("-fx-background-color: rgb(" + 53 + "," + 250 + ", " + 49 + ");");
-	}
-
-	void hboxStyle(HBox... hboxes) {
-		for (HBox x : hboxes) {
-			x.setSpacing(40);
-			x.setAlignment(Pos.CENTER);
-		}
 	}
 
 	void labelStyle(Label... labels) {
