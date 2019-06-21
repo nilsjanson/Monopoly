@@ -96,10 +96,12 @@ public class InfoStage {
 		info.initStyle(StageStyle.UNDECORATED);
 		info.setScene(scene);
 		info.setWidth(((max - min) / 2) - 5);
+		info.setMaxWidth(((max - min) / 2) - 5);
 		info.setHeight(min * .5);
 		info.show();
 		info.setX((min + info.getWidth() + 10));
 		info.setY((min / 2) - (info.getHeight() / 2));
+		System.out.println("info:"+info.getWidth());
 	}
 
 	void borderPaneStyle(BorderPane pane) {
@@ -177,7 +179,6 @@ public class InfoStage {
 		ArrayList<Button> buttons = new ArrayList<Button>();
 
 		for (Button button : street.values()) {
-			butStyle(button);
 			buttons.add(button);
 		}
 		player.setButtons(buttons);
@@ -220,7 +221,7 @@ public class InfoStage {
 	private Button initBut(String color, Button x, Stage prime,Player player) {
 		x.prefHeightProperty().bind(prime.heightProperty().divide(28 / 20));
 		x.prefWidthProperty().bind(prime.widthProperty().divide(28 / 10));
-		x.setStyle("-fx-background-color: grey; -fx-border-color: black;");
+		x.setStyle("-fx-background-color: grey; -fx-border-color: black;-fx-font-size: 0em; -fx-font-color: transparent;");
 		x.setOnAction(e -> changeColor(x, color));
 		return x;
 	}
@@ -230,11 +231,8 @@ public class InfoStage {
 			x.setStyle("-fx-background-color:" + color);
 		} else {
 			x.setStyle("-fx-background-color: grey");
+			new StreetView(info,x.getText());
 		}
-	}
-
-	void butStyle(Button x) {
-		x.setStyle("-fx-background-color: grey");
 	}
 
 	Scene getScene() {

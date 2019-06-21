@@ -1,9 +1,11 @@
 package gui;
 
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -21,13 +23,20 @@ public class StreetView {
 		vbox.getChildren().addAll(img, buttons);
 		vbox.setAlignment(Pos.CENTER);
 		Scene scene = new Scene(vbox);
-		scene.setOnKeyPressed(e-> info.setScene(info.getScene()));
+		scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+
+			@Override
+			public void handle(KeyEvent arg0) {
+				info.setScene(info.getScene());
+			}
+		}); 
+		
 		info.setScene(scene);
 	}
 
 	private void butStyle(Button... buttons) {
 		for (Button but : buttons) {
-			but.setStyle("-fx-border-color: black; -fx-border-color: black; -fx-font-size: 2em;");
+			but.setStyle("-fx-border-color: black; -fx-border-color: black; -fx-font-size: 1px;");
 		}
 	}
 }
