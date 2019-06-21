@@ -109,6 +109,7 @@ public class InfoStage {
 		}
 		
 		ivbox.setStyle("-fx-background-color: rgb(" + 192 + "," + 254 + ", " + 213 + ");");
+		ivbox.setSpacing(30);
 		ivbox.autosize();
 		scene = new Scene(ivbox);
 		keyHandler(scene);
@@ -119,8 +120,10 @@ public class InfoStage {
 		info.show();
 		info.setWidth(ivbox.getWidth());
 		info.setHeight(ivbox.getHeight());
-
 		info.setX((max-info.getWidth()));
+		if (info.getWidth()<(max-min/2)) {
+			info.setX(max-min/2+info.getWidth());
+		}
 		info.setY((min / 2) - (info.getHeight() / 2));
 		info.setOnCloseRequest(e->System.exit(0));
 		System.out.println("info:"+info.getWidth());
@@ -236,13 +239,15 @@ public class InfoStage {
 		x.setMaxSize(5, 5);
 		x.setStyle("-fx-background-color: grey;");
 		x.setOnAction(e -> changeColor(x, color));
+		x.disarm();
 		return x;
 	}
 
 	private void changeColor(Button x, String color) {
-		if (x.getStyle() == "-fx-background-color: grey") {
+		if (x.isArmed()) {
 			x.setStyle("-fx-background-color:" + color);
 		} else {
+			x.disarm();
 			x.setStyle("-fx-background-color: grey");
 //			new StreetStage(board.prime,x.getText(),Street);		
 		}
