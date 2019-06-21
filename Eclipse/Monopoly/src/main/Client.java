@@ -6,6 +6,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.HashMap;
 import java.util.concurrent.Semaphore;
 
 import gui.Auktion;
@@ -24,7 +25,11 @@ public class Client extends Thread {
 	DataInputStream in;
 	DataOutputStream out;
 	private int ownPlayerNumber;
+	private int anzahlSpieler;
 	String name;
+	
+	
+	HashMap<String, Integer> playerList= new HashMap<String,Integer>();
 
 	Client(gui.Board board, Stage stage) {
 		this.board = board;
@@ -38,13 +43,20 @@ public class Client extends Thread {
 			in = new DataInputStream(new BufferedInputStream(server.getInputStream()));
 			out = new DataOutputStream(new BufferedOutputStream(server.getOutputStream()));
 			board.actionSeamphore.acquire();
-			out.writeInt(board.spieler);
+			anzahlSpieler = board.spieler;
+			out.writeInt(anzahlSpieler);
 			out.flush();
 			int ownPlayerNumber = in.readInt();
 			name = board.playerName;
 			out.writeUTF(name);
 			out.flush();
 			board.boardReady.acquire();
+			
+			for(int i = 0 ; i < anzahlSpieler ; i++) {
+				String playerName  = in.readUTF();
+				int playerID =  in .readInt();
+			}
+			
 
 			int x = in.readInt();
 			System.out.println(x);
@@ -128,18 +140,30 @@ public class Client extends Thread {
 						a.neuesGebot(in.readInt());
 						if (actual == ownPlayerNumber) {
 							a.yourTurn();
-							board.gebotAbgegeben.acquire();
-							int gebot = a.getGebot();
-							System.out.println(gebot + "wird abgegeben");
-							out.writeInt(gebot);
-							out.flush();
 
 						} else {
 							a.disableButtons();
 						}
 						actual = in.readInt();
 					}
+					a.close(in.readInt());
 
+
+					break;
+				case 7: //Grundstueckbesitzer wechseln
+					String gName = in.readUTF();
+					int oldOwner = in.readInt();
+					int neuerOwner = in.readInt();
+					if(oldOwner!=-1) {
+						System.out.println("Spieler " + oldOwner + " wird das Besitzrecht der Karte " + gName + " entzogen");
+						
+					}
+					System.out.println("Spieler " + oldOwner + " wird das Besitzrecht der Karte " + gName + " anerkannt");
+					if(board.streetStageOpen!=null) {
+					board.streetStageOpen.close();
+					}
+					
+					
 					break;
 
 				}
@@ -163,7 +187,7 @@ public class Client extends Thread {
 			@Override
 			public void run() {
 				System.out.println(name);
-				Auktion auk = new Auktion(board, name, "Nils");
+				Auktion auk = new Auktion(board, name,out, "Nils");
 			}
 		});
 	}

@@ -7,7 +7,8 @@ import java.util.concurrent.Semaphore;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
-import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -50,13 +51,13 @@ public class Board {
 	double playerStartPositionY;
 	public Semaphore actionSeamphore;
 	public WuerfelStage wuerfelStage;
-	public Semaphore boardReady= new Semaphore(0);
+	public InfoStage infoStage;
+	public Semaphore boardReady = new Semaphore(0);
 	public StreetStage streetStageOpen;
 	public Semaphore streetStageOpenSemaphore = new Semaphore(0);
 	public Auktion auktionStageOpen;
 	public Semaphore auktionStageOpenSemaphore = new Semaphore(0);
-	public Semaphore gebotAbgegeben = new Semaphore(0); 
-	
+	public Semaphore gebotAbgegeben = new Semaphore(0);
 
 	public ImageView[] playerArr;
 
@@ -167,6 +168,7 @@ public class Board {
 		BorderPane.setAlignment(right, Pos.CENTER);
 
 		scene = new Scene(pane);
+		
 		prime.initStyle(StageStyle.UNDECORATED);
 		controlBoard(scene);
 		prime.setScene(scene);
@@ -174,8 +176,8 @@ public class Board {
 		prime.setHeight(max);
 		prime.show();
 
-		wuerfelStage= new WuerfelStage(me,Math.min(width,height),Math.max(width, height));
-
+		wuerfelStage = new WuerfelStage(me, Math.min(width, height), Math.max(width, height));
+		infoStage = new InfoStage(me,Math.min(width, height), Math.max(width, height));
 		playerArr[0] = createPlayer(max * 0.075, max * 0.075, "/playerIcons/bike.png");
 		playerArr[1] = createPlayer(max * 0.075, max * 0.075, "/playerIcons/dog.png");
 		if (spieler > 2) {
@@ -185,8 +187,18 @@ public class Board {
 			playerArr[3] = createPlayer(max * 0.075, max * 0.075, "/playerIcons/misslex.png");
 		}
 
-		System.out.println("Maximale Groesse: " + max);
+		System.out.println("Maximale Groesse: " + width +" "+ max);
 		boardReady.release();
+		prime.focusedProperty().addListener(new ChangeListener<Boolean>() {
+			@Override
+			public void changed(ObservableValue<? extends Boolean> ov, Boolean hidden, Boolean shown) {
+				if (shown) {
+					wuerfelStage.stage.toFront();
+					infoStage.info.toFront();
+					prime.toFront();
+				}
+			}
+		});
 	}
 
 	private Pane createCardFields() {
@@ -389,12 +401,13 @@ public class Board {
 
 	private void butStyle(Button... x) {
 		for (Button but : x) {
-			but.setStyle("-fx-border-color: black; -fx-background-color: lightgreen; -fx-border-color: black; -fx-font-size: 2em;");
+			but.setStyle(
+					"-fx-border-color: black; -fx-background-color: lightgreen; -fx-border-color: black; -fx-font-size: 2em;");
 		}
 	}
 
 	private void helpLabelStyle(ArrayList<Label> help) {
-		for (Label x: help) {
+		for (Label x : help) {
 			x.setStyle("-fx-font-size: 2em;");
 		}
 	}
@@ -410,10 +423,27 @@ public class Board {
 		helpfull.add(new Label("ESC = Beendet das Programm"));
 		helpLabelStyle(helpfull);
 		vbox.getChildren().addAll(helpfull);
-		vbox.setStyle("-fx-background-color: rgb(" + 192 + "," + 254 + ", " + 213 + ");");
+		vbox.setStyle("-fx-background-color: rgb(" + 192 + "," + 254 + ", " + 213 + "); -fx-border-color: black;");
 		Scene scene = new Scene(vbox);
+		scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+
+			@Override
+			public void handle(KeyEvent event) {
+				switch (event.getCode()) {
+				case ESCAPE:
+					help.close();
+					break;
+				case ENTER:
+					help.close();
+					break;
+				default:
+					break;
+				}
+			}
+		});
 		help.setScene(scene);
 		help.initModality(Modality.APPLICATION_MODAL);
+		help.initStyle(StageStyle.UNDECORATED);
 		help.show();
 	}
 
@@ -432,22 +462,18 @@ public class Board {
 					helpMe();
 					break;
 				case E:
-					try {
-						// new EmailStage(me,"Stupa Seminar","Studiensekreteriat","Wir laden Sie
-						// herzlichst zu unserem Stupa Seminar am 15.07 ein.").start(prime);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
+					new EmailStage(me, "Schoenheitswettbewerb", "Schoenheit Ohne Grenzen",
+							"Sie haben einen Schoenheitswettbewerb gewonnen, kassieren Sie 100€.");
 					break;
 				case B:
 					// new StreetStage(me,"AstaBuero");
 					break;
 				case A:
-				//	new Auktion(prime,me,"Mensa","Lars","Nils","Florian");
-					//Auktion auk = new Auktion(prime,me,"Mensa","Nils");
+					// new Auktion(prime,me,"Mensa","Lars","Nils","Florian");
+					// Auktion auk = new Auktion(prime,me,"Mensa","Nils");
 					break;
 				case X:
-					new Lobby();
+					System.exit(0);
 					break;
 				case CONTROL:
 					parent.setRotate(parent.getRotate() - 90);
@@ -461,7 +487,7 @@ public class Board {
 				case WINDOWS:
 					break;
 				case ESCAPE:
-					System.exit(0);
+					new ExitStage(prime);
 					break;
 				default:
 					System.out.println(event.getCode() + " erkannt!");
@@ -501,7 +527,5 @@ public class Board {
 	public Scene getScene() {
 		return scene;
 	}
-	
-
 
 }
