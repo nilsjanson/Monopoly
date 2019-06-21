@@ -692,29 +692,12 @@ public class Server {
 					broadcastInt(5);
 					broadcastUTF(c.getName() + " hat die Strasse " + grundstueck.getName() + " gekauft");
 					grundstueck.setBesitzer(c);
-					c.addGeld(-grundstueck.getPreis());
-					changeBesitzer(grundstueck, c);
 					break;
 				case 2:
 					versteigerung(grundstueck, c);
 					break;
 				}
 			}
-		}
-		
-		private void changeBesitzer(Grundstueck g , Client neuerOwner) throws IOException {
-			broadcastInt(7);
-			broadcastUTF(g.getName());
-			if(g.getBesitzer()==null) {
-				broadcastInt(-1);
-			}
-			else {
-				broadcastInt(g.getBesitzer().getID());
-			}
-			g.setBesitzer(neuerOwner);
-			broadcastInt(neuerOwner.getID());
-			
-			
 		}
 
 		private void versteigerung(Grundstueck g, Client c) throws IOException {
@@ -742,8 +725,8 @@ public class Server {
 				beginner++;
 			}
 			broadcastInt(-1);
-			broadcastInt(hoechstbieter.getID());
-			hoechstbieter.addGeld(-aktuellesGebot);
+			broadcastUTF(hoechstbieter.getName() + " hat die Strasse " + g.getName() + " fuer " + aktuellesGebot
+					+ " ersteigert");
 			g.setBesitzer(hoechstbieter);
 
 		}
@@ -834,8 +817,12 @@ public class Server {
 				try {
 					// Jedem Client die anderen Mitspieler mitteilen.
 					for (Client other : list) {
-					broadcastUTF(other.name);
-					broadcastInt(other.ID);
+						/*
+						 * if (c.getID() != other.getID()) {
+						 * c.getOut().writeUTF("Other Player, Sending(Name, ID) {" +
+						 * String.class.toString() + ", " + Integer.class.toString() + "}");
+						 * c.getOut().writeUTF(other.getName()); c.getOut().writeInt(other.getID()); }
+						 */
 					}
 					// Jedem Client das Stargeld geben.
 					System.out.println(c.name + " " + c.ID);

@@ -1,7 +1,5 @@
 package gui;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 
@@ -17,6 +15,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -31,15 +30,13 @@ public class Auktion extends Application {
 	Stage stage;
 	ImageView icon;
 	String[] playerNames;
-	DataOutputStream out;
 	
 	public int meinGebot;
 	
 	
 
-	public Auktion( Board board, String strassenName,DataOutputStream out, String... playerNames) {
+	public Auktion( Board board, String strassenName, String... playerNames) {
 		this.board= board;
-		this.out = out;
 		icon = new ImageView(
 				getClass().getResource("/besitzkarten/" + strassenName + ".jpg").toExternalForm());
 		this.playerNames = playerNames;
@@ -54,51 +51,27 @@ public class Auktion extends Application {
 	}
 
 	private void bieten() {
-		meinGebot = Integer.parseInt(gebot.getText());		
-		if(meinGebot>=Integer.parseInt(aktGebot.getText())) {
-				disableButtons();
-				neuesGebot(meinGebot);
-				System.out.println("Eingegebenes Gebot " + meinGebot + "€");
-				try {
-					out.writeInt(meinGebot);
-					out.flush();
-					
-				}catch(Exception ex) {
-					ex.printStackTrace();
-				}
-				}
-				
-			
-	}
-	
-	public void close(int winnerPlayer) {
+		
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
-				System.out.println("Player " + winnerPlayer + " hat die Auktion gewonnen");
-				stage.close();
+				meinGebot = Integer.parseInt(gebot.getText());
+				board.gebotAbgegeben.release(1);
+				System.out.println("Eingegebenes Gebot " + meinGebot + "€");
+			
 				
 			}
 		});
 	}
 	
 	private void aussteigen() {
-		disableButtons();
 		System.out.println("Spieler: "+ "" +"ist aus der Auktion ausgestiegen.");
-		try {
-			out.writeInt(-1);
-			out.flush();
-			
-		}catch(Exception ex) {
-			ex.printStackTrace();
-		}
 	}
 
 	public void neuesGebot(int x) {
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
-				
 				aktGebot.setText("" + x);
 			}
 		});
@@ -223,7 +196,7 @@ public class Auktion extends Application {
 					helpMe();
 					break;
 				case ENTER:
-				//	bieten();
+					bieten();
 					break;
 				case F11:
 					board.mediaPlayer.play();

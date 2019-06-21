@@ -50,7 +50,6 @@ public class EmailStage extends Application {
 		Label inhal = new Label(inhalt);
 		labelStyle(betref, vo, inhal);
 		vboxStyle(vbox);
-		inhal.setAlignment(Pos.CENTER);
 		vbox.autosize();
 		vbox.getChildren().addAll(head,betref, vo, absatz, inhal);
 		email.setScene(scene);

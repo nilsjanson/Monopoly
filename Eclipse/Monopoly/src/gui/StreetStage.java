@@ -3,7 +3,6 @@ package gui;
 import java.util.concurrent.Semaphore;
 
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -52,7 +51,7 @@ public class StreetStage extends Application {
 			e.printStackTrace();
 		}
 	}
-		
+	
 	StreetStage(Board board, ImageView img) {
 		this.img = img;
 		this.board = board;
@@ -147,16 +146,7 @@ public class StreetStage extends Application {
 		board.streetStageOpenSemaphore.release();
 		
 	}
-	public void close() {
-		Platform.runLater(new Runnable() {
-			@Override
-			public void run() {
-				
-				stage.close();
-				
-			}
-		});
-	}
+	
 	private void buttonStyle(Button...buttons) {
 		for (Button x: buttons) {
 			x.setStyle("-fx-background-color: black; -fx-border-color: black; -fx-font-size: 2em; -fx-text-fill: white");
