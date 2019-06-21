@@ -17,6 +17,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import model.Besitzrechtkarte;
 
 public class StreetStage extends Application {
 
@@ -35,14 +36,14 @@ public class StreetStage extends Application {
 	
 
 	
-	public StreetStage(Board board, String name, int playerNumber,boolean kaufbar, boolean versteigerbar, boolean hausKaufbar,boolean aktionErforderlich) {
+	public StreetStage(Board board, Besitzrechtkarte x,boolean kaufbar, boolean versteigerbar, boolean hausKaufbar,boolean aktionErforderlich) {
 		board.streetStageOpen = this;
 		this.kaufbar= kaufbar;
 		this.versteigerbar= versteigerbar;
 		this.hausKaufbar = hausKaufbar;
-		this.playerNumber= playerNumber;
+		this.playerNumber= x.getOwner().getID();
 		this.aktionErforderlich = aktionErforderlich;
-		img = new ImageView(getClass().getResource("/besitzkarten/"+name+".jpg").toExternalForm());
+		img = new ImageView(getClass().getResource("/besitzkarten/"+x.getName()+".jpg").toExternalForm());
 		this.board= board;
 		img.setFitWidth(board.getMax()*0.55);
 		img.setFitHeight(board.getMax()*0.55);

@@ -2,7 +2,9 @@ package gui;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.Semaphore;
 
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
@@ -17,6 +19,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import model.Besitzrechtkarte;
 import model.Player;
 
 public class InfoStage {
@@ -27,19 +30,21 @@ public class InfoStage {
 	Scene scene;
 	Stage info;
 	int playerCount = 0;
+	Label[] geldArr ;
 
-	static Player nils = new Player("Nils", "car.png", 0);
-	static Player lars = new Player("Lars", "tank.png", 0);
-	static Player lucas = new Player("Lucas", "dog.png", 0);
-	static Player flo = new Player("Florian", "misslex.png", 0);
+	static Player nils = new Player("Nils", 0);
+	static Player lars = new Player("Lars", 0);
+	static Player lucas = new Player("Lucas", 0);
+	static Player flo = new Player("Florian", 0);
 
 	public InfoStage(Board board, double min, double max) {
 		this(board, min, max, nils, lars, lucas,flo);
 	}
 
-	private InfoStage(Board board, double min, double max, Player... players) {
+	 InfoStage(Board board, double min, double max, Player... players) {
 		ArrayList<VBox> playerBoxes = new ArrayList<VBox>();
 		ArrayList<GridPane> grids = new ArrayList<GridPane>();
+		geldArr = new Label[players.length];
 		VBox ivbox = new VBox();
 		this.board = board;
 		this.min = min;
@@ -49,11 +54,13 @@ public class InfoStage {
 		info = new Stage();
 
 		ivbox.setAlignment(Pos.CENTER);
+		int q = 0 ;
 		for (Player player : players) {
 			VBox playerBox = new VBox();
 			playerBoxes.add(playerBox);
 			Label name = new Label(player.getName());
 			Label geld = new Label(player.getBilanz() + "�");
+			geldArr[q] = geld;
 			labelStyle(name, geld);
 			playerBox.getChildren().add(name);
 			playerBox.getChildren().add(geld);
@@ -63,6 +70,7 @@ public class InfoStage {
 			grid.setVgap(2);
 			playerBox.getChildren().add(grid);
 			HashMap<String, Button> streets = createButtons(player);
+			player.setStreet(streets);
 			ArrayList<String> names = getNames();
 			int x = 0;
 			int y = 0;
@@ -85,7 +93,11 @@ public class InfoStage {
 					counter++;
 				}
 			}
+			q++;
 		}
+		
+		
+		
 		ArrayList<VBox> player = playerBoxes;
 		while (playerBoxes.size()!=0) {
 			HBox hbox = new HBox();
@@ -136,6 +148,17 @@ public class InfoStage {
 					info.toFront();
 					board.prime.toFront();
 				}
+			}
+		});
+		board.infoStageSemaphore.release();
+	}
+	
+	public void updateGeld(Player player) {
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				geldArr[player.getID()].setText(player.getBilanz()+"");
+				
 			}
 		});
 	}
@@ -250,17 +273,31 @@ public class InfoStage {
 	private Button initBut(String color, Button x, Stage prime,Player player) {
 		x.setMaxSize(5, 5);
 		x.setStyle("-fx-background-color: grey;");
-		x.setOnAction(e -> changeColor(x, color));
+		
 		return x;
 	}
 
-	private void changeColor(Button x, String color) {
-		if (x.getStyle().equals("-fx-background-color: grey;")) {
-			x.setStyle("-fx-background-color:" + color);
-		} else {
-			x.setStyle("-fx-background-color: grey;");
-//			new StreetStage(board.prime,x.getText(),Street);
-		}
+	public void changeColor(Besitzrechtkarte x) {
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				Player p = x.getOwner();
+				Button b = p.getStreetsButton(x.getName());
+				if (b.getStyle().equals("-fx-background-color: grey;")) {
+					b.setStyle("-fx-background-color:" + x.getColor());
+					b.setOnAction(e -> {
+					System.out.println("clicked infostage");
+					//new StreetStage(board, x, false , false, false, false);
+					});
+					
+				} else {
+					b.setStyle("-fx-background-color: grey;");
+					b.setOnAction(null);
+				}
+				
+			}
+		});
+		
 	}
 
 	Scene getScene() {

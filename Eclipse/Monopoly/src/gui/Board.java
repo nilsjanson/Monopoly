@@ -7,6 +7,7 @@ import java.util.concurrent.Semaphore;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -31,6 +32,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
+import model.Player;
 
 public class Board {
 
@@ -45,6 +47,7 @@ public class Board {
 	BorderPane parent;
 	private double max;
 	private double width;
+	private double height;
 	private Scene scene;
 	int buttonCount = 0;
 	double playerStartPositionX;
@@ -58,6 +61,7 @@ public class Board {
 	public Auktion auktionStageOpen;
 	public Semaphore auktionStageOpenSemaphore = new Semaphore(0);
 	public Semaphore gebotAbgegeben = new Semaphore(0);
+	public Semaphore infoStageSemaphore = new Semaphore(0);
 
 	public ImageView[] playerArr;
 
@@ -145,7 +149,7 @@ public class Board {
 		welcome.close();
 		Rectangle2D screen = Screen.getPrimary().getVisualBounds();
 		width = screen.getMaxX();
-		double height = screen.getMaxY();
+		height = screen.getMaxY();
 		max = Math.min(width, height);
 		BorderPane pane = new BorderPane();
 
@@ -177,7 +181,7 @@ public class Board {
 		prime.show();
 
 		wuerfelStage = new WuerfelStage(me, Math.min(width, height), Math.max(width, height));
-		infoStage = new InfoStage(me,Math.min(width, height), Math.max(width, height));
+		//infoStage = new InfoStage(me,Math.min(width, height), Math.max(width, height));
 		playerArr[0] = createPlayer(max * 0.075, max * 0.075, "/playerIcons/bike.png");
 		playerArr[1] = createPlayer(max * 0.075, max * 0.075, "/playerIcons/dog.png");
 		if (spieler > 2) {
@@ -199,6 +203,17 @@ public class Board {
 				}
 			}
 		});
+	}
+	
+	public void  startInfoStage(Player... players) {
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				infoStage = new InfoStage(me,Math.min(width, height), Math.max(width, height),players);
+				
+			}
+		});
+	
 	}
 
 	private Pane createCardFields() {
@@ -468,6 +483,7 @@ public class Board {
 					
 				case W:
 					wuerfelStage.getLeertaste().release();
+					
 					break;
 				case B:
 					// new StreetStage(me,"AstaBuero");

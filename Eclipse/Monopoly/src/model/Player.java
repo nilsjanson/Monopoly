@@ -8,6 +8,8 @@ import javafx.scene.image.ImageView;
 
 public class Player {
 
+	public static Player nullPlayer = new Player("",-100);
+	
 	private ImageView img;
 	private int position;
 	private int bilanz;
@@ -59,6 +61,10 @@ public class Player {
 		}
 		return "";
 	}
+	
+	public void setBilanz(int bilanz) {
+		this.bilanz = bilanz;
+	}
 
 	public void setStreet(HashMap<String, Button> streets) {
 		this.streets = streets;
@@ -77,11 +83,12 @@ public class Player {
 		streetName = getNames();
 	}
 
-	public Player(String name, String iconName, int money) {
+	public Player(String name,int id) {
 		this.name = name;
-		img = new ImageView(getClass().getResource("/playerIcons/" + iconName).toExternalForm());
-		bilanz = money;
+	//	img = new ImageView(getClass().getResource("/playerIcons/" + iconName).toExternalForm());
+		bilanz = 0;
 		streetName = getNames();
+		this.id = id;
 	}
 
 	public ImageView getIcon() {

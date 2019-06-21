@@ -6,7 +6,9 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.Semaphore;
 
 import gui.Auktion;
@@ -16,6 +18,8 @@ import gui.WuerfelStage;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
+import model.Besitzrechtkarte;
+import model.Player;
 
 public class Client extends Thread {
 
@@ -29,7 +33,7 @@ public class Client extends Thread {
 	String name;
 	
 	
-	HashMap<String, Integer> playerList= new HashMap<String,Integer>();
+	Player[] playerList ;
 
 	Client(gui.Board board, Stage stage) {
 		this.board = board;
@@ -51,15 +55,18 @@ public class Client extends Thread {
 			out.writeUTF(name);
 			out.flush();
 			board.boardReady.acquire();
-			
+			playerList = new Player[anzahlSpieler];
 			for(int i = 0 ; i < anzahlSpieler ; i++) {
 				String playerName  = in.readUTF();
-				int playerID =  in .readInt();
+				int playerID =  in.readInt();
+				playerList[i] = (new Player(playerName, playerID));
+				System.out.println(playerList[i].getName() + "(" + playerList[i].getID()+ ") has joined");
 			}
+			board.startInfoStage(playerList);
+			board.infoStageSemaphore.acquire();
 			
 
 			int x = in.readInt();
-			System.out.println(x);
 			while (x != -1) {
 				switch (x) {
 				case 2: // wuerfeln
@@ -75,34 +82,33 @@ public class Client extends Thread {
 				case 4: // Feld checken
 					StreetStage s;
 					int actualPlayer = in.readInt();
-					System.out.println("auf feld gekommen");
 					if (in.readBoolean()) { // ist ein Grundstueck
 						String streetName = in.readUTF();
 						if (in.readBoolean()) { // hat keinen Besitzer
 							if (in.readBoolean()) {
 								if (actualPlayer == ownPlayerNumber) {
-									showStreetStage(board, streetName, actualPlayer, true, true, false, true);
+									showStreetStage(board, streetName, true, true, false, true);
 									waitForStreetAction();
 
 								} else {
-									showStreetStage(board, streetName, actualPlayer, true, true, false, false);
+									showStreetStage(board, streetName, true, true, false, false);
 								}
 
 							} else {
 								if (actualPlayer == ownPlayerNumber) {
-									showStreetStage(board, streetName, actualPlayer, false, true, false, true);
+									showStreetStage(board, streetName,false, true, false, true);
 									waitForStreetAction();
 								} else {
 									System.out.println("sp en drekc");
-									showStreetStage(board, streetName, actualPlayer, false, true, false, false);
+									showStreetStage(board, streetName, false, true, false, false);
 								}
 							}
 						} else { // Besitzer existiert
 							int owner = in.readInt();
 							if (owner == ownPlayerNumber) {
-								showStreetStage(board, streetName, actualPlayer, false, true, false, false);
+								showStreetStage(board, streetName, false, true, false, false);
 							} else {
-								showStreetStage(board, streetName, actualPlayer, false, false, false, false);
+								showStreetStage(board, streetName, false, false, false, false);
 							}
 
 						}
@@ -153,10 +159,12 @@ public class Client extends Thread {
 					String gName = in.readUTF();
 					int oldOwner = in.readInt();
 					int neuerOwner = in.readInt();
+					Besitzrechtkarte bKarte = Besitzrechtkarte.findByName(gName);
 					if(oldOwner!=-1) {
 						System.out.println("Spieler " + oldOwner + " wird das Besitzrecht der Karte " + gName + " entzogen");
-						
+						board.infoStage.changeColor(bKarte);
 					}
+					bKarte.setOwner(playerList[neuerOwner]);
 					System.out.println("Spieler " + oldOwner + " wird das Besitzrecht der Karte " + gName + " anerkannt");
 					if(board.streetStageOpen!=null) {
 					board.streetStageOpen.close();
@@ -207,7 +215,7 @@ public class Client extends Thread {
 
 	}
 
-	private void showStreetStage(Board board, String name, int playerNumber, boolean kaufbar, boolean versteigerbar,
+	private void showStreetStage(Board board, String name, boolean kaufbar, boolean versteigerbar,
 			boolean hausKaufbar, boolean aktionErforderlich) {
 		try {
 			board.streetStageOpenSemaphore.acquire(board.streetStageOpenSemaphore.availablePermits());
@@ -218,7 +226,8 @@ public class Client extends Thread {
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
-				StreetStage s = new StreetStage(board, name, playerNumber, kaufbar, versteigerbar, hausKaufbar,
+				Besitzrechtkarte x = Besitzrechtkarte.findByName(name);
+				StreetStage s = new StreetStage(board,x, kaufbar, versteigerbar, hausKaufbar,
 						aktionErforderlich);
 			}
 		});
@@ -228,7 +237,10 @@ public class Client extends Thread {
 	// Starte den Wuerfelzuh
 
 	public void changeMoney(int playerNumber, int money) {
+		System.out.println("bin hier drin");
 		System.out.println("Spieler " + playerNumber + " hat jetzt " + money + " Euro");
+		playerList[playerNumber].setBilanz(money);
+		board.infoStage.updateGeld(playerList[playerNumber]);
 	}
 
 	public void wuerfel(int ownPlayerNumber) throws IOException {
@@ -251,8 +263,7 @@ public class Client extends Thread {
 			}
 			int wuerfel1 = in.readInt();
 			int wuerfel2 = in.readInt();
-			System.out.println(wuerfel1);
-			System.out.println(wuerfel2);
+		
 
 			board.wuerfelStage.wuerfeln(wuerfel1, wuerfel2);
 

@@ -24,6 +24,7 @@ public class WuerfelStage {
 	double min;
 	double max;
 
+
 	public WuerfelStage(Board board, double min, double max) {
 		this.min = min;
 		this.max = max;
@@ -144,7 +145,6 @@ public class WuerfelStage {
 
 class WuerfelAnimation extends Thread {
 	ArrayList<ImageView> imgs;
-	boolean gewuerfelt;
 	Stage stage;
 
 	WuerfelAnimation(ArrayList<ImageView> imgs, Stage stage) {
@@ -158,9 +158,11 @@ class WuerfelAnimation extends Thread {
 	}
 
 	void wuerfeln() {
+	
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
+				while(true) {
 				ArrayList<ImageView> img = imgs;
 				HBox hbox = new HBox();
 				hbox.setStyle("-fx-background-color: red");
@@ -181,9 +183,10 @@ class WuerfelAnimation extends Thread {
 				Scene scene = new Scene(hbox);
 				stage.setScene(scene);
 				try {
-					sleep(3000);
+					sleep(500);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
+				}
 				}
 				
 			}
