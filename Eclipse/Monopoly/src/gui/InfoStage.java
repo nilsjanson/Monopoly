@@ -28,22 +28,24 @@ public class InfoStage {
 	static Player nils = new Player("Nils", "car.png", 0);
 	static Player lars = new Player("Lars", "tank.png", 0);
 	static Player lucas = new Player("Lucas", "dog.png", 0);
+	static Player flo = new Player("Florian", "misslex.png", 0);
 
 	public InfoStage(Board board, double min, double max) {
-		this(board, min, max, nils, lars, lucas);
+		this(board, min, max, nils, lars, lucas,flo);
 	}
 
 	private InfoStage(Board board, double min, double max, Player... players) {
 		ArrayList<VBox> playerBoxes = new ArrayList<VBox>();
 		ArrayList<GridPane> grids = new ArrayList<GridPane>();
+		VBox ivbox = new VBox();
 		this.board = board;
 		this.min = min;
 		this.max = max;
 		Label infoSt = new Label("InfoStage");
 		infoSt.setStyle("-fx-font-size: 20;");
 		info = new Stage();
-		HBox ihbox = new HBox();
-		ihbox.setAlignment(Pos.CENTER);
+
+		ivbox.setAlignment(Pos.CENTER);
 		for (Player player : players) {
 			VBox playerBox = new VBox();
 			playerBoxes.add(playerBox);
@@ -52,10 +54,8 @@ public class InfoStage {
 			labelStyle(name, geld);
 			playerBox.getChildren().add(name);
 			playerBox.getChildren().add(geld);
-			ihbox.getChildren().add(playerBox);
 			GridPane grid = new GridPane();
 			grids.add(grid);
-			grid.setAlignment(Pos.CENTER);
 			grid.setHgap(1);
 			grid.setVgap(2);
 			playerBox.getChildren().add(grid);
@@ -83,16 +83,31 @@ public class InfoStage {
 				}
 			}
 		}
-		ihbox.setStyle("-fx-background-color: rgb(" + 192 + "," + 254 + ", " + 213 + ");");
-		ihbox.setMaxWidth(((max - min) / 2) - 5);
+		VBox colum = new VBox();
+		ArrayList<VBox> player = playerBoxes;
+		while (playerBoxes.size()!=0) {
+			HBox hbox = new HBox();
+			while (hbox.getChildren().size()!=2) {
+				hbox.getChildren().add(player.get(0));
+				player.remove(0);
+			}
+			ivbox.getChildren().add(hbox);
+			hbox = new HBox();
+			if (player.size()>=2) {
+				while (hbox.getChildren().size()!=2) {
+					hbox.getChildren().add(player.get(0));
+					player.remove(0);
+				}	
+				ivbox.getChildren().add(hbox);
+			}
+			
+		}
 		
-		BorderPane bpane = new BorderPane();
-		borderPaneStyle(bpane);
-		BorderPane.setAlignment(infoSt, Pos.CENTER);
-		bpane.setTop(infoSt);
-//		bpane.setCenter(ihbox);
+		ivbox.setStyle("-fx-background-color: rgb(" + 192 + "," + 254 + ", " + 213 + ");");
+		ivbox.setMaxWidth(((max - min) / 2) - 5);
 		
-		scene = new Scene(ihbox);
+		
+		scene = new Scene(ivbox,((max - min) / 2),min * .5);
 		keyHandler(scene);
 //		info.initStyle(StageStyle.UNDECORATED);
 		info.setScene(scene);
@@ -101,13 +116,6 @@ public class InfoStage {
 		info.show();
 		info.setX((min + info.getWidth()));
 		info.setY((min / 2) - (info.getHeight() / 2));
-		for (int i=0; i<grids.size();i++) {
-			playerBoxes.get(i).setLayoutX(info.getWidth()/playerBoxes.size());
-			grids.get(i).setLayoutX(info.getWidth()/playerBoxes.size());
-		}
-		for (Player x: players) {
-			armAllbut(x.getButtons());
-		}
 		info.setOnCloseRequest(e->System.exit(0));
 		System.out.println("info:"+info.getWidth());
 	}
@@ -131,7 +139,6 @@ public class InfoStage {
 
 	void keyHandler(Scene scene) {
 		scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
-
 			@Override
 			public void handle(KeyEvent event) {
 				switch (event.getCode()) {
@@ -239,12 +246,6 @@ public class InfoStage {
 		} else {
 			x.setStyle("-fx-background-color: grey");
 //			new StreetStage(board.prime,x.getText(),Street);		
-		}
-	}
-	
-	private void armAllbut(ArrayList<Button> buttons) {
-		for (Button x: buttons) {
-			x.disarm();
 		}
 	}
 
