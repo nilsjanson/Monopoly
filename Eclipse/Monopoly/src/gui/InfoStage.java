@@ -51,7 +51,6 @@ public class InfoStage {
 			labelStyle(name, geld);
 			playerBox.getChildren().add(name);
 			playerBox.getChildren().add(geld);
-			playerCount++;
 			ihbox.getChildren().add(playerBox);
 			GridPane grid = new GridPane();
 			grid.setAlignment(Pos.CENTER);
@@ -80,12 +79,11 @@ public class InfoStage {
 					
 					counter++;
 				}
-
 			}
-			grid.autosize();
 		}
 		ihbox.setStyle("-fx-background-color: rgb(" + 192 + "," + 254 + ", " + 213 + ");");
 		ihbox.setAlignment(Pos.CENTER);
+		ihbox.setMaxWidth(((max - min) / 2) - 5);
 		BorderPane bpane = new BorderPane();
 		borderPaneStyle(bpane);
 		BorderPane.setAlignment(infoSt, Pos.CENTER);
