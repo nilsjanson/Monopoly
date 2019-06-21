@@ -88,6 +88,7 @@ public class WuerfelStage {
 				}
 			}
 		});
+		stage.setOnCloseRequest(e->System.exit(0));
 	}
 
 	public void wuerfeln(int x, int y) {
