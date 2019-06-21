@@ -184,7 +184,7 @@ public class Board {
 			playerArr[3] = createPlayer(max * 0.075, max * 0.075, "/playerIcons/misslex.png");
 		}
 
-		System.out.println("Maximale Groesse: " + max);
+		System.out.println("Maximale Groesse: " + width +" "+ max);
 		boardReady.release();
 	}
 

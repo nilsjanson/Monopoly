@@ -66,7 +66,6 @@ public class WuerfelStage {
 		stage.setScene(scene);
 		stage.initStyle(StageStyle.UNDECORATED);
 		stage.show();
-		stage.setAlwaysOnTop(true);
 		eins.setFitHeight(min * .15);
 		zwei.setFitHeight(min * .15);
 		eins.setFitWidth(((max - min) / 2) / 2);
