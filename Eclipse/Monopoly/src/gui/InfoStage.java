@@ -14,7 +14,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import model.Player;
 
 public class InfoStage {
@@ -35,6 +34,8 @@ public class InfoStage {
 	}
 
 	private InfoStage(Board board, double min, double max, Player... players) {
+		ArrayList<VBox> playerBoxes = new ArrayList<VBox>();
+		ArrayList<GridPane> grids = new ArrayList<GridPane>();
 		this.board = board;
 		this.min = min;
 		this.max = max;
@@ -43,9 +44,9 @@ public class InfoStage {
 		info = new Stage();
 		HBox ihbox = new HBox();
 		ihbox.setAlignment(Pos.CENTER);
-		ihbox.setSpacing(20);
 		for (Player player : players) {
 			VBox playerBox = new VBox();
+			playerBoxes.add(playerBox);
 			Label name = new Label(player.getName());
 			Label geld = new Label(player.getBilanz() + "€");
 			labelStyle(name, geld);
@@ -53,6 +54,7 @@ public class InfoStage {
 			playerBox.getChildren().add(geld);
 			ihbox.getChildren().add(playerBox);
 			GridPane grid = new GridPane();
+			grids.add(grid);
 			grid.setAlignment(Pos.CENTER);
 			grid.setHgap(1);
 			grid.setVgap(2);
@@ -82,7 +84,6 @@ public class InfoStage {
 			}
 		}
 		ihbox.setStyle("-fx-background-color: rgb(" + 192 + "," + 254 + ", " + 213 + ");");
-		ihbox.setAlignment(Pos.CENTER);
 		ihbox.setMaxWidth(((max - min) / 2) - 5);
 		BorderPane bpane = new BorderPane();
 		borderPaneStyle(bpane);
@@ -91,14 +92,20 @@ public class InfoStage {
 		bpane.setCenter(ihbox);
 		scene = new Scene(bpane);
 		keyHandler(scene);
-		info.initStyle(StageStyle.UNDECORATED);
+//		info.initStyle(StageStyle.UNDECORATED);
 		info.setScene(scene);
-		info.setWidth(((max - min) / 2) - 5);
-		info.setMaxWidth(((max - min) / 2) - 5);
+		info.setWidth(((max - min) / 2));
 		info.setHeight(min * .5);
 		info.show();
-		info.setX((min + info.getWidth() + 10));
+		info.setX((min + info.getWidth() + 5));
 		info.setY((min / 2) - (info.getHeight() / 2));
+		ihbox.setLayoutX(info.getWidth());
+		ihbox.setLayoutY(info.getHeight());
+		for (int i=0; i<grids.size();i++) {
+			playerBoxes.get(i).setLayoutX(info.getWidth()/playerBoxes.size());
+			grids.get(i).setLayoutX(info.getWidth()/playerBoxes.size());
+		}
+		info.setOnCloseRequest(e->System.exit(0));
 		System.out.println("info:"+info.getWidth());
 	}
 
@@ -217,8 +224,6 @@ public class InfoStage {
 	}
 
 	private Button initBut(String color, Button x, Stage prime,Player player) {
-		x.prefHeightProperty().bind(prime.heightProperty().divide(28 / 20));
-		x.prefWidthProperty().bind(prime.widthProperty().divide(28 / 10));
 		x.setStyle("-fx-background-color: grey; -fx-border-color: black;-fx-font-size: 0em; -fx-font-color: transparent;");
 		x.setOnAction(e -> changeColor(x, color));
 		return x;
