@@ -387,10 +387,15 @@ public class Server {
 			 * @throws IOException Client antwortet nicht.
 			 */
 			public void addGeld(int change) throws IOException {
+				while(getGeld()+change < 0) {
+					//muss noch implemtiert werden
+				}
 				geld += change;
 				broadcastInt(3);
 				broadcastInt(this.ID);
 				broadcastInt(this.geld);
+				
+				
 			}
 
 			/**
@@ -497,6 +502,10 @@ public class Server {
 				w2 = model.Board.wuerfeln();
 				broadcastInt(w1);
 				broadcastInt(w2);
+				if(w1==w2) {
+					imGefaengnis=false;
+				}
+				broadcastBoolean(this.imGefaengnis);
 			}
 		}
 
@@ -535,15 +544,16 @@ public class Server {
 						} else if (client.hasFree2()) {
 							// Freikarte 2 aktivieren.
 						} else if (client.getVersuche() < 3) {
-							// Fragen ob bezahlen oder Pasch versuchen.
+							client.wuerfeln(nextPlayer);
 						} else {
-							// bezahlen.
+							client.addGeld(-50);
+							client.imGefaengnis=false;
+							client.versuche=0;
 						}
 					}
-					client.wuerfeln(nextPlayer);
-					client.walk(client.getW());
-					checkField(client);
-
+					if(!client.imGefaengnis) {
+						client.wuerfeln(nextPlayer);
+					
 					
 					if(client.w1 ==client.w2) { //Pasch gewuerfelt
 						if(client.versuche==2) {
@@ -557,10 +567,16 @@ public class Server {
 						nextPlayer++;
 						nextPlayer %= list.size();
 					}
+				
+					if(!client.getImGefaengnis()) {
+						client.walk(client.getW());
+						checkField(client);
+					}
+					}
 					
-					// naechster Spieler
-					nextPlayer++;
-					nextPlayer %= list.size();
+
+					
+					
 				} catch (IOException e) {
 					// Client entfernen wegen IOException
 					list.remove(nextPlayer);
@@ -587,7 +603,6 @@ public class Server {
 			broadcastInt(4); // modus 4 starten
 			broadcastInt(c.ID); // aktuellen Spieler miteilen
 			Grundstueck grundstueck = feld[c.getPos()];
-			// broadcastInt(c.getPos()); // Position miteilen
 			if (grundstueck != null) {
 				broadcastBoolean(true);
 				System.out.println("Standort: " + c.getPos() + grundstueck.getName());
@@ -602,54 +617,22 @@ public class Server {
 
 					Client besitzer = grundstueck.getBesitzer();
 					broadcastInt(besitzer.getID());
+					boolean hausKaufable = grundstueck.kannBebautWerden(feld);
+					broadcastBoolean(hausKaufable);
 					if (!besitzer.equals(c)) { // Feld gehoert einem anderen Spieler -> Spieler zahlt Miete an anderen
 												// Spieler
 						int miete = grundstueck.getMiete(c,feld	);
-						if (c.getGeld() >= miete) { // Miete zahlen
-							besitzer.addGeld(miete);
-							c.addGeld(-miete);
-						} else { // Nicht genug Geld -> Verkaufen bis: genug Geld oder nichts mehr zu verkaufen.
-							boolean lauf = true;
-							while (lauf) {
-								if (c.getGeld() >= miete) {
-									lauf = false;
-								} else {
-									if (c.canMakeMoney()) {
-										// Verkaufen...
-										// zuerst die Gefaengnisfreikarten (falls vorhanden).
-										if (c.hasFree1()) { // erste Gefaengnisfreikarte verkaufen.
-											c.getOut().writeUTF("Sells freeCard1");
-											c.addGeld(50);
-											c.setFree1(false);
-										} else if (c.hasFree2()) { // zweite Gefaengnisfreikarte verkaufen.
-											c.getOut().writeUTF("Sells freeCard2");
-											c.addGeld(50);
-											c.setFree2(false);
-										} else { // Grundstuecke oder Haeuser verkaufen.
-
-										}
-									} else {
-										lauf = false;
-									}
-								}
-							}
-							if (c.getGeld() >= miete) { // genug Geld -> Miete zahlen.
-								besitzer.addGeld(miete);
-								c.addGeld(-miete);
-							} else { // nicht genug Geld -> Verlieren.
-								c.getOut().writeUTF("Nicht genug Geld, du hast verloren.");
-								list.remove(c.getID()); // Stimmt die Reihenfolge der Spieler (naechsterSpieler) noch?
-							}
-						}
+						System.out.println("hier sollte er miete zaheln");
+						besitzer.addGeld(miete);
+						c.addGeld(-miete);
+						waitForAction = false;
 					} else {
-						boolean hausKaufable = grundstueck.kannBebautWerden(feld);
-						broadcastBoolean(hausKaufable);
 						if(hausKaufable) {
 							waitForAction = true;
 						}
 						
 					}
-					// Feld gehoert dem Spieler -> nichts
+					
 				}
 			} else { // Feld == null -> Sonderfelder
 				broadcastBoolean(false);
@@ -657,7 +640,7 @@ public class Server {
 				switch (c.getPos()) {
 				case 0:
 					broadcastInt(0);
-					c.addGeld(400);
+					c.addGeld(200);
 					break;
 				// Fall through beabsichtigt -> Karte von Stapel 1 ziehen.
 				case 2:
@@ -673,10 +656,10 @@ public class Server {
 					// Karte von Stapel 2 ziehen.
 					break;
 				case 12: // Rechenzentrum
-					rechenZollamt(c);
+				//	rechenZollamt(c);
 					break;
 				case 28: // Zollamt
-					rechenZollamt(c);
+				//	rechenZollamt(c);
 					break;
 				// Fall through beabsichtigt -> Steuern zahlen.
 				case 4:
@@ -694,6 +677,7 @@ public class Server {
 					break;
 				case 30: // gehe in das Gefaengnis
 					broadcastInt(3);
+					geheInsGefaenginis(c);
 					break;
 				default: // falls was uebersehen wurde.
 					broadcastInt(0);
@@ -707,7 +691,6 @@ public class Server {
 				case 1:
 					broadcastInt(5);
 					broadcastUTF(c.getName() + " hat die Strasse " + grundstueck.getName() + " gekauft");
-					grundstueck.setBesitzer(c);
 					c.addGeld(-grundstueck.getPreis());
 					changeBesitzer(grundstueck, c);
 					break;
@@ -820,7 +803,8 @@ public class Server {
 			broadcastInt(-1);
 			broadcastInt(hoechstbieter.getID());
 			hoechstbieter.addGeld(-aktuellesGebot);
-			g.setBesitzer(hoechstbieter);
+			changeBesitzer(g,hoechstbieter);
+
 
 		}
 
@@ -943,7 +927,7 @@ public class Server {
 					new int[] { 6, 8, 9 });
 			feld[10] = null; // Gefaengnis
 			feld[11] = new Grundstueck("MotorenPruefstand", new int[] { 10, 50, 150, 450, 625, 750 }, 140, 11, new int[] {11, 13, 14});
-			feld[12] = new Grundstueck("Rechnenzentrum", new int[] {4,10} , 150,12, new int[] {12,28}); // Rechenzentrum, evtl als Grundstueck behandeln
+			feld[12] = new Grundstueck("Rechenzentrum", new int[] {4,10} , 150,12, new int[] {12,28}); // Rechenzentrum, evtl als Grundstueck behandeln
 			feld[13] = new Grundstueck("FahrzeugLabor", new int[] { 10, 50, 150, 450, 625, 750 }, 140, 13, new int[] {11, 13, 14});
 			feld[14] = new Grundstueck("SolarTankstelle", new int[] { 12, 60, 180, 500, 700, 900 }, 160, 14, new int[] {11, 13, 14});
 			feld[15] = new Grundstueck("KreuznachBahnhof", new int[] { 25, 50, 100, 200 }, 200, 15, null); // Bahnhof
