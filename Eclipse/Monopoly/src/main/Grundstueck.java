@@ -91,6 +91,9 @@ public class Grundstueck {
 	 *         <b>false</b>, sonst.
 	 */
 	public boolean kannBebautWerden(Grundstueck[] feld) {
+		if(this.street.length==4 || this.miete.length ==2) { //Bahnhoefe und SOnderfelder raus
+			return false;
+		}
 		if(haeuser == 5) {
 			return false;
 		}
@@ -148,6 +151,17 @@ public class Grundstueck {
 	public Client getBesitzer() {
 		return besitzer;
 	}
+	
+	public int countStreets(Grundstueck[] feld) {
+		int counter = 0 ;
+		for (int i : this.street) {
+			
+			if (feld[i].getBesitzer().equals(getBesitzer())) {
+				counter++;
+			}
+		}
+		return counter;
+	}
 
 	/**
 	 *
@@ -160,7 +174,13 @@ public class Grundstueck {
 			}else {
 				return c.getW() *miete[0];
 			}
-		}else {
+		}else if(street.length==4) {
+			return miete[countStreets(feld)];
+			
+		}
+		
+		
+		else {
 			if(haeuser==0) {
 				if(kannBebautWerden(feld)) {
 					return miete[0]*2;

@@ -926,7 +926,7 @@ public class Server {
 			feld[2] = null; // Kartenstapel 1
 			feld[3] = new Grundstueck("AstaBuero", new int[] { 4, 20, 60, 180, 320, 450 }, 60, 3, new int[] { 1, 3 });
 			feld[4] = null; // Steuern 200
-			feld[5] = new Grundstueck("BingenBahnhof", new int[] { 25, 50, 100, 200 }, 200, 5, null); // Bahnhof
+			feld[5] = new Grundstueck("BingenBahnhof", new int[] { 25, 50, 100, 200 }, 200, 5, new int[] {5,15,25,35}); // Bahnhof
 			feld[6] = new Grundstueck("PflanzenLabor", new int[] { 6, 30, 90, 270, 400, 550 }, 100, 6,
 					new int[] { 6, 8, 9 });
 			feld[7] = null; // Kartenstapel 2
@@ -946,7 +946,7 @@ public class Server {
 					new int[] { 11, 13, 14 });
 			feld[14] = new Grundstueck("SolarTankstelle", new int[] { 12, 60, 180, 500, 700, 900 }, 160, 14,
 					new int[] { 11, 13, 14 });
-			feld[15] = new Grundstueck("KreuznachBahnhof", new int[] { 25, 50, 100, 200 }, 200, 15, null); // Bahnhof
+			feld[15] = new Grundstueck("KreuznachBahnhof", new int[] { 25, 50, 100, 200 }, 200, 15, new int[] {5,15,25,35} ) ; // Bahnhof
 			feld[16] = new Grundstueck("TrvRhenania", new int[] { 14, 70, 200, 550, 750, 950 }, 180, 16,
 					new int[] { 16, 18, 19 });
 			feld[17] = null; // Kartenstapel 1
@@ -962,7 +962,7 @@ public class Server {
 					new int[] { 21, 23, 24 });
 			feld[24] = new Grundstueck("PcPool237", new int[] { 20, 100, 300, 750, 925, 1100 }, 240, 24,
 					new int[] { 21, 23, 24 });
-			feld[25] = new Grundstueck("MainzBahnhof", new int[] { 25, 50, 100, 200 }, 200, 25, null); // Bahnhof
+			feld[25] = new Grundstueck("MainzBahnhof", new int[] { 25, 50, 100, 200 }, 200, 25, new int[] {5,15,25,35}); // Bahnhof
 			feld[26] = new Grundstueck("StudienBeratung", new int[] { 22, 110, 330, 800, 975, 1150 }, 260, 26,
 					new int[] { 26, 27, 29 });
 			feld[27] = new Grundstueck("StudienSekretariat", new int[] { 22, 110, 330, 800, 975, 1150 }, 260, 27,
@@ -981,7 +981,7 @@ public class Server {
 			feld[33] = null; // Kartenstapel 1
 			feld[34] = new Grundstueck("Markomannia", new int[] { 28, 150, 450, 1000, 1200, 1400 }, 320, 34,
 					new int[] { 31, 32, 34 });
-			feld[35] = new Grundstueck("WormsBahnhof", new int[] { 25, 50, 100, 200 }, 200, 35, null); // Bahnhof
+			feld[35] = new Grundstueck("WormsBahnhof", new int[] { 25, 50, 100, 200 }, 200, 35, new int[] {5,15,25,35}); // Bahnhof
 			feld[36] = null; // Kartenstapel 2
 			feld[37] = new Grundstueck("Mensa", new int[] { 35, 175, 500, 1100, 1300, 1500 }, 350, 37,
 					new int[] { 37, 39 });

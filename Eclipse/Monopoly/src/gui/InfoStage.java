@@ -222,8 +222,8 @@ public class InfoStage {
 
 		street.put("BingenBahnhof", initBut("black", new Button("BingenBahnhof"), info, player));
 		street.put("KreuznachBahnhof", initBut("black", new Button("KreuznachBahnhof"), info, player));
-		street.put("WormsBahnhof", initBut("black", new Button("WormsBahnhof"), info, player));
 		street.put("MainzBahnhof", initBut("black", new Button("MainzBahnhof"), info, player));
+		street.put("WormsBahnhof", initBut("black", new Button("WormsBahnhof"), info, player));
 
 		street.put("Rechenzentrum", initBut("snow", new Button("Rechenzentrum"), info, player));
 		street.put("Zollamt", initBut("snow", new Button("Zollamt"), info, player));
@@ -263,8 +263,8 @@ public class InfoStage {
 		names.add("Bibliothek");
 		names.add("BingenBahnhof");
 		names.add("KreuznachBahnhof");
-		names.add("WormsBahnhof");
 		names.add("MainzBahnhof");
+		names.add("WormsBahnhof");
 		names.add("Rechenzentrum");
 		names.add("Zollamt");
 		return names;
