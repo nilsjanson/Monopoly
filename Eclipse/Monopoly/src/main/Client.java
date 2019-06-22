@@ -99,10 +99,15 @@ public class Client extends Thread {
 							}
 						} else { // Besitzer existiert
 							int owner = in.readInt();
-							if (owner == ownPlayerNumber) {
-								boolean hausKaufbar = in.readBoolean();
-								showStreetStage(board, streetName, false, true, false, false);
+							boolean hausKaufbar = in.readBoolean();
+							if (owner == actualPlayer && hausKaufbar) {
+								if(actualPlayer ==ownPlayerNumber) {
+									showStreetStage(board, streetName, false, true, false, true);	
+								}else {
+									showStreetStage(board, streetName, false, true, false, false);
+								}
 							} else {
+								System.out.println("zahle miete");
 								showStreetStage(board, streetName, false, false, false, false);
 							}
 
@@ -160,7 +165,8 @@ public class Client extends Thread {
 						board.infoStage.changeColor(bKarte);
 					}
 					bKarte.setOwner(playerList[neuerOwner]);
-					System.out.println("Spieler " + oldOwner + " wird das Besitzrecht der Karte " + gName + " anerkannt");
+					System.out.println("Spieler " + neuerOwner + " wird das Besitzrecht der Karte " + gName + " anerkannt");
+					board.infoStage.changeColor(bKarte);
 					if(board.streetStageOpen!=null) {
 					board.streetStageOpen.close();
 					}
@@ -183,7 +189,12 @@ public class Client extends Thread {
 					}
 					
 					break;
+				case 9 : //haus kaufen
+					Besitzrechtkarte bK = Besitzrechtkarte.findByName(in.readUTF());
+					bK.setHausCounter(in.readInt());
+					System.out.println("Auf" +bK.getName() + " wurde ein Haus gebaut");
 					
+					break;
 
 				}
 				x = in.readInt();
@@ -283,13 +294,15 @@ public class Client extends Thread {
 		
 
 			board.wuerfelStage.wuerfeln(wuerfel1, wuerfel2);
+			if(!in.readBoolean()) {
+				for (int i = 1; i <= wuerfel1 + wuerfel2; i++) {
+					board.move(board.playerArr[playerNumber]);
+					Thread.sleep(800);
+				}
 
-			for (int i = 1; i <= wuerfel1 + wuerfel2; i++) {
-				board.move(board.playerArr[playerNumber]);
-				Thread.sleep(800);
+				board.wuerfelStage.wuerfeln(wuerfel1, wuerfel2);
 			}
-
-			board.wuerfelStage.wuerfeln(wuerfel1, wuerfel2);
+			
 
 		} catch (Exception ex) {
 			System.out.println("An error occured");

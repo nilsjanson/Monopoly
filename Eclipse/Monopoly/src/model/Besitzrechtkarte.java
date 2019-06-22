@@ -47,8 +47,8 @@ public class Besitzrechtkarte {
 			
 			new Besitzrechtkarte("BingenBahnhof", "black",5),
 			new Besitzrechtkarte("KreuznachBahnhof", "black",15),
-			new Besitzrechtkarte("WormsBahnhof", "black",25),
-			new Besitzrechtkarte("MainzBahnhof", "black",35),
+			new Besitzrechtkarte("MainzBahnhof", "black",25),
+			new Besitzrechtkarte("WormsBahnhof", "black",35),
 			
 			new Besitzrechtkarte("Rechenzentrum", "snow",12),
 			new Besitzrechtkarte("Zollamt", "snow",28)

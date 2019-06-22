@@ -91,8 +91,14 @@ public class Grundstueck {
 	 *         <b>false</b>, sonst.
 	 */
 	public boolean kannBebautWerden(Grundstueck[] feld) {
+		if(haeuser == 5) {
+			return false;
+		}
 		Client c = this.getBesitzer();
 		for (int i : this.street) {
+			if(feld[i].getBesitzer()==null) {
+				return false;
+			}
 			if (!feld[i].getBesitzer().equals(c)) {
 				return false;
 			}
