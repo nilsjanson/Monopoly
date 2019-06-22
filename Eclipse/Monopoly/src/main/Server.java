@@ -272,8 +272,7 @@ public class Server {
 			/**
 			 * Versuche einen Pasch zu wuerfeln wenn man im Gefaengnis ist.
 			 */
-			
-			
+
 			private int versuche = 0;
 			/**
 			 * Anzahl der Augen des 1. Wuerfels
@@ -387,15 +386,14 @@ public class Server {
 			 * @throws IOException Client antwortet nicht.
 			 */
 			public void addGeld(int change) throws IOException {
-				while(getGeld()+change < 0) {
-					//muss noch implemtiert werden
+				while (getGeld() + change < 0) {
+					// muss noch implemtiert werden
 				}
 				geld += change;
 				broadcastInt(3);
 				broadcastInt(this.ID);
 				broadcastInt(this.geld);
-				
-				
+
 			}
 
 			/**
@@ -502,8 +500,8 @@ public class Server {
 				w2 = model.Board.wuerfeln();
 				broadcastInt(w1);
 				broadcastInt(w2);
-				if(w1==w2) {
-					imGefaengnis=false;
+				if (w1 == w2) {
+					imGefaengnis = false;
 				}
 				broadcastBoolean(this.imGefaengnis);
 			}
@@ -545,38 +543,37 @@ public class Server {
 							// Freikarte 2 aktivieren.
 						} else if (client.getVersuche() < 3) {
 							client.wuerfeln(nextPlayer);
+							
 						} else {
 							client.addGeld(-50);
-							client.imGefaengnis=false;
-							client.versuche=0;
+							client.imGefaengnis = false;
+							client.versuche = 0;
 						}
 					}
-					if(!client.imGefaengnis) {
+					if (!client.imGefaengnis) {
 						client.wuerfeln(nextPlayer);
-					
-					
-					if(client.w1 ==client.w2) { //Pasch gewuerfelt
-						if(client.versuche==2) {
-							geheInsGefaenginis(client);
-						}else {
-							client.versuche++;
-						}
-					
-					}else {
-						client.versuche=0;
-						nextPlayer++;
-						nextPlayer %= list.size();
-					}
-				
-					if(!client.getImGefaengnis()) {
 						client.walk(client.getW());
-						checkField(client);
-					}
-					}
-					
 
-					
-					
+						if (client.w1 == client.w2) { // Pasch gewuerfelt
+							if (client.versuche == 0) {
+								geheInsGefaenginis(client);
+							} else {
+								client.versuche++;
+							}
+							nextPlayer--;
+
+						} else {
+							client.versuche = 0;
+							
+						}
+
+						if (!client.getImGefaengnis()) {
+							checkField(client);
+						}
+					}
+					nextPlayer++;
+					nextPlayer %= list.size();
+
 				} catch (IOException e) {
 					// Client entfernen wegen IOException
 					list.remove(nextPlayer);
@@ -621,18 +618,18 @@ public class Server {
 					broadcastBoolean(hausKaufable);
 					if (!besitzer.equals(c)) { // Feld gehoert einem anderen Spieler -> Spieler zahlt Miete an anderen
 												// Spieler
-						int miete = grundstueck.getMiete(c,feld	);
+						int miete = grundstueck.getMiete(c, feld);
 						System.out.println("hier sollte er miete zaheln");
 						besitzer.addGeld(miete);
 						c.addGeld(-miete);
 						waitForAction = false;
 					} else {
-						if(hausKaufable) {
+						if (hausKaufable) {
 							waitForAction = true;
 						}
-						
+
 					}
-					
+
 				}
 			} else { // Feld == null -> Sonderfelder
 				broadcastBoolean(false);
@@ -656,10 +653,10 @@ public class Server {
 					// Karte von Stapel 2 ziehen.
 					break;
 				case 12: // Rechenzentrum
-				//	rechenZollamt(c);
+					// rechenZollamt(c);
 					break;
 				case 28: // Zollamt
-				//	rechenZollamt(c);
+					// rechenZollamt(c);
 					break;
 				// Fall through beabsichtigt -> Steuern zahlen.
 				case 4:
@@ -698,17 +695,18 @@ public class Server {
 					versteigerung(grundstueck, c);
 					break;
 				case 3:
-					hausKaufen(grundstueck,c);
+					hausKaufen(grundstueck, c);
 					break;
 				default:
 					break;
 				}
-				
+
 			}
 		}
-		
+
 		private void geheInsGefaenginis(Client c) {
 			try {
+				System.out.println("Client im gefangnis");
 				c.imGefaengnis = true;
 				c.versuche = 0;
 				broadcastInt(8);
@@ -719,13 +717,13 @@ public class Server {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 		}
-		
-		private void hausKaufen(Grundstueck g , Client c) {
+
+		private void hausKaufen(Grundstueck g, Client c) {
 			try {
 				c.addGeld(-g.getHausKosten());
-				g.setHaeuser(g.getHaeuser()+1);
+				g.setHaeuser(g.getHaeuser() + 1);
 				broadcastInt(9);
 				broadcastUTF(g.getName());
 				broadcastInt(g.getHaeuser());
@@ -747,7 +745,8 @@ public class Server {
 				if (feld[12].getBesitzer().equals(feld[28].getBesitzer())) { // Besitzer hat beide Karten
 					mul = 10;
 				}
-				int wuerfeln = 0; // Wuerfeln ---------------------- hier wuerfeln einbauen ----------------------------
+				int wuerfeln = 0; // Wuerfeln ---------------------- hier wuerfeln einbauen
+									// ----------------------------
 				int aenderung = wuerfeln * mul;
 				broadcastInt(0);
 				c.addGeld(-aenderung);
@@ -803,8 +802,7 @@ public class Server {
 			broadcastInt(-1);
 			broadcastInt(hoechstbieter.getID());
 			hoechstbieter.addGeld(-aktuellesGebot);
-			changeBesitzer(g,hoechstbieter);
-
+			changeBesitzer(g, hoechstbieter);
 
 		}
 
@@ -926,10 +924,17 @@ public class Server {
 			feld[9] = new Grundstueck("DemonstrationsFeld", new int[] { 8, 40, 100, 300, 450, 600 }, 120, 9,
 					new int[] { 6, 8, 9 });
 			feld[10] = null; // Gefaengnis
-			feld[11] = new Grundstueck("MotorenPruefstand", new int[] { 10, 50, 150, 450, 625, 750 }, 140, 11, new int[] {11, 13, 14});
-			feld[12] = new Grundstueck("Rechenzentrum", new int[] {4,10} , 150,12, new int[] {12,28}); // Rechenzentrum, evtl als Grundstueck behandeln
-			feld[13] = new Grundstueck("FahrzeugLabor", new int[] { 10, 50, 150, 450, 625, 750 }, 140, 13, new int[] {11, 13, 14});
-			feld[14] = new Grundstueck("SolarTankstelle", new int[] { 12, 60, 180, 500, 700, 900 }, 160, 14, new int[] {11, 13, 14});
+			feld[11] = new Grundstueck("MotorenPruefstand", new int[] { 10, 50, 150, 450, 625, 750 }, 140, 11,
+					new int[] { 11, 13, 14 });
+			feld[12] = new Grundstueck("Rechenzentrum", new int[] { 4, 10 }, 150, 12, new int[] { 12, 28 }); // Rechenzentrum,
+																												// evtl
+																												// als
+																												// Grundstueck
+																												// behandeln
+			feld[13] = new Grundstueck("FahrzeugLabor", new int[] { 10, 50, 150, 450, 625, 750 }, 140, 13,
+					new int[] { 11, 13, 14 });
+			feld[14] = new Grundstueck("SolarTankstelle", new int[] { 12, 60, 180, 500, 700, 900 }, 160, 14,
+					new int[] { 11, 13, 14 });
 			feld[15] = new Grundstueck("KreuznachBahnhof", new int[] { 25, 50, 100, 200 }, 200, 15, null); // Bahnhof
 			feld[16] = new Grundstueck("TrvRhenania", new int[] { 14, 70, 200, 550, 750, 950 }, 180, 16,
 					new int[] { 16, 18, 19 });
@@ -947,10 +952,16 @@ public class Server {
 			feld[24] = new Grundstueck("PcPool237", new int[] { 20, 100, 300, 750, 925, 1100 }, 240, 24,
 					new int[] { 21, 23, 24 });
 			feld[25] = new Grundstueck("MainzBahnhof", new int[] { 25, 50, 100, 200 }, 200, 25, null); // Bahnhof
-			feld[26] = new Grundstueck("StudienBeratung", new int[] { 22, 110, 330, 800, 975, 1150 }, 260, 26, new int[] {26, 27, 29});
-			feld[27] = new Grundstueck("StudienSekretariat", new int[] { 22, 110, 330, 800, 975, 1150 }, 260, 27, new int[] {26, 27, 29});
-			feld[28] = new Grundstueck("Zollamt", new int[] {4,10} , 150,28, new int[] {28,12}); // Rechenzentrum, evtl als Grundstueck behandeln
-			feld[29] = new Grundstueck("DekanBuero", new int[] { 24, 120, 360, 850, 1025, 1200 }, 280, 29, new int[] {26, 27, 29});
+			feld[26] = new Grundstueck("StudienBeratung", new int[] { 22, 110, 330, 800, 975, 1150 }, 260, 26,
+					new int[] { 26, 27, 29 });
+			feld[27] = new Grundstueck("StudienSekretariat", new int[] { 22, 110, 330, 800, 975, 1150 }, 260, 27,
+					new int[] { 26, 27, 29 });
+			feld[28] = new Grundstueck("Zollamt", new int[] { 4, 10 }, 150, 28, new int[] { 28, 12 }); // Rechenzentrum,
+																										// evtl als
+																										// Grundstueck
+																										// behandeln
+			feld[29] = new Grundstueck("DekanBuero", new int[] { 24, 120, 360, 850, 1025, 1200 }, 280, 29,
+					new int[] { 26, 27, 29 });
 			feld[30] = null; // gehe in das Gefaengnis
 			feld[31] = new Grundstueck("RhenoTeutonia", new int[] { 26, 130, 390, 900, 1100, 1275 }, 300, 31,
 					new int[] { 31, 32, 34 });
