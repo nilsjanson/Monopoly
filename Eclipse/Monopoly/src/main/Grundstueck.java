@@ -110,7 +110,7 @@ public class Grundstueck {
 	 *         im Falle eines Bahnhofs wird <b>-1</b> zurueckgegeben.
 	 */
 	public int getHausKosten() {
-		if (this.stelle == 5 || this.stelle == 15 || this.stelle == 25 || this.stelle == 35) {
+		if (this.stelle == 5 || this.stelle == 15 || this.stelle == 25 || this.stelle == 35) { // Bahnhoefe
 			return -1;
 		}
 		if (this.stelle < 10) {
@@ -188,6 +188,5 @@ public class Grundstueck {
 			this.haeuser = haeuser;
 		}
 	}
-	
-	
+
 }
