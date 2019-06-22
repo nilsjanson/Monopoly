@@ -511,7 +511,7 @@ public class Board {
 					System.exit(0);
 					break;
 				case H:
-					new ConstructionClass(streetButs.get(39), Besitzrechtkarte.findByPosition(39), true);
+			//		new ConstructionClass(streetButs.get(39), Besitzrechtkarte.findByPosition(39), true);
 					break;
 				case CONTROL:
 					parent.setRotate(parent.getRotate() - 90);

@@ -274,6 +274,7 @@ public class Server {
 			 */
 
 			private int versuche = 0;
+			private int versucheImGefangnis;
 			/**
 			 * Anzahl der Augen des 1. Wuerfels
 			 */
@@ -500,8 +501,8 @@ public class Server {
 				w2 = model.Board.wuerfeln();
 				broadcastInt(w1);
 				broadcastInt(w2);
-				if (w1 == w2) {
-					imGefaengnis = false;
+				if(w1==w2) {
+					this.imGefaengnis = false;
 				}
 				broadcastBoolean(this.imGefaengnis);
 			}
@@ -540,27 +541,36 @@ public class Server {
 						if (client.hasFree1()) {
 							// Freikarte 1 aktivieren.
 						} else if (client.hasFree2()) {
-							// Freikarte 2 aktivieren.
-						} else if (client.getVersuche() < 3) {
+							
+						} else if (client.versucheImGefangnis < 2) {
 							client.wuerfeln(nextPlayer);
+							client.versucheImGefangnis++;
+							if (client.w1 == client.w2) {
+								client.imGefaengnis = false;
+								client.walk(client.getW());
+								checkField(client);
+							}
 							
 						} else {
 							client.addGeld(-50);
 							client.imGefaengnis = false;
 							client.versuche = 0;
+							client.versucheImGefangnis=0;
+							nextPlayer--;
 						}
 					}
-					if (!client.imGefaengnis) {
+					
+					else {
 						client.wuerfeln(nextPlayer);
 						client.walk(client.getW());
 
 						if (client.w1 == client.w2) { // Pasch gewuerfelt
-							if (client.versuche == 0) {
+							if (client.versuche == 2) {
 								geheInsGefaenginis(client);
 							} else {
 								client.versuche++;
+								nextPlayer--;
 							}
-							nextPlayer--;
 
 						} else {
 							client.versuche = 0;
@@ -709,6 +719,7 @@ public class Server {
 				System.out.println("Client im gefangnis");
 				c.imGefaengnis = true;
 				c.versuche = 0;
+				c.versucheImGefangnis=0;
 				broadcastInt(8);
 				broadcastInt(c.getID());
 				broadcastInt(c.getPos());
