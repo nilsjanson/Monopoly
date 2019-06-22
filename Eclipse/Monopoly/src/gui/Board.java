@@ -315,11 +315,11 @@ public class Board {
 				@Override
 				public void handle(ActionEvent arg0) {
 					System.out.println("Street " + x.getText());
-					Platform.runLater(new Runnable() {
-						@Override
-						public void run() {
-							streetStageOpen = new StreetStage(me, Besitzrechtkarte.findByName(x.getText()), false , false, false, false);
-					}});
+					/*	Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+				//		streetStageOpen = new StreetStage(me, Besitzrechtkarte.findByName(x.getText()), false , false, false, false);
+				}}); */
 				}
 			});
 		}
@@ -341,11 +341,11 @@ public class Board {
 				@Override
 				public void handle(ActionEvent arg0) {
 					System.out.println("Street " + x.getText());
-					Platform.runLater(new Runnable() {
+				/*	Platform.runLater(new Runnable() {
 						@Override
 						public void run() {
-							streetStageOpen = new StreetStage(me, Besitzrechtkarte.findByName(x.getText()), false , false, false, false);
-					}});
+					//		streetStageOpen = new StreetStage(me, Besitzrechtkarte.findByName(x.getText()), false , false, false, false);
+					}}); */
 				}
 			});
 		}

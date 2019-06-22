@@ -99,13 +99,13 @@ public class Client extends Thread {
 									showStreetStage(board, streetName,false, true, false, true);
 									waitForStreetAction();
 								} else {
-									System.out.println("sp en drekc");
 									showStreetStage(board, streetName, false, true, false, false);
 								}
 							}
 						} else { // Besitzer existiert
 							int owner = in.readInt();
 							if (owner == ownPlayerNumber) {
+								boolean hausKaufbar = in.readBoolean();
 								showStreetStage(board, streetName, false, true, false, false);
 							} else {
 								showStreetStage(board, streetName, false, false, false, false);
@@ -172,6 +172,23 @@ public class Client extends Thread {
 					
 					
 					break;
+					
+				case 8:
+					int playerID = in.readInt();
+					int position = in.readInt();
+					int offset ;
+					if(position<=10) {
+						offset = 10-position;
+					}else {
+						offset = 40-position +10;
+					}
+					for (int i = 1; i <= offset; i++) {
+						board.move(board.playerArr[playerID]);
+						Thread.sleep(800);
+					}
+					
+					break;
+					
 
 				}
 				x = in.readInt();

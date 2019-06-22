@@ -99,6 +99,10 @@ public class Grundstueck {
 		}
 		return true;
 	}
+	
+	public int getHaeuser() {
+		return haeuser;
+	}
 
 	/**
 	 *
@@ -143,8 +147,26 @@ public class Grundstueck {
 	 *
 	 * @return die aktuelle Miete.
 	 */
-	public int getMiete() {
-		return miete[haeuser];
+	public int getMiete(Client c,Grundstueck[] feld) {
+		if(miete.length==2) {
+			if(kannBebautWerden(feld)) {
+				return c.getW() *miete[1];
+			}else {
+				return c.getW() *miete[0];
+			}
+		}else {
+			if(haeuser==0) {
+				if(kannBebautWerden(feld)) {
+					return miete[0]*2;
+				}else {
+					return miete[0];
+				}
+			}else {
+				return miete[haeuser];
+			}
+		
+		}
+		
 	}
 
 	/**

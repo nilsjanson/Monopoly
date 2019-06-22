@@ -283,6 +283,8 @@ public class Server {
 			/**
 			 * Versuche einen Pasch zu wuerfeln wenn man im Gefaengnis ist.
 			 */
+			
+			
 			private int versuche = 0;
 			/**
 			 * Anzahl der Augen des 1. Wuerfels
@@ -553,6 +555,20 @@ public class Server {
 					client.walk(client.getW());
 					checkField(client);
 
+					
+					if(client.w1 ==client.w2) { //Pasch gewuerfelt
+						if(client.versuche==2) {
+							geheInsGefaenginis(client);
+						}else {
+							client.versuche++;
+						}
+					
+					}else {
+						client.versuche=0;
+						nextPlayer++;
+						nextPlayer %= list.size();
+					}
+					
 					// naechster Spieler
 					nextPlayer++;
 					nextPlayer %= list.size();
@@ -599,8 +615,8 @@ public class Server {
 					broadcastInt(besitzer.getID());
 					if (!besitzer.equals(c)) { // Feld gehoert einem anderen Spieler -> Spieler zahlt Miete an anderen
 												// Spieler
-						int miete = grundstueck.getMiete();
-						if (c.getGeld() >= grundstueck.getMiete()) { // Miete zahlen
+						int miete = grundstueck.getMiete(c,feld	);
+						if (c.getGeld() >= miete) { // Miete zahlen
 							besitzer.addGeld(miete);
 							c.addGeld(-miete);
 						} else { // Nicht genug Geld -> Verkaufen bis: genug Geld oder nichts mehr zu verkaufen.
@@ -637,7 +653,12 @@ public class Server {
 							}
 						}
 					} else {
-						// Haus kauf moeglich?
+						boolean hausKaufable = grundstueck.kannBebautWerden(feld);
+						broadcastBoolean(hausKaufable);
+						if(hausKaufable) {
+							waitForAction = true;
+						}
+						
 					}
 					// Feld gehoert dem Spieler -> nichts
 				}
@@ -698,7 +719,41 @@ public class Server {
 				case 2:
 					versteigerung(grundstueck, c);
 					break;
+				case 3:
+					hausKaufen(grundstueck,c);
+					break;
+				default:
+					break;
 				}
+				
+			}
+		}
+		
+		private void geheInsGefaenginis(Client c) {
+			try {
+				c.imGefaengnis = true;
+				c.versuche = 0;
+				broadcastInt(8);
+				broadcastInt(c.getID());
+				broadcastInt(c.getPos());
+				c.position = 10;
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		
+		private void hausKaufen(Grundstueck g , Client c) {
+			try {
+				c.addGeld(-g.getHausKosten());
+				g.setHaeuser(g.getHaeuser()+1);
+				broadcastInt(9);
+				broadcastUTF(g.getName());
+				broadcastInt(g.getHaeuser());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 		
@@ -864,7 +919,7 @@ public class Server {
 			feld[9] = new Grundstueck("DemonstrationsFeld", new int[] { 8, 40, 100, 300, 450, 600 }, 120, 9, new int[] {6, 8, 9});
 			feld[10] = null; // Gefaengnis
 			feld[11] = new Grundstueck("MotorenPruefstand", new int[] { 10, 50, 150, 450, 625, 750 }, 140, 11, new int[] {11, 13, 14});
-			feld[12] = null; // Rechenzentrum, evtl als Grundstueck behandeln
+			feld[12] = new Grundstueck("Rechnenzentrum", new int[] {4,10} , 150,12, new int[] {12,28}); // Rechenzentrum, evtl als Grundstueck behandeln
 			feld[13] = new Grundstueck("FahrzeugLabor", new int[] { 10, 50, 150, 450, 625, 750 }, 140, 13, new int[] {11, 13, 14});
 			feld[14] = new Grundstueck("SolarTankstelle", new int[] { 12, 60, 180, 500, 700, 900 }, 160, 14, new int[] {11, 13, 14});
 			feld[15] = new Grundstueck("KreuznachBahnhof", new int[] { 25, 50, 100, 200 }, 200, 15, null); // Bahnhof
@@ -880,7 +935,7 @@ public class Server {
 			feld[25] = new Grundstueck("MainzBahnhof", new int[] { 25, 50, 100, 200 }, 200, 25, null); // Bahnhof
 			feld[26] = new Grundstueck("StudienBeratung", new int[] { 22, 110, 330, 800, 975, 1150 }, 260, 26, new int[] {26, 27, 29});
 			feld[27] = new Grundstueck("StudienSekretariat", new int[] { 22, 110, 330, 800, 975, 1150 }, 260, 27, new int[] {26, 27, 29});
-			feld[28] = null; // Zollamt
+			feld[28] = new Grundstueck("Zollamt", new int[] {4,10} , 150,28, new int[] {28,12}); // Rechenzentrum, evtl als Grundstueck behandeln
 			feld[29] = new Grundstueck("DekanBuero", new int[] { 24, 120, 360, 850, 1025, 1200 }, 280, 29, new int[] {26, 27, 29});
 			feld[30] = null; // gehe in das Gefaengnis
 			feld[31] = new Grundstueck("RhenoTeutonia", new int[] { 26, 130, 390, 900, 1100, 1275 }, 300, 31, new int[] {31, 32, 34});

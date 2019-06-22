@@ -13,7 +13,7 @@ public class Besitzrechtkarte {
 	private int position;
 	
 	public static List<Besitzrechtkarte> liste = new ArrayList<Besitzrechtkarte>(Arrays.asList(
-			new Besitzrechtkarte("KesselHaus", "purple",1),
+			new Besitzrechtkarte("Kesselhaus", "purple",1),
 			new Besitzrechtkarte("AstaBuero", "purple",3),
 
 			new Besitzrechtkarte("PflanzenLabor", "lightblue",6),

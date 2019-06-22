@@ -278,12 +278,14 @@ public class InfoStage {
 	}
 	
 	public void erzeugeStreetStage(Button x) {
+	
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
-				board.streetStageOpen = null;
 				board.streetStageOpen = new StreetStage(board, Besitzrechtkarte.findByName(x.getText()), false , false, false, false);
 		}});
+		
+	
 	}
 
 	public void changeColor(Besitzrechtkarte x) {

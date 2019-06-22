@@ -134,6 +134,7 @@ public class StreetStage extends Application {
 					close();
 					
 					
+					
 					break;
 				case C:
 					stage.centerOnScreen();
