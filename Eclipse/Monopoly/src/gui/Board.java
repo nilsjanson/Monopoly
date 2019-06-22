@@ -63,6 +63,8 @@ public class Board {
 	public Semaphore auktionStageOpenSemaphore = new Semaphore(0);
 	public Semaphore gebotAbgegeben = new Semaphore(0);
 	public Semaphore infoStageSemaphore = new Semaphore(0);
+	private ArrayList<Button> streetButs = new ArrayList<Button>();
+	
 
 	public ImageView[] playerArr;
 
@@ -214,7 +216,10 @@ public class Board {
 				
 			}
 		});
+	}
 	
+	ArrayList<Button> getAllButtons() {
+		return streetButs;
 	}
 
 	private Pane createCardFields() {
@@ -263,6 +268,7 @@ public class Board {
 			buttons.add(new Button("" + buttonCount++));
 		}
 		streetHButs(buttons);
+		streetButs.addAll(buttons);
 		hbox.getChildren().addAll(buttons);
 		return hbox;
 	}
@@ -276,6 +282,7 @@ public class Board {
 			buttonCount++;
 		}
 		streetHButs(buttons);
+		streetButs.addAll(buttons);
 		hbox.getChildren().addAll(buttons);
 		return hbox;
 	}
@@ -287,6 +294,7 @@ public class Board {
 			buttons.add(new Button("" + buttonCount++));
 		}
 		streetVButs(buttons);
+		streetButs.addAll(buttons);
 		vbox.getChildren().addAll(buttons);
 		return vbox;
 	}
@@ -300,6 +308,7 @@ public class Board {
 			buttonCount++;
 		}
 		streetVButs(buttons);
+		streetButs.addAll(buttons);
 		vbox.getChildren().addAll(buttons);
 		return vbox;
 	}
@@ -505,7 +514,9 @@ public class Board {
 					break;
 				case X:
 					System.exit(0);
-					break;
+					break;		case H:
+						new ConstructionClass(streetButs.get(39),Besitzrechtkarte.findByPosition(39));
+						break;
 				case CONTROL:
 					parent.setRotate(parent.getRotate() - 90);
 					break;
