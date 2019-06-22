@@ -64,7 +64,6 @@ public class Board {
 	public Semaphore gebotAbgegeben = new Semaphore(0);
 	public Semaphore infoStageSemaphore = new Semaphore(0);
 	private ArrayList<Button> streetButs = new ArrayList<Button>();
-	
 
 	public ImageView[] playerArr;
 
@@ -175,7 +174,7 @@ public class Board {
 		BorderPane.setAlignment(right, Pos.CENTER);
 
 		scene = new Scene(pane);
-		
+
 		prime.initStyle(StageStyle.UNDECORATED);
 		controlBoard(scene);
 		prime.setScene(scene);
@@ -184,7 +183,8 @@ public class Board {
 		prime.show();
 
 		wuerfelStage = new WuerfelStage(me, Math.min(width, height), Math.max(width, height));
-		//infoStage = new InfoStage(me,Math.min(width, height), Math.max(width, height));
+		// infoStage = new InfoStage(me,Math.min(width, height), Math.max(width,
+		// height));
 		playerArr[0] = createPlayer(max * 0.075, max * 0.075, "/playerIcons/bike.png");
 		playerArr[1] = createPlayer(max * 0.075, max * 0.075, "/playerIcons/dog.png");
 		if (spieler > 2) {
@@ -194,7 +194,7 @@ public class Board {
 			playerArr[3] = createPlayer(max * 0.075, max * 0.075, "/playerIcons/misslex.png");
 		}
 
-		System.out.println("Maximale Groesse: " + width +" "+ max);
+		System.out.println("Maximale Groesse: " + width + " " + max);
 		boardReady.release();
 		prime.focusedProperty().addListener(new ChangeListener<Boolean>() {
 			@Override
@@ -207,17 +207,17 @@ public class Board {
 			}
 		});
 	}
-	
-	public void  startInfoStage(Player... players) {
+
+	public void startInfoStage(Player... players) {
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
-				infoStage = new InfoStage(me,Math.min(width, height), Math.max(width, height),players);
-				
+				infoStage = new InfoStage(me, Math.min(width, height), Math.max(width, height), players);
+
 			}
 		});
 	}
-	
+
 	ArrayList<Button> getAllButtons() {
 		return streetButs;
 	}
@@ -320,17 +320,7 @@ public class Board {
 			;
 			x.setStyle("-fx-border-color: transparent; -fx-background-color: transparent");
 			x.setTextFill(Color.TRANSPARENT);
-			x.setOnAction(new EventHandler<ActionEvent>() {
-				@Override
-				public void handle(ActionEvent arg0) {
-					System.out.println("Street " + x.getText());
-					/*	Platform.runLater(new Runnable() {
-					@Override
-					public void run() {
-				//		streetStageOpen = new StreetStage(me, Besitzrechtkarte.findByName(x.getText()), false , false, false, false);
-				}}); */
-				}
-			});
+			streetButtonControl(x);
 		}
 		buttons.get(0).setPrefWidth(max * 0.136);
 		buttons.get(buttons.size() - 1).setPrefWidth(max * 0.136);
@@ -346,19 +336,24 @@ public class Board {
 			;
 			x.setStyle("-fx-border-color: transparent; -fx-background-color: transparent");
 			x.setTextFill(Color.TRANSPARENT);
-			x.setOnAction(new EventHandler<ActionEvent>() {
-				@Override
-				public void handle(ActionEvent arg0) {
-					System.out.println("Street " + x.getText());
-				/*	Platform.runLater(new Runnable() {
-						@Override
-						public void run() {
-					//		streetStageOpen = new StreetStage(me, Besitzrechtkarte.findByName(x.getText()), false , false, false, false);
-					}}); */
-				}
-			});
+			streetButtonControl(x);
 		}
 	}
+
+	private void streetButtonControl(Button button) {
+		button.setOnAction( new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				System.out.println("Street "+button.getText());
+				button.setStyle("-fx-background-color: transparent; -fx-background-image: url(\"/icons/3house.png\"); -fx-background-size: "+button.getWidth()+" "+button.getHeight()+"; -fx-rotate: 90;");
+//				/*
+//				 * Platform.runLater(new Runnable() {
+//				 * 
+//				 * @Override public void run() { // streetStageOpen = new StreetStage(me,
+//				 * Besitzrechtkarte.findByName(x.getText()), false , false, false, false); }});
+//				 */
+			}
+		});}
 
 	void startMusik() {
 		final URL resource = getClass().getResource("/musik/AnnoDominiBeatsStillStanding.mp3");
@@ -500,10 +495,10 @@ public class Board {
 					new EmailStage(me, "Schoenheitswettbewerb", "Schoenheit Ohne Grenzen",
 							"Sie haben einen Schoenheitswettbewerb gewonnen, kassieren Sie 100€.");
 					break;
-					
+
 				case W:
 					wuerfelStage.getLeertaste().release();
-					
+
 					break;
 				case B:
 					// new StreetStage(me,"AstaBuero");
@@ -514,9 +509,10 @@ public class Board {
 					break;
 				case X:
 					System.exit(0);
-					break;		case H:
-						new ConstructionClass(streetButs.get(39),Besitzrechtkarte.findByPosition(39),true);
-						break;
+					break;
+				case H:
+					new ConstructionClass(streetButs.get(39), Besitzrechtkarte.findByPosition(39), true);
+					break;
 				case CONTROL:
 					parent.setRotate(parent.getRotate() - 90);
 					break;
