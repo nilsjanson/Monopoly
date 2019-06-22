@@ -6,16 +6,11 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.Semaphore;
 
 import gui.Auktion;
 import gui.Board;
 import gui.StreetStage;
-import gui.WuerfelStage;
-import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 import model.Besitzrechtkarte;
@@ -130,7 +125,7 @@ public class Client extends Thread {
 					}
 					break;
 
-				case 5: // Straße kaufen
+				case 5: // Straï¿½e kaufen
 					System.out.println(in.readUTF());
 					break;
 
@@ -236,6 +231,11 @@ public class Client extends Thread {
 
 	// Starte den Wuerfelzuh
 
+	/**
+	 * Aendert das Geld eines Spielers.
+	 * @param playerNumber die Spielernummer des Spielers, dessen Geld geaendert werden soll.
+	 * @param money das neue Geld.
+	 */
 	public void changeMoney(int playerNumber, int money) {
 		System.out.println("bin hier drin");
 		System.out.println("Spieler " + playerNumber + " hat jetzt " + money + " Euro");
