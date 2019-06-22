@@ -183,9 +183,12 @@ public class Client extends Thread {
 					}else {
 						offset = 40-position +10;
 					}
-					for (int i = 1; i <= offset; i++) {
+					int counter = position;
+					while(counter!=10) {
 						board.move(board.playerArr[playerID]);
 						Thread.sleep(800);
+						counter++;
+						counter = counter%40;
 					}
 					
 					break;
