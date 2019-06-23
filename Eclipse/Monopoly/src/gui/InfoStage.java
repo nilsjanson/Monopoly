@@ -7,6 +7,7 @@ import java.util.concurrent.Semaphore;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -30,7 +31,7 @@ public class InfoStage {
 	Scene scene;
 	Stage info;
 	int playerCount = 0;
-	Label[] geldArr ;
+	Label[] geldArr;
 
 	static Player nils = new Player("Nils", 0);
 	static Player lars = new Player("Lars", 0);
@@ -38,10 +39,10 @@ public class InfoStage {
 	static Player flo = new Player("Florian", 0);
 
 	public InfoStage(Board board, double min, double max) {
-		this(board, min, max, nils, lars, lucas,flo);
+		this(board, min, max, nils, lars, lucas, flo);
 	}
 
-	 InfoStage(Board board, double min, double max, Player... players) {
+	InfoStage(Board board, double min, double max, Player... players) {
 		ArrayList<VBox> playerBoxes = new ArrayList<VBox>();
 		ArrayList<GridPane> grids = new ArrayList<GridPane>();
 		geldArr = new Label[players.length];
@@ -54,7 +55,7 @@ public class InfoStage {
 		info = new Stage();
 
 		ivbox.setAlignment(Pos.CENTER);
-		int q = 0 ;
+		int q = 0;
 		for (Player player : players) {
 			VBox playerBox = new VBox();
 			playerBoxes.add(playerBox);
@@ -85,8 +86,8 @@ public class InfoStage {
 					}
 					counter++;
 				} else {
-					if (x==4) {
-						x=0;
+					if (x == 4) {
+						x = 0;
 						y++;
 					}
 
@@ -95,26 +96,24 @@ public class InfoStage {
 			}
 			q++;
 		}
-		
-		
-		
+
 		ArrayList<VBox> player = playerBoxes;
-		while (playerBoxes.size()!=0) {
+		while (playerBoxes.size() != 0) {
 			HBox hbox = new HBox();
-			while (hbox.getChildren().size()!=2) {
+			while (hbox.getChildren().size() != 2) {
 				hbox.getChildren().add(player.get(0));
 				player.remove(0);
 			}
 			ivbox.getChildren().add(hbox);
 			hbox = new HBox();
-			if (player.size()>=2) {
-				while (hbox.getChildren().size()!=2) {
+			if (player.size() >= 2) {
+				while (hbox.getChildren().size() != 2) {
 					hbox.getChildren().add(player.get(0));
 					player.remove(0);
 				}
 				ivbox.getChildren().add(hbox);
 			} else {
-				if (!(player.size()==0)) {
+				if (!(player.size() == 0)) {
 					hbox.getChildren().add(player.get(0));
 					player.remove(0);
 				}
@@ -126,21 +125,21 @@ public class InfoStage {
 		ivbox.setSpacing(30);
 		ivbox.autosize();
 		scene = new Scene(ivbox);
-		keyHandler(scene);
+		// keyHandler(scene);
 		info.initStyle(StageStyle.UNDECORATED);
 		info.setScene(scene);
-		info.setMaxWidth(((max - min) / 2)-5);
+		info.setMaxWidth(((max - min) / 2) - 5);
 		info.setMaxHeight(min * .8);
 		info.show();
 		info.setWidth(ivbox.getWidth());
 		info.setHeight(ivbox.getHeight());
-		info.setX((max-info.getWidth()));
-		if (info.getWidth()<(max-min/2)) {
-			info.setX(max-min/2+info.getWidth());
+		info.setX((max - info.getWidth()));
+		if (info.getWidth() < (max - min / 2)) {
+			info.setX(max - min / 2 + info.getWidth());
 		}
 		info.setY((min / 2) - (info.getHeight() / 2));
-		info.setOnCloseRequest(e->System.exit(0));
-		info.focusedProperty().addListener(new ChangeListener<Boolean>() {
+		info.setOnCloseRequest(e -> System.exit(0));
+	/*	info.focusedProperty().addListener(new ChangeListener<Boolean>() {
 			@Override
 			public void changed(ObservableValue<? extends Boolean> ov, Boolean hidden, Boolean shown) {
 				if (shown) {
@@ -150,15 +149,17 @@ public class InfoStage {
 				}
 			}
 		});
+		
+		*/
 		board.infoStageSemaphore.release();
 	}
-	
+
 	public void updateGeld(Player player) {
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
-				geldArr[player.getID()].setText(player.getBilanz()+"");
-				
+				geldArr[player.getID()].setText(player.getBilanz() + "");
+
 			}
 		});
 	}
@@ -173,20 +174,15 @@ public class InfoStage {
 		}
 	}
 
-	void keyHandler(Scene scene) {
-		scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
-			@Override
-			public void handle(KeyEvent event) {
-				switch (event.getCode()) {
-				default:
-					board.wuerfelStage.stage.toFront();
-					board.prime.toFront();
-					break;
-				}
-
-			}
-		});
-	}
+	/*
+	 * void keyHandler(Scene scene) { scene.setOnKeyPressed(new
+	 * EventHandler<KeyEvent>() {
+	 * 
+	 * @Override public void handle(KeyEvent event) { switch (event.getCode()) {
+	 * default: board.wuerfelStage.stage.toFront(); board.prime.toFront(); break; }
+	 * 
+	 * } }); }
+	 */
 
 	private HashMap<String, Button> createButtons(Player player) {
 		HashMap<String, Button> street = new HashMap<String, Button>();
@@ -273,19 +269,36 @@ public class InfoStage {
 	private Button initBut(String color, Button x, Stage prime,Player player) {
 		x.setMaxSize(5, 5);
 		x.setStyle("-fx-background-color: grey;");
-		x.setOnAction(e -> erzeugeStreetStage(x));
-		return x;
+		x.setOnAction( new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				System.out.println("Street "+x.getText());
+				board.streetStageOpen=  new StreetStage(board, Besitzrechtkarte.findByName(x.getText()), false , false, false, false); }});
+			//	button.setStyle("-fx-background-color: transparent; -fx-background-image: url(\"/icons/3house.png\"); -fx-background-size: "+button.getWidth()+" "+button.getHeight()+"; -fx-rotate: 90;");
+//				/*
+//				 * Platform.runLater(new Runnable() {
+//				 * 
+//				 * @Override public void run() { // streetStageOpen = new StreetStage(me,
+//				 * Besitzrechtkarte.findByName(x.getText()), false , false, false, false); }});
+//				 */
+			return x;
 	}
 	
+
+
+	// x.setOnAction(e -> erzeugeStreetStage(x));
+
+
 	public void erzeugeStreetStage(Button x) {
-	
-		Platform.runLater(new Runnable() {
-			@Override
-			public void run() {
-				board.streetStageOpen = new StreetStage(board, Besitzrechtkarte.findByName(x.getText()), false , false, false, false);
-		}});
-		
-	
+		board.streetStageOpen = new StreetStage(board, Besitzrechtkarte.findByName(x.getText()), false, false, false,
+				false);
+		/*
+		 * Platform.runLater(new Runnable() {
+		 * 
+		 * @Override public void run() { board.streetStageOpen = new StreetStage(board,
+		 * Besitzrechtkarte.findByName(x.getText()), false , false, false, false); }});
+		 */
+
 	}
 
 	public void changeColor(Besitzrechtkarte x) {
@@ -296,16 +309,15 @@ public class InfoStage {
 				Button b = p.getStreetsButton(x.getName());
 				if (b.getStyle().equals("-fx-background-color: grey;")) {
 					b.setStyle("-fx-background-color:" + x.getColor() + ";");
-					
-					
+
 				} else {
 					b.setStyle("-fx-background-color: grey;");
 
 				}
-				
+
 			}
 		});
-		
+
 	}
 
 	Scene getScene() {

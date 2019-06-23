@@ -496,9 +496,18 @@ public class Server {
 			public void wuerfeln(int playerNumber) throws IOException {
 				broadcastInt(2);
 				broadcastInt(playerNumber);
-				list.get(playerNumber).in.readBoolean();
+				int aktion = list.get(playerNumber).in.readInt();
+				while(aktion != 0) {
+					switch(aktion) {
+					case 1:   //Hypothek aufnehmen
+						break;
+					}
+					aktion = list.get(playerNumber).in.readInt();
+					
+				}
 				w1 = model.Board.wuerfeln();
 				w2 = model.Board.wuerfeln();
+				broadcastInt(0);
 				broadcastInt(w1);
 				broadcastInt(w2);
 				if(w1==w2) {

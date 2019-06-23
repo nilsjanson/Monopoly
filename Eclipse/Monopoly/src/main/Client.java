@@ -50,6 +50,7 @@ public class Client extends Thread {
 			out.writeUTF(name);
 			out.flush();
 			board.boardReady.acquire();
+			board.ownPlayerNumber = ownPlayerNumber;
 			playerList = new Player[anzahlSpieler];
 			for(int i = 0 ; i < anzahlSpieler ; i++) {
 				String playerName  = in.readUTF();
@@ -282,16 +283,66 @@ public class Client extends Thread {
 			int playerNumber = in.readInt(); // erhalte den wuerfelnden SPieler
 			System.out.println(playerNumber + " ist am Zug");
 			if (playerNumber == ownPlayerNumber) { // ist der Client selber am Zug
-				board.wuerfelStage.getLeertaste().acquire(board.wuerfelStage.getLeertaste().availablePermits());
+				board.aktionZugGemachtSem.acquire(board.aktionZugGemachtSem.availablePermits());
 			//	board.wuerfelStage.yourTurn();
 				System.out.println("Sie sind am Zug druecken sie die Leertaste zum wuerfeln!");
-				board.wuerfelStage.getLeertaste().acquire();
-				out.writeBoolean(true);
+				board.yourTurn = true;
+				board.aktionZugGemachtSem.acquire();
+				int aktion = board.actionQueue.remove(0);
+				
+				while(aktion!=0) {
+					out.writeInt(aktion);
+					out.flush();
+					int position = board.actionQueue.remove(0); //Position übermitteln
+					out.write(position);
+					out.flush();
+					in.readInt();
+					in.readInt();
+					switch(aktion) {
+					case 2: //versteigern
+						String name = Besitzrechtkarte.findByPosition(position).getName();
+						showAuctionStage(board, name);
+						board.auktionStageOpenSemaphore.acquire();
+						Auktion a = board.auktionStageOpen;
+						int actual = in.readInt();
+						while (actual != -1) {
+
+							a.neuesGebot(in.readInt());
+							if (actual == ownPlayerNumber) {
+								a.yourTurn();
+
+							} else {
+								a.disableButtons();
+							}
+							actual = in.readInt();
+						}
+						a.close(in.readInt());
+						break;
+					case 3:
+						Besitzrechtkarte x =  Besitzrechtkarte.findByPosition(position);
+						x.setHausCounter(x.getHausCounter()-1);
+					}
+					
+					board.aktionZugGemachtSem.acquire();
+					aktion = board.actionQueue.remove(0);
+					
+					
+				}
+				
+				out.writeInt(0);
 				out.flush();
+				board.yourTurn= false;
 				System.out.println("gewuerfelt");
 			} else { // ist ein anderer CLient am Zug
 				System.out.println("Spieler " + playerNumber + " ist am Zug. Warte auf wuerfeln...");
+				int aktion = in.readInt();
+				while(aktion != 0) {
+					
+				}
 			}
+			
+			
+			
 			int wuerfel1 = in.readInt();
 			int wuerfel2 = in.readInt();
 		
