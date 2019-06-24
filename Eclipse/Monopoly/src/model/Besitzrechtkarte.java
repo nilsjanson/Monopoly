@@ -11,6 +11,7 @@ public class Besitzrechtkarte {
 	private String color;
 	private String name;
 	private int position;
+	private boolean hypothek;
 	
 	public static List<Besitzrechtkarte> liste = new ArrayList<Besitzrechtkarte>(Arrays.asList(
 			new Besitzrechtkarte("Kesselhaus", "purple",1),
@@ -34,7 +35,7 @@ public class Besitzrechtkarte {
 			
 			new Besitzrechtkarte("StudienBeratung", "yellow",26),
 			new Besitzrechtkarte("StudienSekretariat", "yellow",27),
-			new Besitzrechtkarte("DekanBuero", "yellow",28),
+			new Besitzrechtkarte("DekanBuero", "yellow",29),
 			
 			
 			new Besitzrechtkarte("RhenoTeutonia", "lime",31),
@@ -62,8 +63,20 @@ public class Besitzrechtkarte {
 		this.name = name;
 		this.color = color ;
 		this.position = position;
+		hypothek= false;
 	
 	}
+	
+
+	public boolean isHypothek() {
+		return hypothek;
+	}
+
+
+	public void setHypothek(boolean hypothek) {
+		this.hypothek = hypothek;
+	}
+
 
 	public Player getOwner() {
 		return owner;

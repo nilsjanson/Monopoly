@@ -19,7 +19,7 @@ public class WuerfelStage {
 	Stage stage;
 	Board board;
 	ArrayList<ImageView> views;
-	private Semaphore leertaste;
+	//private Semaphore leertaste;
 	HBox hbox;
 	double min;
 	double max;
@@ -47,16 +47,14 @@ public class WuerfelStage {
 
 			views.add(new ImageView(getClass().getResource("/wuerfel/0.png").toExternalForm()));
 			views.add(new ImageView(getClass().getResource("/wuerfel/0.png").toExternalForm()));
-			leertaste = new Semaphore(0);
+			
 			start();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public Semaphore getLeertaste() {
-		return leertaste;
-	}
+	
 
 	public void start() {
 		hbox = new HBox();
@@ -121,9 +119,6 @@ public class WuerfelStage {
 					break;
 				case F2:
 					new WuerfelAnimation(views, stage);
-					break;
-				case SPACE:
-					leertaste.release();
 					break;
 				case ESCAPE:
 					new ExitStage(board.prime);

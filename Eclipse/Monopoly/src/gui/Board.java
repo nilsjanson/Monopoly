@@ -2,6 +2,7 @@ package gui;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Semaphore;
 
 import javafx.animation.KeyFrame;
@@ -41,6 +42,7 @@ public class Board {
 	final URL resource = getClass().getResource("/musik/StillStanding.mp3");
 	final Media media = new Media(resource.toString());
 	final MediaPlayer mediaPlayer = new MediaPlayer(media);
+	public int ownPlayerNumber ;
 	protected Stage prime;
 	private Stage welcome;
 	public int spieler = 0;
@@ -49,6 +51,9 @@ public class Board {
 	private double max;
 	private double width;
 	private double height;
+	public boolean yourTurn = false; //Ob der Spieler am Zug gerade ist und handeln kann
+	public List<Integer> actionQueue = new ArrayList<Integer>();
+	public Semaphore aktionZugGemachtSem = new Semaphore(0);
 	private Scene scene;
 	int buttonCount = 0;
 	double playerStartPositionX;
@@ -345,7 +350,8 @@ public class Board {
 			@Override
 			public void handle(ActionEvent event) {
 				System.out.println("Street "+button.getText());
-				button.setStyle("-fx-background-color: transparent; -fx-background-image: url(\"/icons/3house.png\"); -fx-background-size: "+button.getWidth()+" "+button.getHeight()+"; -fx-rotate: 90;");
+				streetStageOpen = new StreetStage(me, Besitzrechtkarte.findByPosition(Integer.parseInt(button.getText())), false , false, false, false); }});
+			//	button.setStyle("-fx-background-color: transparent; -fx-background-image: url(\"/icons/3house.png\"); -fx-background-size: "+button.getWidth()+" "+button.getHeight()+"; -fx-rotate: 90;");
 //				/*
 //				 * Platform.runLater(new Runnable() {
 //				 * 
@@ -353,7 +359,7 @@ public class Board {
 //				 * Besitzrechtkarte.findByName(x.getText()), false , false, false, false); }});
 //				 */
 			}
-		});}
+	//	});}
 
 	void startMusik() {
 		final URL resource = getClass().getResource("/musik/AnnoDominiBeatsStillStanding.mp3");
@@ -497,7 +503,7 @@ public class Board {
 					break;
 
 				case W:
-					wuerfelStage.getLeertaste().release();
+					aktionZugGemachtSem.release();
 
 					break;
 				case B:
