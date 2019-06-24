@@ -1,5 +1,6 @@
 package gui;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.concurrent.Semaphore;
@@ -12,6 +13,8 @@ import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -94,6 +97,10 @@ public class WuerfelStage {
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
+				final URL resource = getClass().getResource("/sounds/wuerfeln.mp3");
+				final Media media = new Media(resource.toString());
+				final MediaPlayer mediaPlayer = new MediaPlayer(media);
+				mediaPlayer.play();
 				hbox.getChildren().remove(0);
 				hbox.getChildren().remove(0);
 				ImageView eins = views.get(x - 1);
