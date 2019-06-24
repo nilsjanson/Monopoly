@@ -40,6 +40,10 @@ public class Grundstueck {
 	 * Index der anderen Grundstuecke die zu dieser Strasse gehoeren.
 	 */
 	private int[] street;
+	
+	private boolean hypothek;
+	
+
 
 	/**
 	 * Initialisierung des Grundstuecks.
@@ -56,6 +60,7 @@ public class Grundstueck {
 		this.preis = preis;
 		this.stelle = stelle;
 		this.street = street;
+		hypothek = false;
 	}
 
 	public boolean equals(Object o) {
@@ -70,6 +75,16 @@ public class Grundstueck {
 		}
 		return true;
 	}
+	
+	
+	public boolean isHypothek() {
+		return hypothek;
+	}
+
+	public void setHypothek(boolean hypothek) {
+		this.hypothek = hypothek;
+	}
+
 
 	public String getName() {
 		return name;

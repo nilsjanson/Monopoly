@@ -100,7 +100,7 @@ public class StreetStage extends Application {
 				@Override
 				public void handle(ActionEvent arg0) {
 					System.out.println("Versteigerung starten");
-					board.actionQueue.add(2);
+					board.actionQueue.add(3);
 					board.actionQueue.add(besitz.getPosition());
 					board.actionSeamphore.release();
 					stage.close();
@@ -114,7 +114,7 @@ public class StreetStage extends Application {
 					@Override
 					public void handle(ActionEvent arg0) {
 						System.out.println("Haus verkaufen");
-						board.actionQueue.add(3);
+						board.actionQueue.add(4);
 						board.actionQueue.add(besitz.getPosition());
 						board.actionSeamphore.release();
 						stage.close();
@@ -129,7 +129,7 @@ public class StreetStage extends Application {
 					@Override
 					public void handle(ActionEvent arg0) {
 						System.out.println("Versteigerung starten");
-						board.actionQueue.add(4);
+						board.actionQueue.add(5);
 						board.actionQueue.add(besitz.getPosition());
 						board.actionSeamphore.release();
 						stage.close();
