@@ -72,12 +72,17 @@ public class TestBoard {
 		pane.setStyle("-fx-background-color: lightgreen;" + "-fx-background-image: url(\"/icons/TH-Poly.jpg\");"
 				+ "    -fx-background-size: " + max + " " + max + ";");
 
-		HBox buttom = botBoxes();
+		HBox buttom = botBoxes(); // invertieren
+		int bot=identity.size();
+		System.out.println("Bot: "+bot);
+		VBox left = leftBoxes(); // invertieren
+		int lev=identity.size()-bot;
+		System.out.println("Left: "+lev);
 		HBox top = topBoxes();
-		
-		VBox left = leftBoxes();
+		int tp=identity.size()-lev;
+		System.out.println("Top: "+tp);
 		VBox right = rightBoxes();
-
+		System.out.println("Fields: "+identity.size());
 		pane.setTop(top);
 		pane.setBottom(buttom);
 		pane.setLeft(left);
@@ -142,6 +147,7 @@ public class TestBoard {
 		ArrayList<VBox> boxes = new ArrayList<VBox>();
 		for (int i = 0; i <= 10; i++) {
 			boxes.add(new VBox(buttonCount++));
+			identity.put(boxes.get(i), boxCounter++);
 		}
 		streetHBoxs(boxes, true);
 		hbox.getChildren().addAll(boxes);
@@ -156,6 +162,9 @@ public class TestBoard {
 			boxes.add(new VBox(j--));
 			buttonCount++;
 		}
+		for (int i=boxes.size()-1;i!=0;i--) {
+			identity.put(boxes.get(i), boxCounter++);
+		}
 		streetHBoxs(boxes, false);
 		hbox.getChildren().addAll(boxes);
 		return hbox;
@@ -166,11 +175,11 @@ public class TestBoard {
 		ArrayList<HBox> boxes = new ArrayList<HBox>();
 		for (int i = 0; i <= 8; i++) {
 			boxes.add(new HBox(buttonCount++));
+			identity.put(boxes.get(i), boxCounter++);
 		}
+		
 		leftAndRight(boxes, false);
 		vbox.getChildren().addAll(boxes);
-		vbox.setMaxWidth((max * 0.134) * vbox.getChildren().size());
-		vbox.setMaxHeight((max * 0.0814) * vbox.getChildren().size());
 		return vbox;
 	}
 
@@ -182,12 +191,11 @@ public class TestBoard {
 			boxes.add(new HBox(j--));
 			buttonCount++;
 		}
+		for (int i=boxes.size()-1;i!=0;i--) {
+			identity.put(boxes.get(i), boxCounter++);
+		}
 		leftAndRight(boxes, true);
 		vbox.getChildren().addAll(boxes);
-		vbox.setMaxWidth((max * 0.134) * vbox.getChildren().size());
-		vbox.setMaxHeight((max * 0.0814) * vbox.getChildren().size());
-		vbox.maxHeightProperty().bind(prime.heightProperty().multiply(0.0814).multiply(vbox.getChildren().size()));
-		vbox.maxWidthProperty().bind(prime.widthProperty().multiply(0.134).multiply(vbox.getChildren().size()));
 		return vbox;
 	}
 
@@ -195,16 +203,16 @@ public class TestBoard {
 		for (VBox x : boxes) {
 			x.setPrefWidth(max * 0.134);
 			x.setPrefHeight(max * 0.0814);
-			x.setStyle("-fx-border-color: transparent; -fx-background-color: transparent");
-			identity.put(x, boxCounter++);
+			x.setStyle("-fx-border-color: red; -fx-background-color: transparent");
 			if (rotation) {
 				streetVBoxTop(x);
 			} else {
 				streetVBoxBot(x);
 			}
 		}
-		boxes.get(0).setPrefWidth(max * 0.136);
-		boxes.get(boxes.size() - 1).setPrefWidth(max * 0.136);
+		boxes.get(0).setPrefWidth(max * 0.19);
+		boxes.get(boxes.size() - 1).setPrefWidth(max * 0.19);
+		
 
 		boxes.get(0).setPrefHeight(max * 0.136);
 		boxes.get(boxes.size() - 1).setPrefHeight(max * 0.136);
@@ -213,15 +221,11 @@ public class TestBoard {
 	private void leftAndRight(ArrayList<HBox> boxes, boolean rotation) {
 		for (HBox x : boxes) {
 			x.setPrefWidth(max * 0.134);
-			x.setMaxWidth(max * 0.134);
 			x.setPrefHeight(max * 0.0814);
-			x.setMaxHeight(max * 0.0814);
 			x.setStyle("-fx-border-color: red; -fx-background-color: transparent");
 			if (rotation) {
-				identity.put(x, boxCounter++);
 				streetVBoxLeft(x);
 			} else {
-				identity.put(x, boxCounter++);
 				streetVBoxRight(x);
 			}
 		}
