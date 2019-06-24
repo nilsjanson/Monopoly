@@ -387,13 +387,13 @@ public class Server {
 			 * @throws IOException Client antwortet nicht.
 			 */
 			public void addGeld(int change) throws IOException {
-				while (getGeld() + change < 0) {
-					// muss noch implemtiert werden
-				}
 				geld += change;
 				broadcastInt(3);
 				broadcastInt(this.ID);
 				broadcastInt(this.geld);
+				if(geld<0) {
+					yourTurn(this.getID(),false);
+				}
 
 			}
 
@@ -494,20 +494,11 @@ public class Server {
 			 * @throws IOException wenn der Client nicht erreichbar ist.
 			 */
 			public void wuerfeln(int playerNumber) throws IOException {
-				broadcastInt(2);
-				broadcastInt(playerNumber);
-				int aktion = list.get(playerNumber).in.readInt();
-				while(aktion != 0) {
-					switch(aktion) {
-					case 1:   //Hypothek aufnehmen
-						break;
-					}
-					aktion = list.get(playerNumber).in.readInt();
-					
-				}
+			
 				w1 = model.Board.wuerfeln();
 				w2 = model.Board.wuerfeln();
-				broadcastInt(0);
+				broadcastInt(2);
+				broadcastInt(playerNumber);
 				broadcastInt(w1);
 				broadcastInt(w2);
 				if(w1==w2) {
@@ -515,7 +506,49 @@ public class Server {
 				}
 				broadcastBoolean(this.imGefaengnis);
 			}
+			
+			
+			public void yourTurn(int playerNumber, boolean wuerfeln) throws IOException {
+				broadcastInt(1);
+				broadcastInt(playerNumber);
+				int aktion = list.get(playerNumber).in.readInt();
+				Client c = list.get(playerNumber);
+				while(aktion != 2 || (!wuerfeln&& (c.geld<0 &&c.canMakeMoney()))) {
+					int position = list.get(playerNumber).in.readInt();
+					switch(aktion) {
+					case 3: //Versteigerung
+						versteigerung(feld[position], list.get(playerNumber)); 
+						break;
+					
+					case 4: //Haus verkaufen
+						broadcastInt(9);
+						broadcastInt(position);
+						feld[position].setHaeuser(feld[position].getHaeuser()-1);
+					break;	
+					case 5: 
+						broadcastInt(10);
+						broadcastInt(position);
+						feld[position].setHypothek(!feld[position].isHypothek());
+						break;
+					}
+					broadcastInt(1);
+					broadcastInt(playerNumber);
+					aktion = list.get(playerNumber).in.readInt();
+					
+				}
+				if(c.geld<0) {
+					System.out.println(c.getName() + " ist pleite gegangen");
+				}
+				if(wuerfeln) {
+					wuerfeln(playerNumber);
+				}
+				wuerfeln(playerNumber);
+			
+			}
 		}
+		
+		
+	
 
 		/**
 		 * Initialisierung eines neuen Spiels.
@@ -552,7 +585,7 @@ public class Server {
 						} else if (client.hasFree2()) {
 							
 						} else if (client.versucheImGefangnis < 2) {
-							client.wuerfeln(nextPlayer);
+							client.yourTurn(nextPlayer,true);
 							client.versucheImGefangnis++;
 							if (client.w1 == client.w2) {
 								client.imGefaengnis = false;
@@ -570,8 +603,8 @@ public class Server {
 					}
 					
 					else {
-						client.wuerfeln(nextPlayer);
-						client.walk(client.getW());
+						client.yourTurn(nextPlayer,true);
+							client.walk(client.getW());
 
 						if (client.w1 == client.w2) { // Pasch gewuerfelt
 							if (client.versuche == 2) {

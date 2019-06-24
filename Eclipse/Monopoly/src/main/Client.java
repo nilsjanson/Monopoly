@@ -65,6 +65,37 @@ public class Client extends Thread {
 			int x = in.readInt();
 			while (x != -1) {
 				switch (x) {
+				
+				case 1:
+					
+					board.actionSeamphore = new Semaphore(0);
+					int playerNumber = in.readInt(); // erhalte den Spieler, der dran ist
+					System.out.println(playerNumber + " ist am Zug");
+					if (playerNumber == ownPlayerNumber) { // ist der Client selber am Zug
+						board.aktionZugGemachtSem.acquire(board.aktionZugGemachtSem.availablePermits());
+						board.yourTurn = true;
+						board.aktionZugGemachtSem.acquire();
+						int aktion = board.actionQueue.remove(0);
+						
+						if(aktion!=0) {
+							out.writeInt(aktion);
+							out.flush();
+							int position = board.actionQueue.remove(0); //Position übermitteln
+							out.write(position);
+							out.flush();		
+							
+							
+							
+						}else {
+							out.writeInt(2);
+							out.flush();
+						}
+						
+						board.yourTurn= false;
+						System.out.println("gewuerfelt");
+					}
+				
+				
 				case 2: // wuerfeln
 					wuerfel(ownPlayerNumber);
 					break;
@@ -199,7 +230,18 @@ public class Client extends Thread {
 					System.out.println("Auf" +bK.getName() + " wurde ein Haus gebaut");
 					
 					break;
-
+					
+				case 10: //haus verkaufen
+					Besitzrechtkarte besitz =  Besitzrechtkarte.findByPosition(in.readInt());
+					besitz.setHausCounter(besitz.getHausCounter()-1);
+					System.out.println("Auf" +besitz.getName() + " wurde ein Haus abgebaut");
+					break;
+					
+				case 11: //Hypothek aufnehmen
+					Besitzrechtkarte besitzRecht =  Besitzrechtkarte.findByPosition(in.readInt());
+					besitzRecht.setHypothek(!besitzRecht.isHypothek());
+					System.out.println("Auf" +besitzRecht.getName() + " wurde ein Haus abgebaut");
+					break;
 				}
 				x = in.readInt();
 			}
@@ -278,71 +320,8 @@ public class Client extends Thread {
 	public void wuerfel(int ownPlayerNumber) throws IOException {
 
 		try {
-			board.actionSeamphore = new Semaphore(0);
-			System.out.println("Wuerfeln starten");
+			
 			int playerNumber = in.readInt(); // erhalte den wuerfelnden SPieler
-			System.out.println(playerNumber + " ist am Zug");
-			if (playerNumber == ownPlayerNumber) { // ist der Client selber am Zug
-				board.aktionZugGemachtSem.acquire(board.aktionZugGemachtSem.availablePermits());
-			//	board.wuerfelStage.yourTurn();
-				System.out.println("Sie sind am Zug druecken sie die Leertaste zum wuerfeln!");
-				board.yourTurn = true;
-				board.aktionZugGemachtSem.acquire();
-				int aktion = board.actionQueue.remove(0);
-				
-				while(aktion!=0) {
-					out.writeInt(aktion);
-					out.flush();
-					int position = board.actionQueue.remove(0); //Position übermitteln
-					out.write(position);
-					out.flush();
-					in.readInt();
-					in.readInt();
-					switch(aktion) {
-					case 2: //versteigern
-						String name = Besitzrechtkarte.findByPosition(position).getName();
-						showAuctionStage(board, name);
-						board.auktionStageOpenSemaphore.acquire();
-						Auktion a = board.auktionStageOpen;
-						int actual = in.readInt();
-						while (actual != -1) {
-
-							a.neuesGebot(in.readInt());
-							if (actual == ownPlayerNumber) {
-								a.yourTurn();
-
-							} else {
-								a.disableButtons();
-							}
-							actual = in.readInt();
-						}
-						a.close(in.readInt());
-						break;
-					case 3:
-						Besitzrechtkarte x =  Besitzrechtkarte.findByPosition(position);
-						x.setHausCounter(x.getHausCounter()-1);
-					}
-					
-					board.aktionZugGemachtSem.acquire();
-					aktion = board.actionQueue.remove(0);
-					
-					
-				}
-				
-				out.writeInt(0);
-				out.flush();
-				board.yourTurn= false;
-				System.out.println("gewuerfelt");
-			} else { // ist ein anderer CLient am Zug
-				System.out.println("Spieler " + playerNumber + " ist am Zug. Warte auf wuerfeln...");
-				int aktion = in.readInt();
-				while(aktion != 0) {
-					
-				}
-			}
-			
-			
-			
 			int wuerfel1 = in.readInt();
 			int wuerfel2 = in.readInt();
 		
