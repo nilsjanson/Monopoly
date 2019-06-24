@@ -51,7 +51,7 @@ public class StreetStage extends Application {
 		this.kaufbar = kaufbar;
 		besitz = x;
 		this.versteigerbar = versteigerbar;
-		this.hausKaufbar = hausKaufbar;
+		this.hausKaufbar = false;//hausKaufbar;
 		this.playerNumber = x.getOwner().getID();
 		this.aktionErforderlich = aktionErforderlich;
 		img = new ImageView(getClass().getResource("/besitzkarten/" + x.getName() + ".jpg").toExternalForm());
@@ -91,7 +91,7 @@ public class StreetStage extends Application {
 		hausVerkaufen.setVisible(false);
 
 		Button exit = new Button("Exit");
-		haus.setVisible(!aktionErforderlich);
+		exit.setVisible(!aktionErforderlich);
 
 		if (board.yourTurn) {
 			versteigern.setVisible(true);
@@ -102,7 +102,8 @@ public class StreetStage extends Application {
 					System.out.println("Versteigerung starten");
 					board.actionQueue.add(3);
 					board.actionQueue.add(besitz.getPosition());
-					board.actionSeamphore.release();
+					board.aktionZugGemachtSem.release();
+					board.yourTurn = false;
 					stage.close();
 				}
 			});
@@ -116,7 +117,7 @@ public class StreetStage extends Application {
 						System.out.println("Haus verkaufen");
 						board.actionQueue.add(4);
 						board.actionQueue.add(besitz.getPosition());
-						board.actionSeamphore.release();
+						board.aktionZugGemachtSem.release();
 						stage.close();
 					}
 				});
@@ -131,7 +132,7 @@ public class StreetStage extends Application {
 						System.out.println("Versteigerung starten");
 						board.actionQueue.add(5);
 						board.actionQueue.add(besitz.getPosition());
-						board.actionSeamphore.release();
+						board.aktionZugGemachtSem.release();
 						stage.close();
 					}
 				});
