@@ -72,16 +72,17 @@ public class Client extends Thread {
 					int playerNumber = in.readInt(); // erhalte den Spieler, der dran ist
 					System.out.println(playerNumber + " ist am Zug");
 					if (playerNumber == ownPlayerNumber) { // ist der Client selber am Zug
+						System.out.println("Ich bin dran!");
 						board.aktionZugGemachtSem.acquire(board.aktionZugGemachtSem.availablePermits());
 						board.yourTurn = true;
 						board.aktionZugGemachtSem.acquire();
 						int aktion = board.actionQueue.remove(0);
 						
-						if(aktion!=0) {
+						if(aktion!=2) {
 							out.writeInt(aktion);
 							out.flush();
 							int position = board.actionQueue.remove(0); //Position übermitteln
-							out.write(position);
+							out.writeInt(position);
 							out.flush();		
 							
 							
@@ -92,8 +93,8 @@ public class Client extends Thread {
 						}
 						
 						board.yourTurn= false;
-						System.out.println("gewuerfelt");
 					}
+					break;
 				
 				
 				case 2: // wuerfeln
@@ -321,15 +322,15 @@ public class Client extends Thread {
 
 		try {
 			
-			int playerNumber = in.readInt(); // erhalte den wuerfelnden SPieler
+			int playerNumber2 = in.readInt(); // erhalte den wuerfelnden SPieler
 			int wuerfel1 = in.readInt();
 			int wuerfel2 = in.readInt();
 		
-
+			System.out.println(playerNumber2 + " ist dran");
 			board.wuerfelStage.wuerfeln(wuerfel1, wuerfel2);
 			if(!in.readBoolean()) {
 				for (int i = 1; i <= wuerfel1 + wuerfel2; i++) {
-					board.move(board.playerArr[playerNumber]);
+					board.move(board.playerArr[playerNumber2]);
 					Thread.sleep(800);
 				}
 

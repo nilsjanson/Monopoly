@@ -139,7 +139,7 @@ public class InfoStage {
 		}
 		info.setY((min / 2) - (info.getHeight() / 2));
 		info.setOnCloseRequest(e -> System.exit(0));
-	/*	info.focusedProperty().addListener(new ChangeListener<Boolean>() {
+		info.focusedProperty().addListener(new ChangeListener<Boolean>() {
 			@Override
 			public void changed(ObservableValue<? extends Boolean> ov, Boolean hidden, Boolean shown) {
 				if (shown) {
@@ -150,7 +150,7 @@ public class InfoStage {
 			}
 		});
 		
-		*/
+		
 		board.infoStageSemaphore.release();
 	}
 

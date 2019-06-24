@@ -498,6 +498,7 @@ public class Server {
 				w1 = model.Board.wuerfeln();
 				w2 = model.Board.wuerfeln();
 				broadcastInt(2);
+				System.out.println(playerNumber + " sollte jetzt wuerfeln");
 				broadcastInt(playerNumber);
 				broadcastInt(w1);
 				broadcastInt(w2);
@@ -517,6 +518,7 @@ public class Server {
 					int position = list.get(playerNumber).in.readInt();
 					switch(aktion) {
 					case 3: //Versteigerung
+						System.out.println("Versteigerung im Zug gestartet");
 						versteigerung(feld[position], list.get(playerNumber)); 
 						break;
 					
@@ -542,7 +544,6 @@ public class Server {
 				if(wuerfeln) {
 					wuerfeln(playerNumber);
 				}
-				wuerfeln(playerNumber);
 			
 			}
 		}
@@ -604,7 +605,7 @@ public class Server {
 					
 					else {
 						client.yourTurn(nextPlayer,true);
-							client.walk(client.getW());
+						client.walk(client.getW());
 
 						if (client.w1 == client.w2) { // Pasch gewuerfelt
 							if (client.versuche == 2) {

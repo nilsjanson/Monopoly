@@ -503,7 +503,12 @@ public class Board {
 					break;
 
 				case W:
-					aktionZugGemachtSem.release();
+					if(yourTurn) {
+						actionQueue.add(2);
+						yourTurn = false;
+						aktionZugGemachtSem.release();
+
+					}
 
 					break;
 				case B:
