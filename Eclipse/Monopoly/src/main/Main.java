@@ -31,7 +31,7 @@ public class Main extends Application {
 	public void start(Stage prime) throws Exception {
 		File dir = new File(".");
 		String path = dir.getCanonicalPath();
-		if (path.equals("F:\\Studium\\OneDrive - th-bingen.de\\Anlagen\\SENG\\Projekt 2019\\Monopoly\\Monopoly\\Eclipse\\Monopoly")) { // Ausschliesslich Test der Grafischen Oberflaeche
+		if (path.equals("F:\\Studium\\OneDrive - th-bingen.de\\Anlagen\\SENG\\Projekt 2019\\Monopoly\\Monopoly\\Eclipse\\Monopoly") || path.equals("C:\\Java\\SENG\\TH-Poly\\Eclipse\\Monopoly")) { // Ausschliesslich Test der Grafischen Oberflaeche
 			TestBoard board = new TestBoard(prime);
 		} else {
 			System.out.println(dir.getCanonicalPath());
