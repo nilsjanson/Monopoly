@@ -73,16 +73,11 @@ public class TestBoard {
 				+ "    -fx-background-size: " + max + " " + max + ";");
 
 		HBox buttom = botBoxes(); // invertieren
-		int bot=identity.size();
-		System.out.println("Bot: "+bot);
 		VBox left = leftBoxes(); // invertieren
-		int lev=identity.size()-bot;
-		System.out.println("Left: "+lev);
 		HBox top = topBoxes();
-		int tp=identity.size()-lev;
-		System.out.println("Top: "+tp);
 		VBox right = rightBoxes();
 		System.out.println("Fields: "+identity.size());
+		
 		pane.setTop(top);
 		pane.setBottom(buttom);
 		pane.setLeft(left);
@@ -162,7 +157,7 @@ public class TestBoard {
 			boxes.add(new VBox(j--));
 			buttonCount++;
 		}
-		for (int i=boxes.size()-1;i!=0;i--) {
+		for (int i=boxes.size()-1;i>=0;i--) {
 			identity.put(boxes.get(i), boxCounter++);
 		}
 		streetHBoxs(boxes, false);
@@ -191,7 +186,7 @@ public class TestBoard {
 			boxes.add(new HBox(j--));
 			buttonCount++;
 		}
-		for (int i=boxes.size()-1;i!=0;i--) {
+		for (int i=boxes.size()-1;i>=0;i--) { //for (int i=boxes.size()-1;i!=0;i--) {
 			identity.put(boxes.get(i), boxCounter++);
 		}
 		leftAndRight(boxes, true);
