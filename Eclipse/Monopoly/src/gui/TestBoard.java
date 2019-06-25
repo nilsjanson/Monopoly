@@ -39,7 +39,6 @@ public class TestBoard {
 	private double width;
 	private double height;
 	private Scene scene;
-	int buttonCount = 0;
 	double playerStartPositionX;
 	double playerStartPositionY;
 	public Semaphore TestBoardReady = new Semaphore(0);
@@ -141,7 +140,7 @@ public class TestBoard {
 		HBox hbox = new HBox();
 		ArrayList<VBox> boxes = new ArrayList<VBox>();
 		for (int i = 0; i <= 10; i++) {
-			boxes.add(new VBox(buttonCount++));
+			boxes.add(new VBox());
 			identity.put(boxes.get(i), boxCounter++);
 		}
 		streetHBoxs(boxes, true);
@@ -152,10 +151,8 @@ public class TestBoard {
 	private HBox botBoxes() {
 		HBox hbox = new HBox();
 		ArrayList<VBox> boxes = new ArrayList<VBox>();
-		int j = buttonCount + 10;
 		for (int i = 0; i <= 10; i++) {
-			boxes.add(new VBox(j--));
-			buttonCount++;
+			boxes.add(new VBox());
 		}
 		for (int i=boxes.size()-1;i>=0;i--) {
 			identity.put(boxes.get(i), boxCounter++);
@@ -169,7 +166,7 @@ public class TestBoard {
 		VBox vbox = new VBox();
 		ArrayList<HBox> boxes = new ArrayList<HBox>();
 		for (int i = 0; i <= 8; i++) {
-			boxes.add(new HBox(buttonCount++));
+			boxes.add(new HBox());
 			identity.put(boxes.get(i), boxCounter++);
 		}
 		
@@ -181,10 +178,8 @@ public class TestBoard {
 	private VBox leftBoxes() {
 		VBox vbox = new VBox();
 		ArrayList<HBox> boxes = new ArrayList<HBox>();
-		int j = buttonCount + 8;
 		for (int i = 0; i <= 8; i++) {
-			boxes.add(new HBox(j--));
-			buttonCount++;
+			boxes.add(new HBox());
 		}
 		for (int i=boxes.size()-1;i>=0;i--) { //for (int i=boxes.size()-1;i!=0;i--) {
 			identity.put(boxes.get(i), boxCounter++);
@@ -198,7 +193,7 @@ public class TestBoard {
 		for (VBox x : boxes) {
 			x.setPrefWidth(max * 0.134);
 			x.setPrefHeight(max * 0.0814);
-			x.setStyle("-fx-border-color: red; -fx-background-color: transparent");
+			x.setStyle("-fx-border-color: transparent; -fx-background-color: transparent");
 			if (rotation) {
 				streetVBoxTop(x);
 			} else {
@@ -217,7 +212,7 @@ public class TestBoard {
 		for (HBox x : boxes) {
 			x.setPrefWidth(max * 0.134);
 			x.setPrefHeight(max * 0.0814);
-			x.setStyle("-fx-border-color: red; -fx-background-color: transparent");
+			x.setStyle("-fx-border-color: transparent; -fx-background-color: transparent");
 			if (rotation) {
 				streetVBoxLeft(x);
 			} else {
@@ -231,8 +226,8 @@ public class TestBoard {
 
 			@Override
 			public void handle(MouseEvent arg0) {
-				boolean buy = true;
-				new ConstructionClass(box, Besitzrechtkarte.findByPosition(identity.get(box)), buy, 0);
+				box.setAlignment(Pos.TOP_CENTER);
+				new ConstructionClass(box, Besitzrechtkarte.findByPosition(identity.get(box)), 0);
 				getIdentity(box);
 			}
 		});
@@ -244,9 +239,8 @@ public class TestBoard {
 
 			@Override
 			public void handle(MouseEvent arg0) {
-				boolean buy = true;
 				box.setAlignment(Pos.BOTTOM_RIGHT);
-				new ConstructionClass(box, Besitzrechtkarte.findByPosition(identity.get(box)), buy, 180);
+				new ConstructionClass(box, Besitzrechtkarte.findByPosition(identity.get(box)), 180);
 				getIdentity(box);
 			}
 		});
@@ -258,9 +252,8 @@ public class TestBoard {
 
 			@Override
 			public void handle(MouseEvent arg0) {
-				boolean buy = true;
-				box.setAlignment(Pos.TOP_RIGHT);
-				new ConstructionClass(box, Besitzrechtkarte.findByPosition(identity.get(box)), buy, 90);
+				box.setAlignment(Pos.CENTER_RIGHT);
+				new ConstructionClass(box, Besitzrechtkarte.findByPosition(identity.get(box)), 90);
 				getIdentity(box);
 			}
 		});
@@ -272,8 +265,8 @@ public class TestBoard {
 		box.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent arg0) {
-				boolean buy = true;
-				new ConstructionClass(box, Besitzrechtkarte.findByPosition(identity.get(box)), buy, -90);
+				box.setAlignment(Pos.CENTER_LEFT);
+				new ConstructionClass(box, Besitzrechtkarte.findByPosition(identity.get(box)), -90);
 				getIdentity(box);
 			}
 		});
