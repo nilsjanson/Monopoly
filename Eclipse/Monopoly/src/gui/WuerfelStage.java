@@ -160,7 +160,6 @@ class WuerfelAnimation extends Thread {
 	}
 
 	void wuerfeln() {
-	
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
