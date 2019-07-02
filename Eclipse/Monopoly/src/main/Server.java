@@ -1,14 +1,5 @@
 package main;
 
-import java.awt.Button;
-import java.awt.Color;
-import java.awt.Frame;
-import java.awt.GridLayout;
-import java.awt.TextField;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
@@ -17,7 +8,6 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -248,7 +238,6 @@ public class Server {
 		 */
 		private String leaveMessage = "\nPlayer has left because of IOException.\n";
 
-
 		/**
 		 * Der Client.<br>
 		 * Sammlung von Werten und Methoden die einen Spieler beschreiben.
@@ -283,7 +272,9 @@ public class Server {
 			/**
 			 * Versuche einen Pasch zu wuerfeln wenn man im Gefaengnis ist.
 			 */
+
 			private int versuche = 0;
+			private int versucheImGefangnis;
 			/**
 			 * Anzahl der Augen des 1. Wuerfels
 			 */
@@ -400,6 +391,10 @@ public class Server {
 				broadcastInt(3);
 				broadcastInt(this.ID);
 				broadcastInt(this.geld);
+				if(geld<0) {
+					yourTurn(this.getID(),false);
+				}
+
 			}
 
 			/**
@@ -499,15 +494,62 @@ public class Server {
 			 * @throws IOException wenn der Client nicht erreichbar ist.
 			 */
 			public void wuerfeln(int playerNumber) throws IOException {
-				broadcastInt(2);
-				broadcastInt(playerNumber);
-				list.get(playerNumber).in.readBoolean();
+			
 				w1 = model.Board.wuerfeln();
 				w2 = model.Board.wuerfeln();
+				broadcastInt(2);
+				System.out.println(playerNumber + " sollte jetzt wuerfeln");
+				broadcastInt(playerNumber);
 				broadcastInt(w1);
 				broadcastInt(w2);
+				if(w1==w2) {
+					this.imGefaengnis = false;
+				}
+				broadcastBoolean(this.imGefaengnis);
+			}
+			
+			
+			public void yourTurn(int playerNumber, boolean wuerfeln) throws IOException {
+				broadcastInt(1);
+				broadcastInt(playerNumber);
+				int aktion = list.get(playerNumber).in.readInt();
+				Client c = list.get(playerNumber);
+				while(aktion != 2 || (!wuerfeln&& (c.geld<0 &&c.canMakeMoney()))) {
+					int position = list.get(playerNumber).in.readInt();
+					switch(aktion) {
+					case 3: //Versteigerung
+						System.out.println("Versteigerung im Zug gestartet");
+						versteigerung(feld[position], list.get(playerNumber)); 
+						break;
+					
+					case 4: //Haus verkaufen
+						broadcastInt(9);
+						broadcastInt(position);
+						feld[position].setHaeuser(feld[position].getHaeuser()-1);
+					break;	
+					case 5: 
+						broadcastInt(10);
+						broadcastInt(position);
+						feld[position].setHypothek(!feld[position].isHypothek());
+						break;
+					}
+					broadcastInt(1);
+					broadcastInt(playerNumber);
+					aktion = list.get(playerNumber).in.readInt();
+					
+				}
+				if(c.geld<0) {
+					System.out.println(c.getName() + " ist pleite gegangen");
+				}
+				if(wuerfeln) {
+					wuerfeln(playerNumber);
+				}
+			
 			}
 		}
+		
+		
+	
 
 		/**
 		 * Initialisierung eines neuen Spiels.
@@ -542,20 +584,49 @@ public class Server {
 						if (client.hasFree1()) {
 							// Freikarte 1 aktivieren.
 						} else if (client.hasFree2()) {
-							// Freikarte 2 aktivieren.
-						} else if (client.getVersuche() < 3) {
-							// Fragen ob bezahlen oder Pasch versuchen.
+							
+						} else if (client.versucheImGefangnis < 2) {
+							client.yourTurn(nextPlayer,true);
+							client.versucheImGefangnis++;
+							if (client.w1 == client.w2) {
+								client.imGefaengnis = false;
+								client.walk(client.getW());
+								checkField(client);
+							}
+							
 						} else {
-							// bezahlen.
+							client.addGeld(-50);
+							client.imGefaengnis = false;
+							client.versuche = 0;
+							client.versucheImGefangnis=0;
+							nextPlayer--;
 						}
 					}
-					client.wuerfeln(nextPlayer);
-					client.walk(client.getW());
-					checkField(client);
+					
+					else {
+						client.yourTurn(nextPlayer,true);
+						client.walk(client.getW());
 
-					// naechster Spieler
+						if (client.w1 == client.w2) { // Pasch gewuerfelt
+							if (client.versuche == 2) {
+								geheInsGefaenginis(client);
+							} else {
+								client.versuche++;
+								nextPlayer--;
+							}
+
+						} else {
+							client.versuche = 0;
+							
+						}
+
+						if (!client.getImGefaengnis()) {
+							checkField(client);
+						}
+					}
 					nextPlayer++;
 					nextPlayer %= list.size();
+
 				} catch (IOException e) {
 					// Client entfernen wegen IOException
 					list.remove(nextPlayer);
@@ -582,7 +653,6 @@ public class Server {
 			broadcastInt(4); // modus 4 starten
 			broadcastInt(c.ID); // aktuellen Spieler miteilen
 			Grundstueck grundstueck = feld[c.getPos()];
-			// broadcastInt(c.getPos()); // Position miteilen
 			if (grundstueck != null) {
 				broadcastBoolean(true);
 				System.out.println("Standort: " + c.getPos() + grundstueck.getName());
@@ -597,49 +667,22 @@ public class Server {
 
 					Client besitzer = grundstueck.getBesitzer();
 					broadcastInt(besitzer.getID());
+					boolean hausKaufable = grundstueck.kannBebautWerden(feld);
+					broadcastBoolean(hausKaufable);
 					if (!besitzer.equals(c)) { // Feld gehoert einem anderen Spieler -> Spieler zahlt Miete an anderen
 												// Spieler
-						int miete = grundstueck.getMiete();
-						if (c.getGeld() >= grundstueck.getMiete()) { // Miete zahlen
-							besitzer.addGeld(miete);
-							c.addGeld(-miete);
-						} else { // Nicht genug Geld -> Verkaufen bis: genug Geld oder nichts mehr zu verkaufen.
-							boolean lauf = true;
-							while (lauf) {
-								if (c.getGeld() >= miete) {
-									lauf = false;
-								} else {
-									if (c.canMakeMoney()) {
-										// Verkaufen...
-										// zuerst die Gefaengnisfreikarten (falls vorhanden).
-										if (c.hasFree1()) { // erste Gefaengnisfreikarte verkaufen.
-											c.getOut().writeUTF("Sells freeCard1");
-											c.addGeld(50);
-											c.setFree1(false);
-										} else if (c.hasFree2()) { // zweite Gefaengnisfreikarte verkaufen.
-											c.getOut().writeUTF("Sells freeCard2");
-											c.addGeld(50);
-											c.setFree2(false);
-										} else { // Grundstuecke oder Haeuser verkaufen.
-
-										}
-									} else {
-										lauf = false;
-									}
-								}
-							}
-							if (c.getGeld() >= miete) { // genug Geld -> Miete zahlen.
-								besitzer.addGeld(miete);
-								c.addGeld(-miete);
-							} else { // nicht genug Geld -> Verlieren.
-								c.getOut().writeUTF("Nicht genug Geld, du hast verloren.");
-								list.remove(c.getID()); // Stimmt die Reihenfolge der Spieler (naechsterSpieler) noch?
-							}
-						}
+						int miete = grundstueck.getMiete(c, feld);
+						System.out.println("hier sollte er miete zaheln");
+						besitzer.addGeld(miete);
+						c.addGeld(-miete);
+						waitForAction = false;
 					} else {
-						// Haus kauf moeglich?
+						if (hausKaufable) {
+							waitForAction = true;
+						}
+
 					}
-					// Feld gehoert dem Spieler -> nichts
+
 				}
 			} else { // Feld == null -> Sonderfelder
 				broadcastBoolean(false);
@@ -647,7 +690,7 @@ public class Server {
 				switch (c.getPos()) {
 				case 0:
 					broadcastInt(0);
-					c.addGeld(400);
+					c.addGeld(200);
 					break;
 				// Fall through beabsichtigt -> Karte von Stapel 1 ziehen.
 				case 2:
@@ -661,6 +704,12 @@ public class Server {
 				case 36:
 					broadcastInt(2);
 					// Karte von Stapel 2 ziehen.
+					break;
+				case 12: // Rechenzentrum
+					// rechenZollamt(c);
+					break;
+				case 28: // Zollamt
+					// rechenZollamt(c);
 					break;
 				// Fall through beabsichtigt -> Steuern zahlen.
 				case 4:
@@ -678,6 +727,7 @@ public class Server {
 					break;
 				case 30: // gehe in das Gefaengnis
 					broadcastInt(3);
+					geheInsGefaenginis(c);
 					break;
 				default: // falls was uebersehen wurde.
 					broadcastInt(0);
@@ -691,30 +741,92 @@ public class Server {
 				case 1:
 					broadcastInt(5);
 					broadcastUTF(c.getName() + " hat die Strasse " + grundstueck.getName() + " gekauft");
-					grundstueck.setBesitzer(c);
 					c.addGeld(-grundstueck.getPreis());
 					changeBesitzer(grundstueck, c);
 					break;
 				case 2:
 					versteigerung(grundstueck, c);
 					break;
+				case 3:
+					hausKaufen(grundstueck, c);
+					break;
+				default:
+					break;
 				}
+
 			}
 		}
-		
-		private void changeBesitzer(Grundstueck g , Client neuerOwner) throws IOException {
+
+		private void geheInsGefaenginis(Client c) {
+			try {
+				System.out.println("Client im gefangnis");
+				c.imGefaengnis = true;
+				c.versuche = 0;
+				c.versucheImGefangnis=0;
+				broadcastInt(8);
+				broadcastInt(c.getID());
+				broadcastInt(c.getPos());
+				c.position = 10;
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
+
+		private void hausKaufen(Grundstueck g, Client c) {
+			try {
+				c.addGeld(-g.getHausKosten());
+				g.setHaeuser(g.getHaeuser() + 1);
+				broadcastInt(9);
+				broadcastUTF(g.getName());
+				broadcastInt(g.getHaeuser());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		/**
+		 * Berechnet und Wuerfelt die Miete auf den Feldern Zollamt und Rechenzentrum.
+		 * 
+		 * @param c der Client der gerade am Zug ist.
+		 * @throws IOException
+		 */
+		private void rechenZollamt(Client c) throws IOException {
+			if (!c.equals(feld[c.getPos()].getBesitzer())) {
+				int mul = 4;
+				if (feld[12].getBesitzer().equals(feld[28].getBesitzer())) { // Besitzer hat beide Karten
+					mul = 10;
+				}
+				int wuerfeln = 0; // Wuerfeln ---------------------- hier wuerfeln einbauen
+									// ----------------------------
+				int aenderung = wuerfeln * mul;
+				broadcastInt(0);
+				c.addGeld(-aenderung);
+				broadcastInt(0);
+				feld[c.getPos()].getBesitzer().addGeld(aenderung);
+			}
+		}
+
+		/**
+		 * Aendert den Besitzer eines Grundstueckes und teilt es den Spielern mit.
+		 * 
+		 * @param g          das Grundstueck welches einen neuen Besitzer bekommt.
+		 * @param neuerOwner der neue Besitzer.
+		 * @throws IOException
+		 */
+		private void changeBesitzer(Grundstueck g, Client neuerOwner) throws IOException {
 			broadcastInt(7);
 			broadcastUTF(g.getName());
-			if(g.getBesitzer()==null) {
+			if (g.getBesitzer() == null) {
 				broadcastInt(-1);
-			}
-			else {
+			} else {
 				broadcastInt(g.getBesitzer().getID());
 			}
 			g.setBesitzer(neuerOwner);
 			broadcastInt(neuerOwner.getID());
-			
-			
+
 		}
 
 		private void versteigerung(Grundstueck g, Client c) throws IOException {
@@ -722,7 +834,7 @@ public class Server {
 			int beginner = list.lastIndexOf(c);
 			ArrayList<Client> auctionList = new ArrayList<Client>();
 			auctionList.addAll(list);
-			broadcastInt(6); //Auktion starten
+			broadcastInt(6); // Auktion starten
 			broadcastUTF(g.name);
 			Client hoechstbieter = c;
 			int aktuellesGebot = 0;
@@ -733,7 +845,7 @@ public class Server {
 				broadcastInt(aktuellesGebot);
 				int gebotNeu = actual.in.readInt();
 				System.out.println(gebotNeu);
-				if(gebotNeu ==-1) {
+				if (gebotNeu == -1) {
 					auctionList.remove(actual);
 				} else {
 					aktuellesGebot = gebotNeu;
@@ -744,7 +856,7 @@ public class Server {
 			broadcastInt(-1);
 			broadcastInt(hoechstbieter.getID());
 			hoechstbieter.addGeld(-aktuellesGebot);
-			g.setBesitzer(hoechstbieter);
+			changeBesitzer(g, hoechstbieter);
 
 		}
 
@@ -829,16 +941,20 @@ public class Server {
 					System.out.println(leaveMessage);
 				}
 			}
+			for (Client other : list) {
+				try {
+					broadcastUTF(other.name);
+					broadcastInt(other.ID);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
 			for (int i = 0; i < list.size(); i++) {
 				Client c = list.get(i);
 				try {
-					// Jedem Client die anderen Mitspieler mitteilen.
-					for (Client other : list) {
-					broadcastUTF(other.name);
-					broadcastInt(other.ID);
-					}
-					// Jedem Client das Stargeld geben.
-					System.out.println(c.name + " " + c.ID);
+
 					c.addGeld(1500);
 				} catch (Exception e) {
 					// Client entfernen der eine IOException geworfen hat.
@@ -849,45 +965,72 @@ public class Server {
 			}
 			// Felder initialisieren
 			feld[0] = null; // Los
-			feld[1] = new Grundstueck("Kesselhaus", new int[] { 2, 10, 30, 90, 160, 250 }, 60, 1, new int[] {1, 3});
+			feld[1] = new Grundstueck("Kesselhaus", new int[] { 2, 10, 30, 90, 160, 250 }, 60, 1, new int[] { 1, 3 });
 			feld[2] = null; // Kartenstapel 1
-			feld[3] = new Grundstueck("AstaBuero", new int[] { 4, 20, 60, 180, 320, 450 }, 60, 3, new int[] {1, 3});
+			feld[3] = new Grundstueck("AstaBuero", new int[] { 4, 20, 60, 180, 320, 450 }, 60, 3, new int[] { 1, 3 });
 			feld[4] = null; // Steuern 200
-			feld[5] = new Grundstueck("BingenBahnhof", new int[] { 25, 50, 100, 200 }, 200, 5, null); // Bahnhof
-			feld[6] = new Grundstueck("PflanzenLabor", new int[] { 6, 30, 90, 270, 400, 550 }, 100, 6, new int[] {6, 8, 9});
+			feld[5] = new Grundstueck("BingenBahnhof", new int[] { 25, 50, 100, 200 }, 200, 5, new int[] {5,15,25,35}); // Bahnhof
+			feld[6] = new Grundstueck("PflanzenLabor", new int[] { 6, 30, 90, 270, 400, 550 }, 100, 6,
+					new int[] { 6, 8, 9 });
 			feld[7] = null; // Kartenstapel 2
-			feld[8] = new Grundstueck("GewaechsHaus", new int[] { 6, 30, 90, 270, 400, 550 }, 100, 8, new int[] {6, 8, 9});
-			feld[9] = new Grundstueck("DemonstrationsFeld", new int[] { 8, 40, 100, 300, 450, 600 }, 120, 9, new int[] {6, 8, 9});
+			feld[8] = new Grundstueck("GewaechsHaus", new int[] { 6, 30, 90, 270, 400, 550 }, 100, 8,
+					new int[] { 6, 8, 9 });
+			feld[9] = new Grundstueck("DemonstrationsFeld", new int[] { 8, 40, 100, 300, 450, 600 }, 120, 9,
+					new int[] { 6, 8, 9 });
 			feld[10] = null; // Gefaengnis
-			feld[11] = new Grundstueck("MotorenPruefstand", new int[] { 10, 50, 150, 450, 625, 750 }, 140, 11, new int[] {11, 13, 14});
-			feld[12] = null; // Rechenzentrum, evtl als Grundstueck behandeln
-			feld[13] = new Grundstueck("FahrzeugLabor", new int[] { 10, 50, 150, 450, 625, 750 }, 140, 13, new int[] {11, 13, 14});
-			feld[14] = new Grundstueck("SolarTankstelle", new int[] { 12, 60, 180, 500, 700, 900 }, 160, 14, new int[] {11, 13, 14});
-			feld[15] = new Grundstueck("KreuznachBahnhof", new int[] { 25, 50, 100, 200 }, 200, 15, null); // Bahnhof
-			feld[16] = new Grundstueck("TrvRhenania", new int[] { 14, 70, 200, 550, 750, 950 }, 180, 16, new int[] {16, 18, 19});
+			feld[11] = new Grundstueck("MotorenPruefstand", new int[] { 10, 50, 150, 450, 625, 750 }, 140, 11,
+					new int[] { 11, 13, 14 });
+			feld[12] = new Grundstueck("Rechenzentrum", new int[] { 4, 10 }, 150, 12, new int[] { 12, 28 }); // Rechenzentrum,
+																												// evtl
+																												// als
+																												// Grundstueck
+																												// behandeln
+			feld[13] = new Grundstueck("FahrzeugLabor", new int[] { 10, 50, 150, 450, 625, 750 }, 140, 13,
+					new int[] { 11, 13, 14 });
+			feld[14] = new Grundstueck("SolarTankstelle", new int[] { 12, 60, 180, 500, 700, 900 }, 160, 14,
+					new int[] { 11, 13, 14 });
+			feld[15] = new Grundstueck("KreuznachBahnhof", new int[] { 25, 50, 100, 200 }, 200, 15, new int[] {5,15,25,35} ) ; // Bahnhof
+			feld[16] = new Grundstueck("TrvRhenania", new int[] { 14, 70, 200, 550, 750, 950 }, 180, 16,
+					new int[] { 16, 18, 19 });
 			feld[17] = null; // Kartenstapel 1
-			feld[18] = new Grundstueck("BingerBeasts", new int[] { 14, 70, 200, 550, 750, 950 }, 180, 18, new int[] {16, 18, 19});
-			feld[19] = new Grundstueck("BingenImpulse", new int[] { 16, 80, 220, 600, 800, 1000 }, 200, 19, new int[] {16, 18, 19});
+			feld[18] = new Grundstueck("BingerBeasts", new int[] { 14, 70, 200, 550, 750, 950 }, 180, 18,
+					new int[] { 16, 18, 19 });
+			feld[19] = new Grundstueck("BingenImpulse", new int[] { 16, 80, 220, 600, 800, 1000 }, 200, 19,
+					new int[] { 16, 18, 19 });
 			feld[20] = null; // Frei parken
-			feld[21] = new Grundstueck("NetzwerkLabor", new int[] { 18, 90, 250, 700, 875, 1050 }, 220, 21, new int[] {21, 23, 24});
+			feld[21] = new Grundstueck("NetzwerkLabor", new int[] { 18, 90, 250, 700, 875, 1050 }, 220, 21,
+					new int[] { 21, 23, 24 });
 			feld[22] = null; // Kartenstapel 2
-			feld[23] = new Grundstueck("PcPool236", new int[] { 18, 90, 250, 700, 875, 1050 }, 220, 23, new int[] {21, 23, 24});
-			feld[24] = new Grundstueck("PcPool237", new int[] { 20, 100, 300, 750, 925, 1100 }, 240, 24, new int[] {21, 23, 24});
-			feld[25] = new Grundstueck("MainzBahnhof", new int[] { 25, 50, 100, 200 }, 200, 25, null); // Bahnhof
-			feld[26] = new Grundstueck("StudienBeratung", new int[] { 22, 110, 330, 800, 975, 1150 }, 260, 26, new int[] {26, 27, 29});
-			feld[27] = new Grundstueck("StudienSekretariat", new int[] { 22, 110, 330, 800, 975, 1150 }, 260, 27, new int[] {26, 27, 29});
-			feld[28] = null; // Zollamt
-			feld[29] = new Grundstueck("DekanBuero", new int[] { 24, 120, 360, 850, 1025, 1200 }, 280, 29, new int[] {26, 27, 29});
+			feld[23] = new Grundstueck("PcPool236", new int[] { 18, 90, 250, 700, 875, 1050 }, 220, 23,
+					new int[] { 21, 23, 24 });
+			feld[24] = new Grundstueck("PcPool237", new int[] { 20, 100, 300, 750, 925, 1100 }, 240, 24,
+					new int[] { 21, 23, 24 });
+			feld[25] = new Grundstueck("MainzBahnhof", new int[] { 25, 50, 100, 200 }, 200, 25, new int[] {5,15,25,35}); // Bahnhof
+			feld[26] = new Grundstueck("StudienBeratung", new int[] { 22, 110, 330, 800, 975, 1150 }, 260, 26,
+					new int[] { 26, 27, 29 });
+			feld[27] = new Grundstueck("StudienSekretariat", new int[] { 22, 110, 330, 800, 975, 1150 }, 260, 27,
+					new int[] { 26, 27, 29 });
+			feld[28] = new Grundstueck("Zollamt", new int[] { 4, 10 }, 150, 28, new int[] { 28, 12 }); // Rechenzentrum,
+																										// evtl als
+																										// Grundstueck
+																										// behandeln
+			feld[29] = new Grundstueck("DekanBuero", new int[] { 24, 120, 360, 850, 1025, 1200 }, 280, 29,
+					new int[] { 26, 27, 29 });
 			feld[30] = null; // gehe in das Gefaengnis
-			feld[31] = new Grundstueck("RhenoTeutonia", new int[] { 26, 130, 390, 900, 1100, 1275 }, 300, 31, new int[] {31, 32, 34});
-			feld[32] = new Grundstueck("Holsatia", new int[] { 26, 130, 390, 900, 1100, 1275 }, 300, 32, new int[] {31, 32, 34});
+			feld[31] = new Grundstueck("RhenoTeutonia", new int[] { 26, 130, 390, 900, 1100, 1275 }, 300, 31,
+					new int[] { 31, 32, 34 });
+			feld[32] = new Grundstueck("Holsatia", new int[] { 26, 130, 390, 900, 1100, 1275 }, 300, 32,
+					new int[] { 31, 32, 34 });
 			feld[33] = null; // Kartenstapel 1
-			feld[34] = new Grundstueck("Markomannia", new int[] { 28, 150, 450, 1000, 1200, 1400 }, 320, 34, new int[] {31, 32, 34});
-			feld[35] = new Grundstueck("WormsBahnhof", new int[] { 25, 50, 100, 200 }, 200, 35, null); // Bahnhof
+			feld[34] = new Grundstueck("Markomannia", new int[] { 28, 150, 450, 1000, 1200, 1400 }, 320, 34,
+					new int[] { 31, 32, 34 });
+			feld[35] = new Grundstueck("WormsBahnhof", new int[] { 25, 50, 100, 200 }, 200, 35, new int[] {5,15,25,35}); // Bahnhof
 			feld[36] = null; // Kartenstapel 2
-			feld[37] = new Grundstueck("Mensa", new int[] { 35, 175, 500, 1100, 1300, 1500 }, 350, 37, new int[] {37, 39});
+			feld[37] = new Grundstueck("Mensa", new int[] { 35, 175, 500, 1100, 1300, 1500 }, 350, 37,
+					new int[] { 37, 39 });
 			feld[38] = null; // Steuern 100
-			feld[39] = new Grundstueck("Bibliothek", new int[] { 50, 200, 600, 1400, 1700, 2000 }, 400, 39, new int[] {37, 39});
+			feld[39] = new Grundstueck("Bibliothek", new int[] { 50, 200, 600, 1400, 1700, 2000 }, 400, 39,
+					new int[] { 37, 39 });
 		}
 	}
 }

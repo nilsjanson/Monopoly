@@ -25,8 +25,8 @@ public class EmailStage extends Application {
 	final URL resource = getClass().getResource("/sounds/mailSound.wav");
 	final Media media = new Media(resource.toString());
 	final MediaPlayer mediaPlayer = new MediaPlayer(media);
-	
-	
+
+
 	EmailStage(Board board, String betreff, String von, String inhalt) {
 		this.betreff = betreff;
 		this.von = von;

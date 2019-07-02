@@ -2,11 +2,15 @@ package gui;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Semaphore;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -15,6 +19,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
@@ -29,6 +34,8 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
+import model.Besitzrechtkarte;
+import model.Player;
 
 public class Board {
 
@@ -36,6 +43,7 @@ public class Board {
 	final URL resource = getClass().getResource("/musik/StillStanding.mp3");
 	final Media media = new Media(resource.toString());
 	final MediaPlayer mediaPlayer = new MediaPlayer(media);
+	public int ownPlayerNumber ;
 	protected Stage prime;
 	private Stage welcome;
 	public int spieler = 0;
@@ -43,6 +51,10 @@ public class Board {
 	BorderPane parent;
 	private double max;
 	private double width;
+	private double height;
+	public boolean yourTurn = false; //Ob der Spieler am Zug gerade ist und handeln kann
+	public List<Integer> actionQueue = new ArrayList<Integer>();
+	public Semaphore aktionZugGemachtSem = new Semaphore(0);
 	private Scene scene;
 	int buttonCount = 0;
 	double playerStartPositionX;
@@ -56,6 +68,8 @@ public class Board {
 	public Auktion auktionStageOpen;
 	public Semaphore auktionStageOpenSemaphore = new Semaphore(0);
 	public Semaphore gebotAbgegeben = new Semaphore(0);
+	public Semaphore infoStageSemaphore = new Semaphore(0);
+	private ArrayList<Button> streetButs = new ArrayList<Button>();
 
 	public ImageView[] playerArr;
 
@@ -143,7 +157,7 @@ public class Board {
 		welcome.close();
 		Rectangle2D screen = Screen.getPrimary().getVisualBounds();
 		width = screen.getMaxX();
-		double height = screen.getMaxY();
+		height = screen.getMaxY();
 		max = Math.min(width, height);
 		BorderPane pane = new BorderPane();
 
@@ -166,6 +180,7 @@ public class Board {
 		BorderPane.setAlignment(right, Pos.CENTER);
 
 		scene = new Scene(pane);
+
 		prime.initStyle(StageStyle.UNDECORATED);
 		controlBoard(scene);
 		prime.setScene(scene);
@@ -174,7 +189,8 @@ public class Board {
 		prime.show();
 
 		wuerfelStage = new WuerfelStage(me, Math.min(width, height), Math.max(width, height));
-		infoStage = new InfoStage(me,Math.min(width, height), Math.max(width, height));
+		// infoStage = new InfoStage(me,Math.min(width, height), Math.max(width,
+		// height));
 		playerArr[0] = createPlayer(max * 0.075, max * 0.075, "/playerIcons/bike.png");
 		playerArr[1] = createPlayer(max * 0.075, max * 0.075, "/playerIcons/dog.png");
 		if (spieler > 2) {
@@ -184,8 +200,33 @@ public class Board {
 			playerArr[3] = createPlayer(max * 0.075, max * 0.075, "/playerIcons/misslex.png");
 		}
 
-		System.out.println("Maximale Groesse: " + width +" "+ max);
+		System.out.println("Maximale Groesse: " + width + " " + max);
 		boardReady.release();
+		prime.focusedProperty().addListener(new ChangeListener<Boolean>() {
+			@Override
+			public void changed(ObservableValue<? extends Boolean> ov, Boolean hidden, Boolean shown) {
+				if (shown) {
+					wuerfelStage.stage.toFront();
+					infoStage.info.toFront();
+					prime.toFront();
+				}
+			}
+		});
+	}
+
+	public void startInfoStage(Player... players) {
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				infoStage = new InfoStage(me, Math.min(width, height), Math.max(width, height), players);
+
+			}
+		});
+		prime.getIcons().add(new Image("./icons/zylinder.png"));
+	}
+
+	ArrayList<Button> getAllButtons() {
+		return streetButs;
 	}
 
 	private Pane createCardFields() {
@@ -234,6 +275,7 @@ public class Board {
 			buttons.add(new Button("" + buttonCount++));
 		}
 		streetHButs(buttons);
+		streetButs.addAll(buttons);
 		hbox.getChildren().addAll(buttons);
 		return hbox;
 	}
@@ -247,6 +289,7 @@ public class Board {
 			buttonCount++;
 		}
 		streetHButs(buttons);
+		streetButs.addAll(buttons);
 		hbox.getChildren().addAll(buttons);
 		return hbox;
 	}
@@ -258,6 +301,7 @@ public class Board {
 			buttons.add(new Button("" + buttonCount++));
 		}
 		streetVButs(buttons);
+		streetButs.addAll(buttons);
 		vbox.getChildren().addAll(buttons);
 		return vbox;
 	}
@@ -271,6 +315,7 @@ public class Board {
 			buttonCount++;
 		}
 		streetVButs(buttons);
+		streetButs.addAll(buttons);
 		vbox.getChildren().addAll(buttons);
 		return vbox;
 	}
@@ -282,12 +327,7 @@ public class Board {
 			;
 			x.setStyle("-fx-border-color: transparent; -fx-background-color: transparent");
 			x.setTextFill(Color.TRANSPARENT);
-			x.setOnAction(new EventHandler<ActionEvent>() {
-				@Override
-				public void handle(ActionEvent arg0) {
-					System.out.println("Street " + x.getText());
-				}
-			});
+			streetButtonControl(x);
 		}
 		buttons.get(0).setPrefWidth(max * 0.136);
 		buttons.get(buttons.size() - 1).setPrefWidth(max * 0.136);
@@ -303,14 +343,25 @@ public class Board {
 			;
 			x.setStyle("-fx-border-color: transparent; -fx-background-color: transparent");
 			x.setTextFill(Color.TRANSPARENT);
-			x.setOnAction(new EventHandler<ActionEvent>() {
-				@Override
-				public void handle(ActionEvent arg0) {
-					System.out.println("Street " + x.getText());
-				}
-			});
+			streetButtonControl(x);
 		}
 	}
+
+	private void streetButtonControl(Button button) {
+		button.setOnAction( new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				System.out.println("Street "+button.getText());
+				streetStageOpen = new StreetStage(me, Besitzrechtkarte.findByPosition(Integer.parseInt(button.getText())), false , false, false, false); }});
+			//	button.setStyle("-fx-background-color: transparent; -fx-background-image: url(\"/icons/3house.png\"); -fx-background-size: "+button.getWidth()+" "+button.getHeight()+"; -fx-rotate: 90;");
+//				/*
+//				 * Platform.runLater(new Runnable() {
+//				 * 
+//				 * @Override public void run() { // streetStageOpen = new StreetStage(me,
+//				 * Besitzrechtkarte.findByName(x.getText()), false , false, false, false); }});
+//				 */
+			}
+	//	});}
 
 	void startMusik() {
 		final URL resource = getClass().getResource("/musik/AnnoDominiBeatsStillStanding.mp3");
@@ -452,6 +503,16 @@ public class Board {
 					new EmailStage(me, "Schoenheitswettbewerb", "Schoenheit Ohne Grenzen",
 							"Sie haben einen Schoenheitswettbewerb gewonnen, kassieren Sie 100€.");
 					break;
+
+				case W:
+					if(yourTurn) {
+						actionQueue.add(2);
+						yourTurn = false;
+						aktionZugGemachtSem.release();
+
+					}
+
+					break;
 				case B:
 					// new StreetStage(me,"AstaBuero");
 					break;
@@ -461,6 +522,9 @@ public class Board {
 					break;
 				case X:
 					System.exit(0);
+					break;
+				case H:
+			//		new ConstructionClass(streetButs.get(39), Besitzrechtkarte.findByPosition(39), true);
 					break;
 				case CONTROL:
 					parent.setRotate(parent.getRotate() - 90);

@@ -40,6 +40,10 @@ public class Grundstueck {
 	 * Index der anderen Grundstuecke die zu dieser Strasse gehoeren.
 	 */
 	private int[] street;
+	
+	private boolean hypothek;
+	
+
 
 	/**
 	 * Initialisierung des Grundstuecks.
@@ -56,6 +60,7 @@ public class Grundstueck {
 		this.preis = preis;
 		this.stelle = stelle;
 		this.street = street;
+		hypothek = false;
 	}
 
 	public boolean equals(Object o) {
@@ -70,6 +75,16 @@ public class Grundstueck {
 		}
 		return true;
 	}
+	
+	
+	public boolean isHypothek() {
+		return hypothek;
+	}
+
+	public void setHypothek(boolean hypothek) {
+		this.hypothek = hypothek;
+	}
+
 
 	public String getName() {
 		return name;
@@ -91,13 +106,26 @@ public class Grundstueck {
 	 *         <b>false</b>, sonst.
 	 */
 	public boolean kannBebautWerden(Grundstueck[] feld) {
+		if(this.street.length==4 || this.miete.length ==2) { //Bahnhoefe und SOnderfelder raus
+			return false;
+		}
+		if(haeuser == 5) {
+			return false;
+		}
 		Client c = this.getBesitzer();
 		for (int i : this.street) {
+			if(feld[i].getBesitzer()==null) {
+				return false;
+			}
 			if (!feld[i].getBesitzer().equals(c)) {
 				return false;
 			}
 		}
 		return true;
+	}
+	
+	public int getHaeuser() {
+		return haeuser;
 	}
 
 	/**
@@ -106,7 +134,7 @@ public class Grundstueck {
 	 *         im Falle eines Bahnhofs wird <b>-1</b> zurueckgegeben.
 	 */
 	public int getHausKosten() {
-		if (this.stelle == 5 || this.stelle == 15 || this.stelle == 25 || this.stelle == 35) {
+		if (this.stelle == 5 || this.stelle == 15 || this.stelle == 25 || this.stelle == 35) { // Bahnhoefe
 			return -1;
 		}
 		if (this.stelle < 10) {
@@ -138,13 +166,48 @@ public class Grundstueck {
 	public Client getBesitzer() {
 		return besitzer;
 	}
+	
+	public int countStreets(Grundstueck[] feld) {
+		int counter = 0 ;
+		for (int i : this.street) {
+			
+			if (feld[i].getBesitzer().equals(getBesitzer())) {
+				counter++;
+			}
+		}
+		return counter;
+	}
 
 	/**
 	 *
 	 * @return die aktuelle Miete.
 	 */
-	public int getMiete() {
-		return miete[haeuser];
+	public int getMiete(Client c,Grundstueck[] feld) {
+		if(miete.length==2) {
+			if(kannBebautWerden(feld)) {
+				return c.getW() *miete[1];
+			}else {
+				return c.getW() *miete[0];
+			}
+		}else if(street.length==4) {
+			return miete[countStreets(feld)];
+			
+		}
+		
+		
+		else {
+			if(haeuser==0) {
+				if(kannBebautWerden(feld)) {
+					return miete[0]*2;
+				}else {
+					return miete[0];
+				}
+			}else {
+				return miete[haeuser];
+			}
+		
+		}
+		
 	}
 
 	/**
@@ -166,6 +229,5 @@ public class Grundstueck {
 			this.haeuser = haeuser;
 		}
 	}
-	
-	
+
 }
