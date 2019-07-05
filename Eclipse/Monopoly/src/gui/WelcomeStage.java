@@ -21,8 +21,7 @@ public class WelcomeStage {
 	
 	Stage prime;
 	Board board;
-	public int spieler = 0;
-	public String playerName;
+
 	
 	WelcomeStage(Stage prime,Board board) {
 		this.board=board;
@@ -73,11 +72,11 @@ public class WelcomeStage {
 
 
 	private void startGame(int player, String playername) {
-		spieler = player;
+		board.spieler = player;
 		if (playername == null || playername.equals("")) {
-			this.playerName = "Player " + (int) (Math.random() * 10000);
+			board.playerName = "Player " + (int) (Math.random() * 10000);
 		} else {
-			this.playerName = playername;
+			board.playerName = playername;
 		}
 		board.playerArr = new ImageView[player];
 		board.actionSeamphore.release(1);
