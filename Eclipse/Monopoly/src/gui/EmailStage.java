@@ -27,9 +27,9 @@ public class EmailStage extends Application {
 	final MediaPlayer mediaPlayer = new MediaPlayer(media);
 
 
-	EmailStage(Board board, String betreff, String von, String inhalt) {
-		this.betreff = betreff;
-		this.von = von;
+	public EmailStage(Board board,String inhalt, int playernumber) {
+		this.betreff = "Fuer Spieler " +playernumber ;
+		this.von = "TH Bingen";
 		this.inhalt = inhalt;
 		this.board = board;
 		start(board.prime);
