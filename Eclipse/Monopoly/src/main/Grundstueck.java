@@ -82,6 +82,20 @@ public class Grundstueck {
 	}
 
 	public void setHypothek(boolean hypothek) {
+		if(hypothek = true) {
+			try {
+				besitzer.addGeld(preis/2);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}else {
+			try {
+				besitzer.addGeld((int)((preis/2)*-1.1));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		this.hypothek = hypothek;
 	}
 
@@ -183,6 +197,9 @@ public class Grundstueck {
 	 * @return die aktuelle Miete.
 	 */
 	public int getMiete(Client c,Grundstueck[] feld) {
+		if(hypothek || besitzer.getImGefaengnis()) {
+			return 0;
+		}
 		if(miete.length==2) {
 			if(kannBebautWerden(feld)) {
 				return c.getW() *miete[1];

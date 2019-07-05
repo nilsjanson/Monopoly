@@ -10,6 +10,7 @@ import java.util.concurrent.Semaphore;
 
 import gui.Auktion;
 import gui.Board;
+import gui.EmailStage;
 import gui.StreetStage;
 import javafx.application.Platform;
 import javafx.stage.Stage;
@@ -147,18 +148,15 @@ public class Client extends Thread {
 						}
 
 					} else { // ist kein Grundstueck
-						int value = in.readInt();
-						switch (value) {
-						case 1:
-							System.out.println("Ziehe eine Karte von Stapel 1");
-							break;
-						case 2:
-							System.out.println("Ziehe eine Karte von Stapel 2");
-							break;
-						case 3:
-							System.out.println("Gehe in das Gefaengnis");
-							break;
-						}
+					int v = in.readInt();
+					if(v ==77) {
+					String text = in.readUTF();
+					int acPlayer = in.readInt();
+					showEmailStage(text, acPlayer);
+					}
+					else if(v == 3) {
+						System.out.println("Gehe in das Gefaengnis");
+					}
 
 					}
 					break;
@@ -207,21 +205,15 @@ public class Client extends Thread {
 					
 					break;
 					
-				case 8:
+				case 8: //bewege dich auf dem Feld
 					int playerID = in.readInt();
 					int position = in.readInt();
-					int offset ;
-					if(position<=10) {
-						offset = 10-position;
-					}else {
-						offset = 40-position +10;
-					}
-					int counter = position;
-					while(counter!=10) {
+					int dest = in.readInt();
+					while(position!=dest) {
 						board.move(board.playerArr[playerID]);
 						Thread.sleep(800);
-						counter++;
-						counter = counter%40;
+						position++;
+						position = position%40;
 					}
 					
 					break;
@@ -243,6 +235,8 @@ public class Client extends Thread {
 					besitzRecht.setHypothek(!besitzRecht.isHypothek());
 					System.out.println("Auf" +besitzRecht.getName() + " wurde ein Haus abgebaut");
 					break;
+					
+				
 				}
 				x = in.readInt();
 			}
@@ -299,6 +293,18 @@ public class Client extends Thread {
 				Besitzrechtkarte x = Besitzrechtkarte.findByName(name);
 				StreetStage s = new StreetStage(board,x, kaufbar, versteigerbar, hausKaufbar,
 						aktionErforderlich);
+			}
+		});
+
+	}
+	
+	private void showEmailStage(String text, int playernumber) {
+		
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				
+				EmailStage s = new EmailStage(board,text, playernumber);
 			}
 		});
 

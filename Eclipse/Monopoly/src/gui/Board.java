@@ -499,10 +499,6 @@ public class Board {
 				case F1:
 					helpMe();
 					break;
-				case E:
-					new EmailStage(me, "Schoenheitswettbewerb", "Schoenheit Ohne Grenzen",
-							"Sie haben einen Schoenheitswettbewerb gewonnen, kassieren Sie 100€.");
-					break;
 
 				case W:
 					if(yourTurn) {

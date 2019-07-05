@@ -51,7 +51,7 @@ public class StreetStage extends Application {
 		this.kaufbar = kaufbar;
 		besitz = x;
 		this.versteigerbar = versteigerbar;
-		this.hausKaufbar = false;//hausKaufbar;
+		this.hausKaufbar = false;// hausKaufbar;
 		this.playerNumber = x.getOwner().getID();
 		this.aktionErforderlich = aktionErforderlich;
 		img = new ImageView(getClass().getResource("/besitzkarten/" + x.getName() + ".jpg").toExternalForm());
@@ -93,20 +93,22 @@ public class StreetStage extends Application {
 		Button exit = new Button("Exit");
 		exit.setVisible(!aktionErforderlich);
 
-		if (board.yourTurn) {
-			versteigern.setVisible(true);
-			versteigern.setOnAction(new EventHandler<ActionEvent>() {
+		if (board.yourTurn && board.ownPlayerNumber == playerNumber) {
+			if (besitz.getHausCounter() == 0) {
+				versteigern.setVisible(true);
+				versteigern.setOnAction(new EventHandler<ActionEvent>() {
 
-				@Override
-				public void handle(ActionEvent arg0) {
-					System.out.println("Versteigerung starten");
-					board.actionQueue.add(3);
-					board.actionQueue.add(besitz.getPosition());
-					board.aktionZugGemachtSem.release();
-					board.yourTurn = false;
-					stage.close();
-				}
-			});
+					@Override
+					public void handle(ActionEvent arg0) {
+						System.out.println("Versteigerung starten");
+						board.actionQueue.add(3);
+						board.actionQueue.add(besitz.getPosition());
+						board.aktionZugGemachtSem.release();
+						board.yourTurn = false;
+						stage.close();
+					}
+				});
+			}
 
 			if (besitz.getHausCounter() > 0) {
 				hausVerkaufen.setVisible(true);
@@ -123,19 +125,35 @@ public class StreetStage extends Application {
 				});
 
 			}
-			if (!besitz.isHypothek()) {
-				hypothek.setVisible(true);
-				hypothek.setOnAction(new EventHandler<ActionEvent>() {
+			if (besitz.getHausCounter() == 0) {
+				if (!besitz.isHypothek()) {
+					hypothek.setVisible(true);
+					hypothek.setOnAction(new EventHandler<ActionEvent>() {
 
-					@Override
-					public void handle(ActionEvent arg0) {
-						System.out.println("Versteigerung starten");
-						board.actionQueue.add(5);
-						board.actionQueue.add(besitz.getPosition());
-						board.aktionZugGemachtSem.release();
-						stage.close();
-					}
-				});
+						@Override
+						public void handle(ActionEvent arg0) {
+							System.out.println("Hypothek aufgenommen");
+							board.actionQueue.add(5);
+							board.actionQueue.add(besitz.getPosition());
+							board.aktionZugGemachtSem.release();
+							stage.close();
+						}
+					});
+				} else {
+					hypothek.setVisible(true);
+					hypothek.setText("Hypothek aufheben");
+					hypothek.setOnAction(new EventHandler<ActionEvent>() {
+
+						@Override
+						public void handle(ActionEvent arg0) {
+							System.out.println("Hypothek bezahlt");
+							board.actionQueue.add(5);
+							board.actionQueue.add(besitz.getPosition());
+							board.aktionZugGemachtSem.release();
+							stage.close();
+						}
+					});
+				}
 			}
 		}
 

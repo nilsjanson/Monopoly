@@ -531,6 +531,7 @@ public class Server {
 						broadcastInt(10);
 						broadcastInt(position);
 						feld[position].setHypothek(!feld[position].isHypothek());
+						
 						break;
 					}
 					broadcastInt(1);
@@ -696,13 +697,11 @@ public class Server {
 				case 2:
 				case 17:
 				case 33:
-					broadcastInt(1);
-					break;
-				// Fall through beabsichtigt -> Karte von Stapel 2 ziehen.
 				case 7:
 				case 22:
 				case 36:
-					broadcastInt(2);
+					broadcastInt(77);
+					emailZiehen(c);
 					// Karte von Stapel 2 ziehen.
 					break;
 				case 12: // Rechenzentrum
@@ -757,6 +756,70 @@ public class Server {
 			}
 		}
 
+		private void emailZiehen(Client c) {
+			model.EmailKarte e = model.EmailKarte.getEmail();
+			int aktion = e.getAktion();
+			try {
+				broadcastUTF(e.getText());
+				broadcastInt(c.getID());
+			} catch (IOException e2) {
+				e2.printStackTrace();
+			}
+			switch(aktion) {
+			case 1:
+				try {
+					c.addGeld(e.getParameter());
+				} catch (IOException e1) {
+					
+					e1.printStackTrace();
+				}
+				break;
+			case 2:
+					if(c.hasFreeCard1= false) {
+						c.hasFreeCard1 = true;
+					}else {
+						c.hasFreeCard2 = true;
+					}
+				break;
+			case 3:
+				geheInsGefaenginis(c);
+				break;
+			case 4 : 
+				try {
+
+					broadcastInt(8);
+					broadcastInt(c.getID());
+					broadcastInt(c.getPos());
+					broadcastInt(e.getParameter());
+					c.position = e.getParameter();
+					checkField(c);
+				} catch (IOException exc) {
+					// TODO Auto-generated catch block
+					exc.printStackTrace();
+				}
+				break;
+			case 5:
+				for(Client cl : list) {
+					if(cl.getID() != c.getID()) {
+						try {
+							cl.addGeld(-(e.getParameter()));
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					}
+				}
+				try {
+					c.addGeld(e.getParameter()*(list.size()-1));
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				break;
+				
+			}
+		}
+		
 		private void geheInsGefaenginis(Client c) {
 			try {
 				System.out.println("Client im gefangnis");
@@ -766,6 +829,7 @@ public class Server {
 				broadcastInt(8);
 				broadcastInt(c.getID());
 				broadcastInt(c.getPos());
+				broadcastInt(10);
 				c.position = 10;
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
