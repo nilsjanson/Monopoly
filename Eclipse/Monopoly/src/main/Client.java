@@ -233,6 +233,7 @@ public class Client extends Thread {
 				case 11: //Hypothek aufnehmen
 					Besitzrechtkarte besitzRecht =  Besitzrechtkarte.findByPosition(in.readInt());
 					besitzRecht.setHypothek(!besitzRecht.isHypothek());
+					board.infoStage.setHypothek(besitzRecht);
 					System.out.println("Auf" +besitzRecht.getName() + " wurde ein Haus abgebaut");
 					break;
 					

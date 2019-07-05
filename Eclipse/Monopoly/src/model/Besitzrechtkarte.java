@@ -57,6 +57,7 @@ public class Besitzrechtkarte {
 			
 			));
 	
+	
 	Besitzrechtkarte(String name, String color, int position) {
 		owner = Player.nullPlayer;
 		hausCounter = 0 ;
