@@ -42,7 +42,7 @@ public class Board {
 	final URL resource = getClass().getResource("/musik/StillStanding.mp3");
 	final Media media = new Media(resource.toString());
 	final MediaPlayer mediaPlayer = new MediaPlayer(media);
-	public int ownPlayerNumber ;
+	public int ownPlayerNumber;
 	protected Stage prime;
 	private Stage welcome;
 	public int spieler = 0;
@@ -51,7 +51,7 @@ public class Board {
 	private double max;
 	private double width;
 	private double height;
-	public boolean yourTurn = false; //Ob der Spieler am Zug gerade ist und handeln kann
+	public boolean yourTurn = false; // Ob der Spieler am Zug gerade ist und handeln kann
 	public List<Integer> actionQueue = new ArrayList<Integer>();
 	public Semaphore aktionZugGemachtSem = new Semaphore(0);
 	private Scene scene;
@@ -79,9 +79,9 @@ public class Board {
 
 		actionSeamphore = new Semaphore(0);
 		this.prime = prime;
-		
-		new WelcomeStage(prime,this);
-//		welcome();
+
+		new WelcomeStage(prime, this);
+		// welcome();
 	}
 
 	protected double getMax() {
@@ -155,7 +155,6 @@ public class Board {
 	}
 
 	protected void createBoard() {
-		welcome.close();
 		Rectangle2D screen = Screen.getPrimary().getVisualBounds();
 		width = screen.getMaxX();
 		height = screen.getMaxY();
@@ -181,13 +180,12 @@ public class Board {
 		BorderPane.setAlignment(right, Pos.CENTER);
 
 		scene = new Scene(pane);
-
-		prime.initStyle(StageStyle.UNDECORATED);
 		controlBoard(scene);
 		prime.setScene(scene);
 		prime.setWidth(max);
 		prime.setHeight(max);
 		prime.show();
+		prime.centerOnScreen();
 
 		wuerfelStage = new WuerfelStage(me, Math.min(width, height), Math.max(width, height));
 		// infoStage = new InfoStage(me,Math.min(width, height), Math.max(width,
@@ -223,7 +221,7 @@ public class Board {
 
 			}
 		});
-		//prime.getIcons().add(new Image("./icons/zylinder.png"));
+		// prime.getIcons().add(new Image("./icons/zylinder.png"));
 	}
 
 	ArrayList<Button> getAllButtons() {
@@ -349,20 +347,27 @@ public class Board {
 	}
 
 	private void streetButtonControl(Button button) {
-		button.setOnAction( new EventHandler<ActionEvent>() {
+		button.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				System.out.println("Street "+button.getText());
-				streetStageOpen = new StreetStage(me, Besitzrechtkarte.findByPosition(Integer.parseInt(button.getText())), false , false, false, false); }});
-			//	button.setStyle("-fx-background-color: transparent; -fx-background-image: url(\"/icons/3house.png\"); -fx-background-size: "+button.getWidth()+" "+button.getHeight()+"; -fx-rotate: 90;");
-//				/*
-//				 * Platform.runLater(new Runnable() {
-//				 * 
-//				 * @Override public void run() { // streetStageOpen = new StreetStage(me,
-//				 * Besitzrechtkarte.findByName(x.getText()), false , false, false, false); }});
-//				 */
+				System.out.println("Street " + button.getText());
+				streetStageOpen = new StreetStage(me,
+						Besitzrechtkarte.findByPosition(Integer.parseInt(button.getText())), false, false, false,
+						false);
 			}
-	//	});}
+		});
+		// button.setStyle("-fx-background-color: transparent; -fx-background-image:
+		// url(\"/icons/3house.png\"); -fx-background-size: "+button.getWidth()+"
+		// "+button.getHeight()+"; -fx-rotate: 90;");
+		// /*
+		// * Platform.runLater(new Runnable() {
+		// *
+		// * @Override public void run() { // streetStageOpen = new StreetStage(me,
+		// * Besitzrechtkarte.findByName(x.getText()), false , false, false, false);
+		// }});
+		// */
+	}
+	// });}
 
 	void startMusik() {
 		final URL resource = getClass().getResource("/musik/AnnoDominiBeatsStillStanding.mp3");
@@ -411,7 +416,6 @@ public class Board {
 		welcome.show();
 		welcome.centerOnScreen();
 	}
-
 
 	private void startGame(int player, String playername) {
 		spieler = player;
@@ -497,7 +501,7 @@ public class Board {
 					break;
 
 				case W:
-					if(yourTurn) {
+					if (yourTurn) {
 						actionQueue.add(2);
 						yourTurn = false;
 						aktionZugGemachtSem.release();
@@ -516,7 +520,8 @@ public class Board {
 					System.exit(0);
 					break;
 				case H:
-			//		new ConstructionClass(streetButs.get(39), Besitzrechtkarte.findByPosition(39), true);
+					// new ConstructionClass(streetButs.get(39),
+					// Besitzrechtkarte.findByPosition(39), true);
 					break;
 				case CONTROL:
 					parent.setRotate(parent.getRotate() - 90);

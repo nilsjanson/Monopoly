@@ -1,7 +1,5 @@
 package main;
 
-import java.io.File;
-
 import gui.Board;
 
 import javafx.application.Application;

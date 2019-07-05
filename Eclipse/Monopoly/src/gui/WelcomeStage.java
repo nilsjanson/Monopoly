@@ -23,11 +23,10 @@ public class WelcomeStage {
 	Board board;
 	public int spieler = 0;
 	public String playerName;
-	public ImageView[] playerArr;
-	public Semaphore actionSeamphore;
 	
 	WelcomeStage(Stage prime,Board board) {
-		actionSeamphore = new Semaphore(0);
+		this.board=board;
+		board.actionSeamphore = new Semaphore(0);
 		this.prime=prime;
 		welcome();
 	}
@@ -67,7 +66,6 @@ public class WelcomeStage {
 		controlWelcome(scene);
 		prime.setScene(scene);
 		prime.initStyle(StageStyle.UNDECORATED);
-		prime.initModality(Modality.APPLICATION_MODAL);
 		prime.show();
 		prime.centerOnScreen();
 	}
@@ -81,8 +79,8 @@ public class WelcomeStage {
 		} else {
 			this.playerName = playername;
 		}
-		playerArr = new ImageView[player];
-		actionSeamphore.release(1);
+		board.playerArr = new ImageView[player];
+		board.actionSeamphore.release(1);
 		board.createBoard();
 	}
 	
