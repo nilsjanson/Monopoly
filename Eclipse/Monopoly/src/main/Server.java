@@ -722,7 +722,7 @@ public class Server {
 					broadcastInt(0);
 					break;
 				case 30: // gehe in das Gefaengnis
-					broadcastInt(3);
+					broadcastInt(0);
 					geheInsGefaenginis(c);
 					break;
 				default: // falls was uebersehen wurde.
