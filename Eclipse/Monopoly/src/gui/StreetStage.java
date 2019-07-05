@@ -91,6 +91,7 @@ public class StreetStage extends Application {
 		hausVerkaufen.setVisible(false);
 
 		Button exit = new Button("Exit");
+		exit.setOnAction(e->stage.close());
 		exit.setVisible(!aktionErforderlich);
 
 		if (board.yourTurn && board.ownPlayerNumber == playerNumber) {
