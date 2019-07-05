@@ -81,6 +81,7 @@ public class WelcomeStage {
 		board.playerArr = new ImageView[player];
 		board.actionSeamphore.release(1);
 		board.createBoard();
+		board.setLobby(new Lobby(board,playername));
 	}
 	
 	private void textFieldStyle(TextField... x) {

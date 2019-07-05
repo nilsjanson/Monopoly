@@ -46,6 +46,7 @@ public class Board {
 	public int spieler = 0;
 	public String playerName;
 	BorderPane parent;
+	Lobby lobby;
 	private double max;
 	private double width;
 	private double height;
@@ -216,10 +217,14 @@ public class Board {
 			@Override
 			public void run() {
 				infoStage = new InfoStage(me, Math.min(width, height), Math.max(width, height), players);
-
+				lobby.lobby.close();
 			}
 		});
 		// prime.getIcons().add(new Image("./icons/zylinder.png"));
+	}
+	
+	protected void setLobby(Lobby lobby) {
+		this.lobby=lobby;
 	}
 
 	ArrayList<Button> getAllButtons() {
