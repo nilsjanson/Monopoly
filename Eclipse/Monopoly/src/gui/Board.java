@@ -182,8 +182,8 @@ public class Board {
 		prime.setScene(scene);
 		prime.setWidth(max);
 		prime.setHeight(max);
-		prime.show();
 		prime.centerOnScreen();
+		prime.show();
 
 		wuerfelStage = new WuerfelStage(me, Math.min(width, height), Math.max(width, height));
 		// infoStage = new InfoStage(me,Math.min(width, height), Math.max(width,
