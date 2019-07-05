@@ -33,15 +33,6 @@ public class InfoStage {
 	int playerCount = 0;
 	Label[] geldArr;
 
-	static Player nils = new Player("Nils", 0);
-	static Player lars = new Player("Lars", 0);
-	static Player lucas = new Player("Lucas", 0);
-	static Player flo = new Player("Florian", 0);
-
-	public InfoStage(Board board, double min, double max) {
-		this(board, min, max, nils, lars, lucas, flo);
-	}
-
 	InfoStage(Board board, double min, double max, Player... players) {
 		ArrayList<VBox> playerBoxes = new ArrayList<VBox>();
 		ArrayList<GridPane> grids = new ArrayList<GridPane>();
