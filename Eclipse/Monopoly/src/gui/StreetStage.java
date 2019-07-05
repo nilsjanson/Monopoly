@@ -91,10 +91,11 @@ public class StreetStage extends Application {
 		hausVerkaufen.setVisible(false);
 
 		Button exit = new Button("Exit");
-		exit.setOnAction(e->stage.close());
+		exit.setOnAction(e -> stage.close());
 		exit.setVisible(!aktionErforderlich);
 
 		if (board.yourTurn && board.ownPlayerNumber == playerNumber) {
+			System.out.println(besitz.getHausCounter() +" soviele jacj hauser");
 			if (besitz.getHausCounter() == 0) {
 				versteigern.setVisible(true);
 				versteigern.setOnAction(new EventHandler<ActionEvent>() {
@@ -127,6 +128,7 @@ public class StreetStage extends Application {
 
 			}
 			if (besitz.getHausCounter() == 0) {
+				
 				if (!besitz.isHypothek()) {
 					hypothek.setVisible(true);
 					hypothek.setOnAction(new EventHandler<ActionEvent>() {
@@ -141,8 +143,9 @@ public class StreetStage extends Application {
 						}
 					});
 				} else {
+
 					hypothek.setVisible(true);
-					hypothek.setText("Hypothek aufheben");
+					// hypothek.setText("Hypothek aufheben");
 					hypothek.setOnAction(new EventHandler<ActionEvent>() {
 
 						@Override
