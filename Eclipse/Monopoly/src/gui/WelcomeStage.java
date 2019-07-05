@@ -1,5 +1,6 @@
 package gui;
 
+import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 
 import javafx.event.EventHandler;
@@ -19,20 +20,19 @@ import javafx.stage.StageStyle;
 public class WelcomeStage {
 	
 	Stage prime;
+	Board board;
 	public int spieler = 0;
 	public String playerName;
 	public ImageView[] playerArr;
 	public Semaphore actionSeamphore;
 	
-	WelcomeStage(Stage prime) {
-
+	WelcomeStage(Stage prime,Board board) {
 		actionSeamphore = new Semaphore(0);
 		this.prime=prime;
 		welcome();
 	}
 
 	private void welcome() {
-		Stage welcome = new Stage();
 		VBox vbox = new VBox();
 		ImageView logo = new ImageView(getClass().getResource("/icons/TH-Poly-Logo.jpg").toExternalForm());
 		vbox.setAlignment(Pos.CENTER);
@@ -65,11 +65,11 @@ public class WelcomeStage {
 		Scene scene = new Scene(vbox);
 		vbox.autosize();
 		controlWelcome(scene);
-		welcome.setScene(scene);
-		welcome.initStyle(StageStyle.UNDECORATED);
-		welcome.initModality(Modality.APPLICATION_MODAL);
-		welcome.show();
-		welcome.centerOnScreen();
+		prime.setScene(scene);
+		prime.initStyle(StageStyle.UNDECORATED);
+		prime.initModality(Modality.APPLICATION_MODAL);
+		prime.show();
+		prime.centerOnScreen();
 	}
 	
 
@@ -83,7 +83,7 @@ public class WelcomeStage {
 		}
 		playerArr = new ImageView[player];
 		actionSeamphore.release(1);
-		new Board(prime);
+		board.createBoard();
 	}
 	
 	private void textFieldStyle(TextField... x) {
@@ -109,12 +109,56 @@ public class WelcomeStage {
 				case ESCAPE:
 					System.exit(0);
 					break;
+				case F1:
+					helpMe();
+					break;
 				default:
 					System.out.println(event.getCode() + " erkannt!");
 					break;
 				}
 			}
 		});
+	}
+	
+	protected void helpMe() {
+		Stage help = new Stage();
+		VBox vbox = new VBox();
+		ArrayList<Label> helpfull = new ArrayList<Label>();
+		helpfull.add(new Label("F1 = Hilfe"));
+		helpfull.add(new Label("Enter = Wuerfeln bestaetigen"));
+		helpfull.add(new Label("F11 = Musik an"));
+		helpfull.add(new Label("F12 = Musik aus"));
+		helpfull.add(new Label("ESC = Beendet das Programm"));
+		helpLabelStyle(helpfull);
+		vbox.getChildren().addAll(helpfull);
+		vbox.setStyle("-fx-background-color: rgb(" + 192 + "," + 254 + ", " + 213 + "); -fx-border-color: black;");
+		Scene scene = new Scene(vbox);
+		scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+
+			@Override
+			public void handle(KeyEvent event) {
+				switch (event.getCode()) {
+				case ESCAPE:
+					help.close();
+					break;
+				case ENTER:
+					help.close();
+					break;
+				default:
+					break;
+				}
+			}
+		});
+		help.setScene(scene);
+		help.initModality(Modality.APPLICATION_MODAL);
+		help.initStyle(StageStyle.UNDECORATED);
+		help.show();
+	}
+	
+	private void helpLabelStyle(ArrayList<Label> help) {
+		for (Label x : help) {
+			x.setStyle("-fx-font-size: 2em;");
+		}
 	}
 	
 }

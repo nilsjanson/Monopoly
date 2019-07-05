@@ -29,13 +29,9 @@ public class Main extends Application {
 
 	@Override
 	public void start(Stage prime) throws Exception {
-		File dir = new File(".");
-		String path = dir.getCanonicalPath();
-		
-			System.out.println(dir.getCanonicalPath());
-			this.prime = prime;
-			this.board = new gui.Board(prime);
-			new Client(board, prime);
+		this.prime = prime;
+		this.board = new gui.Board(prime);
+		new Client(board, prime);
 		
 	}
 

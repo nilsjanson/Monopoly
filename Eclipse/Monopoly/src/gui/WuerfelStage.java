@@ -3,8 +3,6 @@ package gui;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.concurrent.Semaphore;
-
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;

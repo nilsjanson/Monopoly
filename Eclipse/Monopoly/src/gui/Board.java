@@ -19,7 +19,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
@@ -80,7 +79,9 @@ public class Board {
 
 		actionSeamphore = new Semaphore(0);
 		this.prime = prime;
-		welcome();
+		
+		new WelcomeStage(prime,this);
+//		welcome();
 	}
 
 	protected double getMax() {
@@ -153,7 +154,7 @@ public class Board {
 		timeline.play();
 	}
 
-	private void createBoard() {
+	protected void createBoard() {
 		welcome.close();
 		Rectangle2D screen = Screen.getPrimary().getVisualBounds();
 		width = screen.getMaxX();
@@ -389,7 +390,6 @@ public class Board {
 
 		HBox playerNames = new HBox();
 		TextField name = new TextField();
-		name.setOnAction(e -> sendPlayerName(name.getText()));
 		Label playerName = new Label("Ihr Spielername:");
 		playerName.setStyle(
 				"-fx-background-color:lightgreen; -fx-padding:0.5em; -fx-text-fill: black; -fx-font-size:20px;");
@@ -412,9 +412,6 @@ public class Board {
 		welcome.centerOnScreen();
 	}
 
-	private void sendPlayerName(String name) {
-		System.out.println("SendNilsPlayerName(" + name + ");");
-	}
 
 	private void startGame(int player, String playername) {
 		spieler = player;
@@ -423,7 +420,6 @@ public class Board {
 		} else {
 			this.playerName = playername;
 		}
-		sendPlayerName(playername);
 		playerArr = new ImageView[player];
 		actionSeamphore.release(1);
 		createBoard();
