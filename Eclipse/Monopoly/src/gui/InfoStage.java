@@ -137,8 +137,7 @@ public class InfoStage {
 				}
 			}
 		});
-		
-		
+
 		board.infoStageSemaphore.release();
 	}
 
@@ -254,28 +253,31 @@ public class InfoStage {
 		return names;
 	}
 
-	private Button initBut(String color, Button x, Stage prime,Player player) {
+	private Button initBut(String color, Button x, Stage prime, Player player) {
 		x.setMaxSize(5, 5);
 		x.setStyle("-fx-background-color: grey;");
-		x.setOnAction( new EventHandler<ActionEvent>() {
+		x.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				System.out.println("Street "+x.getText());
-				board.streetStageOpen=  new StreetStage(board, Besitzrechtkarte.findByName(x.getText()), false , false, false, false); }});
-			//	button.setStyle("-fx-background-color: transparent; -fx-background-image: url(\"/icons/3house.png\"); -fx-background-size: "+button.getWidth()+" "+button.getHeight()+"; -fx-rotate: 90;");
-//				/*
-//				 * Platform.runLater(new Runnable() {
-//				 * 
-//				 * @Override public void run() { // streetStageOpen = new StreetStage(me,
-//				 * Besitzrechtkarte.findByName(x.getText()), false , false, false, false); }});
-//				 */
-			return x;
+				System.out.println("Street " + x.getText());
+				board.streetStageOpen = new StreetStage(board, Besitzrechtkarte.findByName(x.getText()), false, false,
+						false, false);
+			}
+		});
+		// button.setStyle("-fx-background-color: transparent; -fx-background-image:
+		// url(\"/icons/3house.png\"); -fx-background-size: "+button.getWidth()+"
+		// "+button.getHeight()+"; -fx-rotate: 90;");
+		// /*
+		// * Platform.runLater(new Runnable() {
+		// *
+		// * @Override public void run() { // streetStageOpen = new StreetStage(me,
+		// * Besitzrechtkarte.findByName(x.getText()), false , false, false, false);
+		// }});
+		// */
+		return x;
 	}
-	
-
 
 	// x.setOnAction(e -> erzeugeStreetStage(x));
-
 
 	public void erzeugeStreetStage(Button x) {
 		board.streetStageOpen = new StreetStage(board, Besitzrechtkarte.findByName(x.getText()), false, false, false,
@@ -290,6 +292,7 @@ public class InfoStage {
 	}
 
 	public void changeColor(Besitzrechtkarte x) {
+
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
@@ -300,9 +303,24 @@ public class InfoStage {
 
 				} else {
 					b.setStyle("-fx-background-color: grey;");
-
 				}
+			}
+		});
 
+	}
+
+	public void setHypothek(Besitzrechtkarte x) {
+
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				Player p = x.getOwner();
+				Button b = p.getStreetsButton(x.getName());
+				if (!x.isHypothek()) {
+					b.setStyle("-fx-background-color: "+x.getColor()+";");
+				} else {
+					b.setStyle("-fx-background-color: rgb(" + 53 + "," + 250 + ", " + 49 + ");");
+				}
 			}
 		});
 

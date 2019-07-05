@@ -83,7 +83,7 @@ public class Client extends Thread {
 							out.writeInt(aktion);
 							System.out.println("Schicke " + aktion);
 							out.flush();
-							int position = board.actionQueue.remove(0); //Position übermitteln
+							int position = board.actionQueue.remove(0); //Position ï¿½bermitteln
 							out.writeInt(position);
 							out.flush();		
 							
@@ -235,6 +235,7 @@ public class Client extends Thread {
 					Besitzrechtkarte besitzRecht =  Besitzrechtkarte.findByPosition(in.readInt());
 					besitzRecht.setHypothek(!besitzRecht.isHypothek());
 					System.out.println("Auf" +besitzRecht.getName() + " wurde Hypothek aufgenommen/Abgenommen");
+					board.infoStage.setHypothek(besitzRecht);
 					break;
 					
 				
