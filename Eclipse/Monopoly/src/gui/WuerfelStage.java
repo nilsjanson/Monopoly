@@ -1,12 +1,15 @@
 package gui;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.concurrent.Semaphore;
+
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
@@ -18,34 +21,51 @@ import javafx.stage.StageStyle;
 public class WuerfelStage {
 	Stage stage;
 	Board board;
-	// private Semaphore leertaste;
+	ArrayList<ImageView> views;
+	//private Semaphore leertaste;
 	HBox hbox;
 	double min;
 	double max;
-	ImageView viewOne;
-	ImageView viewTwo;
-	Wuerfel wuerfel1 = new Wuerfel();
-	Wuerfel wuerfel2 = new Wuerfel();
+
 
 	public WuerfelStage(Board board, double min, double max) {
 		this.min = min;
 		this.max = max;
 		this.board = board;
 		try {
+			views = new ArrayList<ImageView>();
+			views.add(new ImageView(getClass().getResource("/wuerfel/1.png").toExternalForm()));
+			views.add(new ImageView(getClass().getResource("/wuerfel/2.png").toExternalForm()));
+			views.add(new ImageView(getClass().getResource("/wuerfel/3.png").toExternalForm()));
+			views.add(new ImageView(getClass().getResource("/wuerfel/4.png").toExternalForm()));
+			views.add(new ImageView(getClass().getResource("/wuerfel/5.png").toExternalForm()));
+			views.add(new ImageView(getClass().getResource("/wuerfel/6.png").toExternalForm()));
+
+			views.add(new ImageView(getClass().getResource("/wuerfel/1.png").toExternalForm()));
+			views.add(new ImageView(getClass().getResource("/wuerfel/2.png").toExternalForm()));
+			views.add(new ImageView(getClass().getResource("/wuerfel/3.png").toExternalForm()));
+			views.add(new ImageView(getClass().getResource("/wuerfel/4.png").toExternalForm()));
+			views.add(new ImageView(getClass().getResource("/wuerfel/5.png").toExternalForm()));
+			views.add(new ImageView(getClass().getResource("/wuerfel/6.png").toExternalForm()));
+
+			views.add(new ImageView(getClass().getResource("/wuerfel/0.png").toExternalForm()));
+			views.add(new ImageView(getClass().getResource("/wuerfel/0.png").toExternalForm()));
+			
 			start();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
+	
+
 	public void start() {
 		hbox = new HBox();
 		hbox.setStyle("-fx-background-color: red;");
-		viewOne = new ImageView();
-		viewOne = new ImageView(wuerfel1.getStartingSymbol());
-		viewTwo = new ImageView(wuerfel2.getStartingSymbol());
-		hbox.getChildren().add(viewOne);
-		hbox.getChildren().add(viewTwo);
+		ImageView eins = views.get(views.size() - 1);
+		ImageView zwei = views.get(views.size() - 2);
+		hbox.getChildren().add(eins);
+		hbox.getChildren().add(zwei);
 		Scene scene = new Scene(hbox);
 		stage = new Stage();
 		keyHandler(scene);
@@ -54,10 +74,10 @@ public class WuerfelStage {
 		stage.show();
 		stage.setWidth(((max - min) / 2) - 5);
 		stage.setHeight(min * .15);
-		viewOne.setFitHeight(stage.getHeight());
-		viewTwo.setFitHeight(stage.getHeight());
-		viewOne.setFitWidth(stage.getWidth() / 2);
-		viewTwo.setFitWidth(stage.getWidth() / 2);
+		eins.setFitHeight(stage.getHeight());
+		zwei.setFitHeight(stage.getHeight());
+		eins.setFitWidth(stage.getWidth() / 2);
+		zwei.setFitWidth(stage.getWidth() / 2);
 		stage.setX(0);
 		stage.setY((min / 2) - (stage.getHeight() / 2));
 		stage.focusedProperty().addListener(new ChangeListener<Boolean>() {
@@ -70,7 +90,7 @@ public class WuerfelStage {
 				}
 			}
 		});
-		stage.setOnCloseRequest(e -> System.exit(0));
+		stage.setOnCloseRequest(e->System.exit(0));
 	}
 
 	public void wuerfeln(int x, int y) {
@@ -81,38 +101,18 @@ public class WuerfelStage {
 				final Media media = new Media(resource.toString());
 				final MediaPlayer mediaPlayer = new MediaPlayer(media);
 				mediaPlayer.play();
-				wuerfel1 = new Wuerfel() {
-					public void run() {
-						rollDice(wuerfel1, viewOne, 1);
-						rollDice(wuerfel2, viewTwo, 1);
-					}
-				};
+				hbox.getChildren().remove(0);
+				hbox.getChildren().remove(0);
+				ImageView eins = views.get(x - 1);
+				ImageView zwei = views.get((y + 6) - 1);
+				eins.setFitHeight(min * .15);
+				zwei.setFitHeight(min * .15);
+				eins.setFitWidth(((max - min) / 2) / 2);
+				zwei.setFitWidth(((max - min) / 2) / 2);
+				hbox.getChildren().add(eins);
+				hbox.getChildren().add(zwei);
 			}
 		});
-	}
-
-	private void rollDice(Wuerfel wuerfel, ImageView iv, int x) {
-
-		wuerfel.views = wuerfel.spin();
-		long t = System.currentTimeMillis();
-		long end = t + 15000;
-		while (System.currentTimeMillis() < end) {
-			for (Image view : wuerfel.views) {
-				Platform.runLater(new Runnable() {
-					@Override
-					public void run() {
-						iv.setImage(view);
-					}
-				});
-				try {
-					Wuerfel.sleep(80);
-				} catch (InterruptedException e) {
-				}
-
-			}
-
-		}
-		iv.setImage(wuerfel.getDice(x));
 	}
 
 	void keyHandler(Scene scene) {
@@ -123,6 +123,9 @@ public class WuerfelStage {
 				switch (event.getCode()) {
 				case F1:
 					board.helpMe();
+					break;
+				case F2:
+					new WuerfelAnimation(views, stage);
 					break;
 				case ESCAPE:
 					new ExitStage(board.prime);
@@ -135,9 +138,60 @@ public class WuerfelStage {
 			}
 		});
 	}
-
+	
 	public void yourTurn() {
-		wuerfeln(3,2);
+		new WuerfelAnimation(views,stage);
+	}
+
+}
+
+class WuerfelAnimation extends Thread {
+	ArrayList<ImageView> imgs;
+	Stage stage;
+
+	WuerfelAnimation(ArrayList<ImageView> imgs, Stage stage) {
+		this.imgs = imgs;
+		this.stage = stage;
+		start();
+	}
+
+	public void run() {
+		wuerfeln();
+	}
+
+	void wuerfeln() {
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				while(true) {
+				ArrayList<ImageView> img = imgs;
+				HBox hbox = new HBox();
+				hbox.setStyle("-fx-background-color: red");
+				img.remove(img.size()-1);
+				img.remove(img.size()-1);
+				Collections.shuffle(imgs);
+				ImageView img1 = img.get(0);
+				img.remove(0);
+				img1.setFitHeight(stage.getHeight());
+				img1.setFitWidth(stage.getWidth() / 2);
+				hbox.getChildren().add(img1);
+				Collections.shuffle(imgs);
+				ImageView img2 = img.get(0);
+				img.remove(0);
+				img2.setFitHeight(stage.getHeight());
+				img2.setFitWidth(stage.getWidth() / 2);
+				hbox.getChildren().add(img2);
+				Scene scene = new Scene(hbox);
+				stage.setScene(scene);
+				try {
+					sleep(500);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				}
+				
+			}
+		});
 	}
 
 }

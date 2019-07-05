@@ -222,7 +222,7 @@ public class Board {
 
 			}
 		});
-		prime.getIcons().add(new Image("./icons/zylinder.png"));
+		//prime.getIcons().add(new Image("./icons/zylinder.png"));
 	}
 
 	ArrayList<Button> getAllButtons() {
