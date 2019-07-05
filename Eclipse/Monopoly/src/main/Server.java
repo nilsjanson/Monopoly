@@ -529,6 +529,7 @@ public class Server {
 					case 5:
 						broadcastInt(11);
 						broadcastInt(position);
+						System.out.println("Hypothek ist" + feld[position].isHypothek());
 						feld[position].setHypothek(!feld[position].isHypothek());
 
 						break;
