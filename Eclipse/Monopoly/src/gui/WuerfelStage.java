@@ -83,8 +83,8 @@ public class WuerfelStage {
 				mediaPlayer.play();
 				wuerfel1 = new Wuerfel() {
 					public void run() {
-						rollDice(wuerfel1, viewOne, 1);
-						rollDice(wuerfel2, viewTwo, 1);
+						rollDice(wuerfel1, viewOne, x);
+						rollDice(wuerfel2, viewTwo, y);
 					}
 				};
 			}
@@ -92,7 +92,6 @@ public class WuerfelStage {
 	}
 
 	private void rollDice(Wuerfel wuerfel, ImageView iv, int x) {
-
 		wuerfel.views = wuerfel.spin();
 		long t = System.currentTimeMillis();
 		long end = t + 15000;
@@ -108,9 +107,7 @@ public class WuerfelStage {
 					Wuerfel.sleep(80);
 				} catch (InterruptedException e) {
 				}
-
 			}
-
 		}
 		iv.setImage(wuerfel.getDice(x));
 	}
