@@ -235,7 +235,7 @@ public class InfoStage {
 
 	private ArrayList<String> getNames() {
 		ArrayList<String> names = new ArrayList<String>();
-		names.add("KesselHaus");
+		names.add("Kesselhaus");
 		names.add("AstaBuero");
 		names.add("PflanzenLabor");
 		names.add("GewaechsHaus");
