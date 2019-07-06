@@ -12,21 +12,21 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 public class WelcomeStage {
-	
+
 	Stage prime;
 	Board board;
 
-	
-	WelcomeStage(Stage prime,Board board) {
-		this.board=board;
+	WelcomeStage(Stage prime, Board board) {
+		this.board = board;
 		board.actionSeamphore = new Semaphore(0);
-		this.prime=prime;
+		this.prime = prime;
 		welcome();
 	}
 
@@ -35,31 +35,45 @@ public class WelcomeStage {
 		ImageView logo = new ImageView(getClass().getResource("/icons/TH-Poly-Logo.jpg").toExternalForm());
 		vbox.setAlignment(Pos.CENTER);
 		vbox.setStyle("-fx-background-color: lightgreen");
-		HBox hbox = new HBox();
+		HBox buttonBox = new HBox();
 		Button zwei = new Button("2 Spieler");
 		Button drei = new Button("3 Spieler");
 		Button vier = new Button("4 Spieler");
 
 		butStyle(zwei, drei, vier);
-		hbox.getChildren().addAll(zwei, drei, vier);
-		hbox.setSpacing(10);
-		hbox.setStyle("-fx-padding:1em");
-		hbox.setAlignment(Pos.CENTER);
+		buttonBox.getChildren().addAll(zwei, drei, vier);
+		buttonBox.setSpacing(10);
+		buttonBox.setStyle("-fx-padding:1em");
 
 		HBox playerNames = new HBox();
 		TextField name = new TextField();
 		Label playerName = new Label("Ihr Spielername:");
-		playerName.setStyle(
-				"-fx-background-color:lightgreen; -fx-padding:0.5em; -fx-text-fill: black; -fx-font-size:20px;");
+		labelStyle(playerName);
 		textFieldStyle(name);
 		playerNames.getChildren().addAll(playerName, name);
-		playerNames.setAlignment(Pos.CENTER);
 
 		zwei.setOnAction(e -> startGame(2, name.getText()));
 		drei.setOnAction(e -> startGame(3, name.getText()));
 		vier.setOnAction(e -> startGame(4, name.getText()));
 
-		vbox.getChildren().addAll(logo, hbox, playerNames);
+
+		HBox getServerIp = new HBox();
+		Label labelIp = new Label("Server IP:");
+		labelStyle(labelIp);
+		TextField servip = new TextField();
+		textFieldStyle(servip);
+		getServerIp.getChildren().addAll(labelIp, servip);
+
+		HBox getPort = new HBox();
+		Label portLabel = new Label("Port: ");
+		labelStyle(portLabel);
+		TextField portField = new TextField();
+		textFieldStyle(portField);
+		
+		getPort.getChildren().addAll(portLabel, portField);
+		
+		setAligmentCenter(getPort,playerNames,getServerIp,buttonBox);
+		vbox.getChildren().addAll(logo, buttonBox, playerNames,getServerIp,getPort);
 		Scene scene = new Scene(vbox);
 		vbox.autosize();
 		controlWelcome(scene);
@@ -69,7 +83,16 @@ public class WelcomeStage {
 		prime.centerOnScreen();
 	}
 	
+	
+	private void setAligmentCenter(HBox...boxes) {
+		for (HBox x: boxes) {
+			x.setAlignment(Pos.CENTER);
+		}
+	}
 
+	private void labelStyle(Label label) {
+		label.setStyle("-fx-background-color:lightgreen; -fx-padding:0.5em; -fx-text-fill: black; -fx-font-size:20px;");
+	}
 
 	private void startGame(int player, String playername) {
 		board.spieler = player;
@@ -81,9 +104,9 @@ public class WelcomeStage {
 		board.playerArr = new ImageView[player];
 		board.actionSeamphore.release(1);
 		board.createBoard();
-		board.setLobby(new Lobby(board,playername));
+		board.setLobby(new Lobby(board, playername));
 	}
-	
+
 	private void textFieldStyle(TextField... x) {
 		for (TextField field : x) {
 			field.setStyle("-fx-border-color: black; -fx-control-inner-background: lightgreen; -fx-font-size: 2em;");
@@ -91,14 +114,14 @@ public class WelcomeStage {
 		// vbox.setStyle("-fx-background-color: rgb(" + 192 + "," + 254 + ", " + 213 +
 		// ");");
 	}
-	
+
 	private void butStyle(Button... x) {
 		for (Button but : x) {
 			but.setStyle(
 					"-fx-border-color: black; -fx-background-color: lightgreen; -fx-border-color: black; -fx-font-size: 2em;");
 		}
 	}
-	
+
 	private void controlWelcome(Scene scene) {
 		scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			@Override
@@ -117,7 +140,7 @@ public class WelcomeStage {
 			}
 		});
 	}
-	
+
 	protected void helpMe() {
 		Stage help = new Stage();
 		VBox vbox = new VBox();
@@ -152,11 +175,11 @@ public class WelcomeStage {
 		help.initStyle(StageStyle.UNDECORATED);
 		help.show();
 	}
-	
+
 	private void helpLabelStyle(ArrayList<Label> help) {
 		for (Label x : help) {
 			x.setStyle("-fx-font-size: 2em;");
 		}
 	}
-	
+
 }
