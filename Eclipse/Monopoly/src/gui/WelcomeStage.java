@@ -22,6 +22,8 @@ public class WelcomeStage {
 
 	Stage prime;
 	Board board;
+	TextField portField;
+	TextField servip;
 
 	WelcomeStage(Stage prime, Board board) {
 		this.board = board;
@@ -60,14 +62,16 @@ public class WelcomeStage {
 		HBox getServerIp = new HBox();
 		Label labelIp = new Label("Server IP:");
 		labelStyle(labelIp);
-		TextField servip = new TextField();
+		 servip = new TextField();
+		 servip.setText("localhost");
 		textFieldStyle(servip);
 		getServerIp.getChildren().addAll(labelIp, servip);
 
 		HBox getPort = new HBox();
 		Label portLabel = new Label("Port: ");
 		labelStyle(portLabel);
-		TextField portField = new TextField();
+		portField = new TextField();
+		portField.setText("1337");
 		textFieldStyle(portField);
 		
 		getPort.getChildren().addAll(portLabel, portField);
@@ -96,6 +100,8 @@ public class WelcomeStage {
 
 	private void startGame(int player, String playername) {
 		board.spieler = player;
+		board.setIp(servip.getText());
+		board.setPort(portField.getText());
 		if (playername == null || playername.equals("")) {
 			board.playerName = "Player " + (int) (Math.random() * 10000);
 		} else {

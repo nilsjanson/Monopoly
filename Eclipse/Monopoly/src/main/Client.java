@@ -38,11 +38,12 @@ public class Client extends Thread {
 
 	public void run() {
 		try {
-			server = new Socket("localhost", 1337);
-			in = new DataInputStream(new BufferedInputStream(server.getInputStream()));
-			out = new DataOutputStream(new BufferedOutputStream(server.getOutputStream()));
+			
 			board.actionSeamphore.acquire();
 			anzahlSpieler = board.spieler;
+			server = new Socket(board.getIp(), Integer.parseInt(board.getPort()));
+			in = new DataInputStream(new BufferedInputStream(server.getInputStream()));
+			out = new DataOutputStream(new BufferedOutputStream(server.getOutputStream()));
 			out.writeInt(anzahlSpieler);
 			out.flush();
 			int ownPlayerNumber = in.readInt();
