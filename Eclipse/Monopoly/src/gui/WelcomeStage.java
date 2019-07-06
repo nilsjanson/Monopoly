@@ -71,7 +71,7 @@ public class WelcomeStage {
 		Label portLabel = new Label("Port: ");
 		labelStyle(portLabel);
 		portField = new TextField();
-		portField.setText("1337");
+		portField.setText("1099");
 		textFieldStyle(portField);
 
 		getPort.getChildren().addAll(portLabel, portField);

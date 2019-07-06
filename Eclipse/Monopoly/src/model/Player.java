@@ -111,18 +111,14 @@ public class Player {
 		return id;
 	}
 
-	public void buyCardOption(Card x) {
-		//
-	}
+	
 
 	private void move(int count) {
 		position += count;
 		position = position % 40;
 	}
 
-	protected void buyHouseOption(Card card) {
 
-	}
 
 	public int getPosition() {
 		return position;

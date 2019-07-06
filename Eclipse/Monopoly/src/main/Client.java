@@ -41,6 +41,7 @@ public class Client extends Thread {
 			
 			board.actionSeamphore.acquire();
 			anzahlSpieler = board.spieler;
+			
 			server = new Socket(board.getIp(), Integer.parseInt(board.getPort()));
 			in = new DataInputStream(new BufferedInputStream(server.getInputStream()));
 			out = new DataOutputStream(new BufferedOutputStream(server.getOutputStream()));

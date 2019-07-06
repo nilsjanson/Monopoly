@@ -493,10 +493,18 @@ public class Server {
 			 *
 			 * @throws IOException wenn der Client nicht erreichbar ist.
 			 */
+			private int rollDices() {
+		        int erg = 7;
+		        while(erg==7) {
+		            erg = (int)(Math.random()*6)+1;
+		        }
+		        return erg;
+		    }
+			
 			public void wuerfeln(int playerNumber) throws IOException {
-
-				w1 = model.Board.wuerfeln();
-				w2 = model.Board.wuerfeln();
+			
+				w1 = rollDices();
+				w2 = rollDices();
 				broadcastInt(2);
 				System.out.println(playerNumber + " sollte jetzt wuerfeln");
 				broadcastInt(playerNumber);
