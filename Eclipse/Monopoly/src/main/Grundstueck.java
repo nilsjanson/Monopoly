@@ -82,7 +82,7 @@ public class Grundstueck {
 	}
 
 	public void setHypothek(boolean hypothek) {
-		if(hypothek = true) {
+		if(hypothek) {
 			try {
 				besitzer.addGeld(preis/2);
 			} catch (IOException e) {
@@ -90,7 +90,8 @@ public class Grundstueck {
 			}
 		}else {
 			try {
-				besitzer.addGeld((int)((preis/2)*-1.1));
+				int price = -((int)((preis/2)*1.1));
+				besitzer.addGeld(price);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
