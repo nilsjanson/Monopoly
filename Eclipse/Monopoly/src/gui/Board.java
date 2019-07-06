@@ -72,15 +72,10 @@ public class Board {
 	public ImageView[] playerArr;
 
 	public Board(Stage prime) {
-		// mediaPlayer.play(); Musik ausgeschaltet, da wenn ich nocheinmal dieses Lied
-		// hoere meine rechte Halsschlagader platzt sollte man auf die Idee kommen das
-		// ganze mal mit drei Clients zu testen.
-
+		// mediaPlayer.play();
 		actionSeamphore = new Semaphore(0);
 		this.prime = prime;
-
 		new WelcomeStage(prime, this);
-		// welcome();
 	}
 
 	protected double getMax() {
@@ -88,7 +83,6 @@ public class Board {
 	}
 
 	private ImageView createPlayer(double width, double height, String source) {
-
 		ImageView icon = new ImageView(getClass().getResource(source).toExternalForm());
 		icon.setFitHeight(height);
 		icon.setFitWidth(width);
