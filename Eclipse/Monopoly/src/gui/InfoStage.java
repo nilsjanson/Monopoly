@@ -11,6 +11,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -31,17 +32,28 @@ public class InfoStage {
 	Label[] geldArr;
 
 	InfoStage(Board board, double min, double max, Player... players) {
-		ArrayList<VBox> playerBoxes = new ArrayList<VBox>();
-		ArrayList<GridPane> grids = new ArrayList<GridPane>();
+
 		geldArr = new Label[players.length];
-		VBox ivbox = new VBox();
+
 		this.board = board;
 		this.min = min;
 		this.max = max;
+		Thread thread = new Thread() {
+			public void start() {
+				createInfoStage(players);
+			}
+		};
+		thread.start();
+	}
+	
+	private void createInfoStage(Player...players) {
+		ArrayList<VBox> playerBoxes = new ArrayList<VBox>();
+		VBox ivbox = new VBox();
+		ArrayList<GridPane> grids = new ArrayList<GridPane>();
 		Label infoSt = new Label("InfoStage");
 		infoSt.setStyle("-fx-font-size: 20;");
 		info = new Stage();
-
+		
 		ivbox.setAlignment(Pos.CENTER);
 		int q = 0;
 		for (Player player : players) {
@@ -118,6 +130,7 @@ public class InfoStage {
 		info.setScene(scene);
 		info.setMaxWidth(((max - min) / 2) - 5);
 		info.setMaxHeight(min * .8);
+		info.getIcons().add(new Image("/icons/info.png"));
 		info.show();
 		info.setWidth(ivbox.getWidth());
 		info.setHeight(ivbox.getHeight());

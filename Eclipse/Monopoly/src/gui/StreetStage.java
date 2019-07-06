@@ -219,10 +219,6 @@ public class StreetStage extends Application {
 				case ENTER:
 					stage.close();
 					break;
-				case ESCAPE:
-					close();
-
-					break;
 				case C:
 					stage.centerOnScreen();
 					break;
@@ -254,7 +250,6 @@ public class StreetStage extends Application {
 		try {
 			this.stop();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

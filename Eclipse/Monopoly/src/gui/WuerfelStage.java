@@ -48,8 +48,12 @@ public class WuerfelStage {
 
 			views.add(new ImageView(getClass().getResource("/wuerfel/0.png").toExternalForm()));
 			views.add(new ImageView(getClass().getResource("/wuerfel/0.png").toExternalForm()));
-			
-			start();
+			Thread thread = new Thread() {
+				public void start() {
+					startWuerfelStage();
+				}
+			};
+			thread.start();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -57,7 +61,7 @@ public class WuerfelStage {
 
 	
 
-	public void start() {
+	public void startWuerfelStage() {
 		hbox = new HBox();
 		hbox.setStyle("-fx-background-color: red;");
 		ImageView eins = views.get(views.size() - 1);
@@ -66,6 +70,7 @@ public class WuerfelStage {
 		hbox.getChildren().add(zwei);
 		Scene scene = new Scene(hbox);
 		stage = new Stage();
+		stage.getIcons().add(new Image("/icons/dice.png"));
 		keyHandler(scene);
 		stage.setScene(scene);
 		stage.initStyle(StageStyle.UNDECORATED);

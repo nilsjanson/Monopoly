@@ -14,6 +14,16 @@ import javafx.stage.StageStyle;
 
 public class ExitStage {
 	ExitStage(Stage prime) {
+		Thread thread = new Thread() {
+			public void start() {
+				createExitStage();
+			}
+		};
+		thread.start();
+		
+	}
+	
+	private void createExitStage() {
 		Stage exit = new Stage();
 		exit.initModality(Modality.APPLICATION_MODAL);
 		exit.initStyle(StageStyle.UNDECORATED);

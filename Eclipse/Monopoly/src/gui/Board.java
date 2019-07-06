@@ -18,6 +18,7 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
@@ -150,8 +151,17 @@ public class Board {
 		timeline.getKeyFrames().add(end);
 		timeline.play();
 	}
-
+	
 	protected void createBoard() {
+		Thread thread = new Thread() {
+			public void start() {
+				createBoard(true);
+			}
+		};
+		thread.start();
+	}
+
+	protected void createBoard(boolean boost) {
 		Rectangle2D screen = Screen.getPrimary().getVisualBounds();
 		width = screen.getMaxX();
 		height = screen.getMaxY();
@@ -182,6 +192,7 @@ public class Board {
 		prime.setWidth(max);
 		prime.setHeight(max);
 		prime.centerOnScreen();
+		prime.getIcons().add(new Image("./icons/zylinder.png"));
 		prime.show();
 
 		wuerfelStage = new WuerfelStage(me, Math.min(width, height), Math.max(width, height));
@@ -218,7 +229,6 @@ public class Board {
 				lobby.lobby.close();
 			}
 		});
-		// prime.getIcons().add(new Image("./icons/zylinder.png"));
 	}
 	
 	protected void setLobby(Lobby lobby) {

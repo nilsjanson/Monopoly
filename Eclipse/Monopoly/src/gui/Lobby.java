@@ -5,6 +5,7 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.effect.Reflection;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
@@ -20,6 +21,15 @@ public class Lobby {
 	
 	Lobby(Board board, String... names) {
 		this.board=board;
+		Thread thread = new Thread() {
+			public void start() {
+				createLobby(names);
+			}
+		};
+		thread.start();
+	}
+	
+	private void createLobby(String...names) {
 		lobby=new Stage();
 		VBox vbox = new VBox();
 		vbox.setAlignment(Pos.CENTER);
@@ -48,6 +58,7 @@ public class Lobby {
 		lobby.initStyle(StageStyle.UNDECORATED);
 		lobby.initModality(Modality.WINDOW_MODAL);
 		lobby.show();
+		
 	}
 	
 	void addPlayer(String name) {
