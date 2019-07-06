@@ -17,36 +17,55 @@ import javafx.stage.Stage;
 import model.Besitzrechtkarte;
 import model.Player;
 
+/**
+ * Controller fuer einen Benutzer zwischen Server und grafischer Oberflaeche.
+ */
 public class Client extends Thread {
 
-	gui.Board board;
-	Stage stage;
-	Socket server;
-	DataInputStream in;
-	DataOutputStream out;
+	/** Referenz auf das Gui-Board. */
+	private gui.Board board;
+	/** Stage fuer GUI. */
+	private Stage stage;
+	/** Socket fuer Serververbindung. */
+	private Socket server;
+	/** Inputstream der Serververbindung. */
+	private DataInputStream in;
+	/** Output der Serververbindung. */
+	private DataOutputStream out;
+	/** Eigene Spielernummer. */
 	private int ownPlayerNumber;
+	/** ausgewaehlte Anzahl der Spieler. */
 	private int anzahlSpieler;
-	String name;
+	/** Name des eigenen Spielers. */
+	private String name;
+	/** Liste aller Spieler im Spiel. */
+	private Player[] playerList;
 
-	Player[] playerList;
-
-	Client(gui.Board board, Stage stage) {
-		this.board = board;
-		this.stage = stage;
+	/**
+	 * Erzeugen eines neuen Clients.
+	 * @param b GUI Board
+	 * @param s GUI Stage
+	 */
+	Client(final gui.Board b, final Stage s) {
+		this.board = b;
+		this.stage = s;
 		start();
 	}
 
-	public void run() {
+	/** Threadmethode des Clients. */
+	public final void run() {
 		try {
-			
 			board.actionSeamphore.acquire();
 			anzahlSpieler = board.spieler;
-			server = new Socket(board.getIp(), Integer.parseInt(board.getPort()));
-			in = new DataInputStream(new BufferedInputStream(server.getInputStream()));
-			out = new DataOutputStream(new BufferedOutputStream(server.getOutputStream()));
+			server = new Socket(board.getIp(),
+					Integer.parseInt(board.getPort()));
+			in = new DataInputStream(new BufferedInputStream(
+					server.getInputStream()));
+			out = new DataOutputStream(new BufferedOutputStream(
+					server.getOutputStream()));
 			out.writeInt(anzahlSpieler);
 			out.flush();
-			int ownPlayerNumber = in.readInt();
+			ownPlayerNumber = in.readInt();
 			name = board.playerName;
 			out.writeUTF(name);
 			out.flush();
@@ -56,18 +75,18 @@ public class Client extends Thread {
 			for (int i = 0; i < anzahlSpieler; i++) {
 				String playerName = in.readUTF();
 				int playerID = in.readInt();
-				playerList[i] = (new Player(playerName, playerID));
-				System.out.println(playerList[i].getName() + "(" + playerList[i].getID() + ") has joined");
+				playerList[i] = new Player(playerName,
+						playerID);
+				System.out.println(playerList[i].getName()
+						+ "(" + playerList[i].getID()
+						+ ") has joined");
 			}
 			board.startInfoStage(playerList);
 			board.infoStageSemaphore.acquire();
-
 			int x = in.readInt();
 			while (x != -1) {
 				switch (x) {
-
 				case 1:
-
 					board.actionSeamphore = new Semaphore(0);
 					int playerNumber = in.readInt(); // erhalte den Spieler, der dran ist
 					System.out.println(playerNumber + " ist am Zug");
@@ -77,7 +96,6 @@ public class Client extends Thread {
 						board.yourTurn = true;
 						board.aktionZugGemachtSem.acquire();
 						int aktion = board.actionQueue.remove(0);
-
 						if (aktion != 2) {
 							out.writeInt(aktion);
 							System.out.println("Schicke " + aktion);
@@ -85,101 +103,43 @@ public class Client extends Thread {
 							int position = board.actionQueue.remove(0); // Position �bermitteln
 							out.writeInt(position);
 							out.flush();
-
 						} else {
 							out.writeInt(2);
 							out.flush();
 						}
-
 						board.yourTurn = false;
 					}
 					break;
-
 				case 2: // wuerfeln
-					wuerfel(ownPlayerNumber);
+					wuerfel();
 					break;
-
 				case 3: // geld updaten
 					int player = in.readInt();
 					int money = in.readInt();
 					changeMoney(player, money);
 					break;
-
 				case 4: // Feld checken
-					StreetStage s;
-					int actualPlayer = in.readInt();
-					if (in.readBoolean()) { // ist ein Grundstueck
-						String streetName = in.readUTF();
-						if (in.readBoolean()) { // hat keinen Besitzer
-							if (in.readBoolean()) {
-								if (actualPlayer == ownPlayerNumber) {
-									showStreetStage(board, streetName, true, true, false, true);
-									waitForStreetAction();
-
-								} else {
-									showStreetStage(board, streetName, true, true, false, false);
-								}
-
-							} else {
-								if (actualPlayer == ownPlayerNumber) {
-									showStreetStage(board, streetName, false, true, false, true);
-									waitForStreetAction();
-								} else {
-									showStreetStage(board, streetName, false, true, false, false);
-								}
-							}
-						} else { // Besitzer existiert
-							int owner = in.readInt();
-							boolean hausKaufbar = in.readBoolean();
-							if (owner == actualPlayer && hausKaufbar) {
-								if (actualPlayer == ownPlayerNumber) {
-									showStreetStage(board, streetName, false, true, false, true);
-								} else {
-									showStreetStage(board, streetName, false, true, false, false);
-								}
-							} else {
-								System.out.println("zahle miete");
-								showStreetStage(board, streetName, false, false, false, false);
-							}
-
-						}
-
-					} else { // ist kein Grundstueck
-						int v = in.readInt();
-						if (v == 77) {
-							String text = in.readUTF();
-							int acPlayer = in.readInt();
-							showEmailStage(text, acPlayer);
-						} else if (v == 3) {
-							System.out.println("Gehe in das Gefaengnis");
-						}
-
-					}
+					checkFeld();
 					break;
-
 				case 5: // Stra�e kaufen
 					System.out.println(in.readUTF());
 					break;
-
 				case 6: // Auktion starten
-					String name = in.readUTF();
-					showAuctionStage(board, name);
+					String sName = in.readUTF();
+					showAuctionStage(board, sName);
 					board.auktionStageOpenSemaphore.acquire();
 					Auktion a = board.auktionStageOpen;
 					int actual = in.readInt();
 					while (actual != -1) {
-
 						a.neuesGebot(in.readInt());
 						if (actual == ownPlayerNumber) {
 							a.yourTurn();
-
 						} else {
 							a.disableButtons();
 						}
 						actual = in.readInt();
 					}
 					a.close(in.readInt());
-
 					break;
 				case 7: // Grundstueckbesitzer wechseln
 					String gName = in.readUTF();
@@ -198,7 +158,6 @@ public class Client extends Thread {
 					if (board.streetStageOpen != null) {
 						board.streetStageOpen.close();
 					}
-
 					break;
 
 				case 8: // bewege dich auf dem Feld
@@ -211,54 +170,104 @@ public class Client extends Thread {
 						position++;
 						position = position % 40;
 					}
-
 					break;
 				case 9: // haus kaufen
 					Besitzrechtkarte bK = Besitzrechtkarte.findByName(in.readUTF());
 					bK.setHausCounter(in.readInt());
 					System.out.println("Auf" + bK.getName() + " wurde ein Haus gebaut");
-
 					break;
-
 				case 10: // haus verkaufen
 					Besitzrechtkarte besitz = Besitzrechtkarte.findByPosition(in.readInt());
 					besitz.setHausCounter(besitz.getHausCounter() - 1);
 					System.out.println("Auf" + besitz.getName() + " wurde ein Haus abgebaut");
 					break;
-
 				case 11: // Hypothek aufnehmen
 					Besitzrechtkarte besitzRecht = Besitzrechtkarte.findByPosition(in.readInt());
 					besitzRecht.setHypothek(!besitzRecht.isHypothek());
 					System.out.println("Auf" + besitzRecht.getName() + " wurde Hypothek aufgenommen/Abgenommen");
 					board.infoStage.setHypothek(besitzRecht);
 					break;
-
+				default:
+					break;
 				}
 				x = in.readInt();
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
-
 	}
 
-	private void showAuctionStage(Board board, String name) {
+	/** Zeige das Auktionsfenster.
+	*@param b Referenz auf das GUI Board
+	*@param n Name der zu versteigernden Strasse
+	*/
+	private void showAuctionStage(final Board b, final String n) {
 		try {
 			System.out.println("Auktionfenster starten");
 			board.auktionStageOpenSemaphore.acquire(board.auktionStageOpenSemaphore.availablePermits());
-			System.out.println("name: " + name);
+			System.out.println("name: " + n);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
-				System.out.println(name);
-				Auktion auk = new Auktion(board, name, out, "Nils");
+				Auktion auk = new Auktion(board, n, out, "Nils");
 			}
 		});
 	}
 
+	/** Ueberpruefen des Feldes auf dem sich der Spieler befindet.
+	 * @throws IOException durch Inputstream
+	 */
+	private void checkFeld() throws IOException {
+		StreetStage s;
+		int actualPlayer = in.readInt();
+		if (in.readBoolean()) { // ist ein Grundstueck
+			String streetName = in.readUTF();
+			if (in.readBoolean()) { // hat keinen Besitzer
+				if (in.readBoolean()) {
+					if (actualPlayer == ownPlayerNumber) {
+						showStreetStage(board, streetName, true, true, false, true);
+						waitForStreetAction();
+					} else {
+						showStreetStage(board, streetName, true, true, false, false);
+					}
+				} else {
+					if (actualPlayer == ownPlayerNumber) {
+						showStreetStage(board, streetName, false, true, false, true);
+						waitForStreetAction();
+					} else {
+						showStreetStage(board, streetName, false, true, false, false);
+					}
+				}
+			} else { // Besitzer existiert
+				int owner = in.readInt();
+				boolean hausKaufbar = in.readBoolean();
+				if (owner == actualPlayer && hausKaufbar) {
+					if (actualPlayer == ownPlayerNumber) {
+						showStreetStage(board, streetName, false, true, false, true);
+					} else {
+						showStreetStage(board, streetName, false, true, false, false);
+					}
+				} else {
+					System.out.println("zahle miete");
+					showStreetStage(board, streetName, false, false, false, false);
+				}
+			}
+		} else { // ist kein Grundstueck
+			int v = in.readInt();
+			if (v == 77) {
+				String text = in.readUTF();
+				int acPlayer = in.readInt();
+				showEmailStage(text, acPlayer);
+			} else if (v == 3) {
+				System.out.println("Gehe in das Gefaengnis");
+			}
+		}
+	}
+
+	/**Warte auf ein Input in der StreetStage. */
 	private void waitForStreetAction() {
 		try {
 			System.out.println("Warte auf Aktion");
@@ -274,9 +283,17 @@ public class Client extends Thread {
 		}
 
 	}
-
-	private void showStreetStage(Board board, String name, boolean kaufbar, boolean versteigerbar, boolean hausKaufbar,
-			boolean aktionErforderlich) {
+ /**
+  * Methode um StreetStage zu zeigen.
+  * @param b Referent auf das Board
+  * @param n Name der Strasse
+  * @param kaufbar ist es kaufbar
+  * @param versteigerbar ist es versteigerbar
+  * @param hausKaufbar ist ein hauskaufbar
+  * @param aktionErforderlich ist eine Aktion erforderlich
+  */
+	private void showStreetStage(final Board b, final String n, final boolean kaufbar,
+			final boolean versteigerbar, final boolean hausKaufbar, final boolean aktionErforderlich) {
 		try {
 			board.streetStageOpenSemaphore.acquire(board.streetStageOpenSemaphore.availablePermits());
 
@@ -286,14 +303,18 @@ public class Client extends Thread {
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
-				Besitzrechtkarte x = Besitzrechtkarte.findByName(name);
-				StreetStage s = new StreetStage(board, x, kaufbar, versteigerbar, hausKaufbar, aktionErforderlich);
+				Besitzrechtkarte x = Besitzrechtkarte.findByName(n);
+				StreetStage s = new StreetStage(b, x, kaufbar, versteigerbar, hausKaufbar, aktionErforderlich);
 			}
 		});
 
 	}
-
-	private void showEmailStage(String text, int playernumber) {
+ /**
+  * Zeige eine Email an.
+  * @param text Text der abzubilden ist
+  * @param playernumber zeige welcher Spieler an der Reihe ist
+  */
+	private void showEmailStage(final String text, final int playernumber) {
 
 		Platform.runLater(new Runnable() {
 			@Override
@@ -309,19 +330,20 @@ public class Client extends Thread {
 
 	/**
 	 * Aendert das Geld eines Spielers.
-	 * 
 	 * @param playerNumber die Spielernummer des Spielers, dessen Geld geaendert
 	 *                     werden soll.
 	 * @param money        das neue Geld.
 	 */
-	public void changeMoney(int playerNumber, int money) {
+	public void changeMoney(final int playerNumber, final int money) {
 		System.out.println("bin hier drin");
 		System.out.println("Spieler " + playerNumber + " hat jetzt " + money + " Euro");
 		playerList[playerNumber].setBilanz(money);
 		board.infoStage.updateGeld(playerList[playerNumber]);
 	}
-
-	public void wuerfel(int ownPlayerNumber) throws IOException {
+	/** Methode zum wuerfeln.
+	 * @throws IOException wegen Input und Outputstream
+	 */
+	public final void wuerfel() throws IOException {
 
 		try {
 
