@@ -17,6 +17,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import main.Server;
 
 public class WelcomeStage {
 
@@ -58,12 +59,11 @@ public class WelcomeStage {
 		drei.setOnAction(e -> startGame(3, name.getText()));
 		vier.setOnAction(e -> startGame(4, name.getText()));
 
-
 		HBox getServerIp = new HBox();
 		Label labelIp = new Label("Server IP:");
 		labelStyle(labelIp);
-		 servip = new TextField();
-		 servip.setText("localhost");
+		servip = new TextField();
+		servip.setText("localhost");
 		textFieldStyle(servip);
 		getServerIp.getChildren().addAll(labelIp, servip);
 
@@ -73,11 +73,12 @@ public class WelcomeStage {
 		portField = new TextField();
 		portField.setText("1337");
 		textFieldStyle(portField);
-		
+
 		getPort.getChildren().addAll(portLabel, portField);
-		
-		setAligmentCenter(getPort,playerNames,getServerIp,buttonBox);
-		vbox.getChildren().addAll(logo, buttonBox, playerNames,getServerIp,getPort);
+		Button startServer = new Button("Start Server");
+		serverButStyle(startServer);
+		setAligmentCenter(getPort, playerNames, getServerIp, buttonBox);
+		vbox.getChildren().addAll(logo, buttonBox, playerNames, getServerIp, getPort,startServer);
 		Scene scene = new Scene(vbox);
 		vbox.autosize();
 		controlWelcome(scene);
@@ -86,10 +87,9 @@ public class WelcomeStage {
 		prime.show();
 		prime.centerOnScreen();
 	}
-	
-	
-	private void setAligmentCenter(HBox...boxes) {
-		for (HBox x: boxes) {
+
+	private void setAligmentCenter(HBox... boxes) {
+		for (HBox x : boxes) {
 			x.setAlignment(Pos.CENTER);
 		}
 	}
@@ -126,6 +126,13 @@ public class WelcomeStage {
 			but.setStyle(
 					"-fx-border-color: black; -fx-background-color: lightgreen; -fx-border-color: black; -fx-font-size: 2em;");
 		}
+	}
+	
+	private void serverButStyle(Button x) {
+			x.setStyle(
+					"-fx-border-color: black; -fx-background-color: red; -fx-border-color: black; -fx-font-size: 2em; -fx-text-fill: white");
+			String [] arr = new String[] {portField.getText()};
+		x.setOnAction(e->Server.main(arr));
 	}
 
 	private void controlWelcome(Scene scene) {
