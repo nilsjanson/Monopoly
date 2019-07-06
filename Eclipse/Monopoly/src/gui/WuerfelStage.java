@@ -2,12 +2,12 @@ package gui;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
@@ -150,7 +150,7 @@ class WuerfelAnimation extends Thread {
 	WuerfelAnimation(ArrayList<ImageView> imgs, Stage stage) {
 		this.imgs = imgs;
 		this.stage = stage;
-		start();
+		this.setDaemon(true);
 	}
 
 	public void run() {
@@ -161,31 +161,32 @@ class WuerfelAnimation extends Thread {
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
-				while(true) {
-				ArrayList<ImageView> img = imgs;
+				ArrayList<Image> img = new ArrayList<Image>();
+				img.add(new Image(getClass().getResource("/wuerfel/1.png").toExternalForm()));
+				img.add(new Image(getClass().getResource("/wuerfel/2.png").toExternalForm()));
+				img.add(new Image(getClass().getResource("/wuerfel/3.png").toExternalForm()));
+				img.add(new Image(getClass().getResource("/wuerfel/4.png").toExternalForm()));
+				img.add(new Image(getClass().getResource("/wuerfel/5.png").toExternalForm()));
+				img.add(new Image(getClass().getResource("/wuerfel/6.png").toExternalForm()));
+				long time = System.currentTimeMillis();
+				long till = time+30000;
+				while(System.currentTimeMillis()<till) {
 				HBox hbox = new HBox();
 				hbox.setStyle("-fx-background-color: red");
-				img.remove(img.size()-1);
-				img.remove(img.size()-1);
-				Collections.shuffle(imgs);
-				ImageView img1 = img.get(0);
-				img.remove(0);
+				ImageView img1 = new ImageView();
 				img1.setFitHeight(stage.getHeight());
 				img1.setFitWidth(stage.getWidth() / 2);
 				hbox.getChildren().add(img1);
-				Collections.shuffle(imgs);
-				ImageView img2 = img.get(0);
-				img.remove(0);
+				ImageView img2 = new ImageView();
 				img2.setFitHeight(stage.getHeight());
 				img2.setFitWidth(stage.getWidth() / 2);
 				hbox.getChildren().add(img2);
+				for (Image x: img) {
+					img1.setImage(x);
+					img2.setImage(x);
+				}
 				Scene scene = new Scene(hbox);
 				stage.setScene(scene);
-				try {
-					sleep(500);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
 				}
 				
 			}
