@@ -71,14 +71,14 @@ public class WelcomeStage {
 		Label portLabel = new Label("Port: ");
 		labelStyle(portLabel);
 		portField = new TextField();
-		portField.setText("1337");
+		portField.setText("1099");
 		textFieldStyle(portField);
 
 		getPort.getChildren().addAll(portLabel, portField);
 		Button startServer = new Button("Start Server");
 		serverButStyle(startServer);
 		setAligmentCenter(getPort, playerNames, getServerIp, buttonBox);
-		vbox.getChildren().addAll(logo, buttonBox, playerNames, getServerIp, getPort,startServer);
+		vbox.getChildren().addAll(logo, buttonBox, playerNames, getServerIp, getPort, startServer);
 		Scene scene = new Scene(vbox);
 		vbox.autosize();
 		controlWelcome(scene);
@@ -127,12 +127,21 @@ public class WelcomeStage {
 					"-fx-border-color: black; -fx-background-color: lightgreen; -fx-border-color: black; -fx-font-size: 2em;");
 		}
 	}
-	
+
 	private void serverButStyle(Button x) {
-			x.setStyle(
-					"-fx-border-color: black; -fx-background-color: red; -fx-border-color: black; -fx-font-size: 2em; -fx-text-fill: white");
-			String [] arr = new String[] {portField.getText()};
-		x.setOnAction(e->Server.main(arr));
+		x.setStyle(
+				"-fx-border-color: black; -fx-background-color: red; -fx-border-color: black; -fx-font-size: 2em; -fx-text-fill: white");
+		String[] arr = new String[] { portField.getText() };
+		x.setOnAction(e -> startServer(arr));
+	}
+
+	private void startServer(String... arr) {
+		Thread thread = new Thread() {
+			public void run() {
+				Server.main(arr);
+			}
+		};
+		thread.start();
 	}
 
 	private void controlWelcome(Scene scene) {
