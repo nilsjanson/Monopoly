@@ -31,7 +31,7 @@ public class Server {
 		/**
 		 * Port auf dem der Server hoert.
 		 */
-		int port = 1337;
+		int port = 1099;
 		/**
 		 * Liste der Queues fuer Spieler
 		 */
