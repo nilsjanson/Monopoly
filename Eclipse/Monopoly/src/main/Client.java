@@ -92,8 +92,10 @@ public class Client extends Thread {
 					System.out.println(playerNumber + " ist am Zug");
 					if (playerNumber == ownPlayerNumber) { // ist der Client selber am Zug
 						System.out.println("Ich bin dran!");
-						board.aktionZugGemachtSem.acquire(board.aktionZugGemachtSem.availablePermits());
+						board.aktionZugGemachtSem = new Semaphore(0);
+	
 						board.yourTurn = true;
+						System.out.println("Ich bin dran!");
 						board.aktionZugGemachtSem.acquire();
 						int aktion = board.actionQueue.remove(0);
 						if (aktion != 2) {
@@ -121,7 +123,7 @@ public class Client extends Thread {
 				case 4: // Feld checken
 					checkFeld();
 					break;
-				case 5: // Stra�e kaufen
+				case 5: // Strasse kaufen
 					System.out.println(in.readUTF());
 					break;
 				case 6: // Auktion starten
@@ -186,6 +188,25 @@ public class Client extends Thread {
 					besitzRecht.setHypothek(!besitzRecht.isHypothek());
 					System.out.println("Auf" + besitzRecht.getName() + " wurde Hypothek aufgenommen/Abgenommen");
 					board.infoStage.setHypothek(besitzRecht);
+					break;
+				case 12: //Spieler ist raus
+					int playId = in.readInt();
+					playerList[playId] = null;
+					System.out.println(playerList[playId].getName()+" ist raus");
+					if(playId==ownPlayerNumber) {
+						System.out.println("Game over");
+					} 
+					int counter = 0;
+					Player winner = null ;
+					for(Player p : playerList) {
+						if(p!=null) {
+							winner = p;
+							counter++;
+						}
+					}
+					if(counter==1) {
+						System.out.println("Spiel ist vorbei. Spieler: " + winner.getName()+ " hat gewonnen" );
+					}
 					break;
 				default:
 					break;

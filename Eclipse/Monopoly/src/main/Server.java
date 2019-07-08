@@ -350,7 +350,8 @@ public class Server {
 					return true;
 				}
 				for (Grundstueck g : feld) {
-					if (g != null && g.getBesitzer().equals(this)) { // Grundstueck zum verkaufen gefunden.
+					if (g != null && g.getBesitzer()!=null && g.getBesitzer().getID()==this.ID) { // Grundstueck zum verkaufen gefunden.
+						System.out.println("SPiler besitzt noch:" + g.getName());
 						return true;
 					}
 				}
@@ -435,11 +436,15 @@ public class Server {
 			}
 
 			public void yourTurn(int playerNumber, boolean wuerfeln) throws IOException {
+				Client c = list.get(playerNumber);
+				int aktion = 0;
+				if((wuerfeln || (c.geld < 0 && c.canMakeMoney()))) {
 				broadcastInt(1);
 				broadcastInt(playerNumber);
-				int aktion = list.get(playerNumber).in.readInt();
-				Client c = list.get(playerNumber);
-				while (aktion != 2 || (!wuerfeln && (c.geld < 0 && c.canMakeMoney()))) {
+				aktion = list.get(playerNumber).in.readInt();
+				}
+				
+				while ((wuerfeln&&aktion != 2 )|| (!wuerfeln && (c.geld < 0 && c.canMakeMoney()))) {
 					int position = list.get(playerNumber).in.readInt();
 					switch (aktion) {
 					case 3: // Versteigerung
@@ -460,20 +465,46 @@ public class Server {
 
 						break;
 					}
-					broadcastInt(1);
-					broadcastInt(playerNumber);
-					aktion = list.get(playerNumber).in.readInt();
+					if(wuerfeln) {
+						broadcastInt(1);
+						broadcastInt(playerNumber);
+						aktion = list.get(playerNumber).in.readInt();
+					}else if(c.canMakeMoney()&&c.getGeld()<0) {
+						broadcastInt(1);
+						broadcastInt(playerNumber);
+						aktion = list.get(playerNumber).in.readInt();
+					}
+					
 
 				}
 				if (c.geld < 0) {
 					System.out.println(c.getName() + " ist pleite gegangen");
+					for(Client x: list) {
+						if(x.getName().equals(c.getName())) {
+							deletePlayer(x);
+						}
+					}
 				}
 				if (wuerfeln) {
 					wuerfeln(playerNumber);
 				}
 
 			}
+			
+			public void deletePlayer(Client c) {
+				try {
+					broadcastInt(12);
+					broadcastInt(c.getID());
+					list.remove(c);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
 		}
+		
+		
 
 		/**
 		 * Initialisierung eines neuen Spiels.
@@ -842,8 +873,12 @@ public class Server {
 			}
 			broadcastInt(-1);
 			broadcastInt(hoechstbieter.getID());
-			hoechstbieter.addGeld(-aktuellesGebot);
+			Client old = g.getBesitzer();
 			changeBesitzer(g, hoechstbieter);
+			if(old!=null) {
+			old.addGeld(aktuellesGebot);
+			}
+			hoechstbieter.addGeld(-aktuellesGebot);
 
 		}
 
