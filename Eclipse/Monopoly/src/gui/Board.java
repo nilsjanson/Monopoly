@@ -18,6 +18,7 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.effect.Reflection;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
@@ -520,6 +521,31 @@ public class Board {
 		this.port = port;
 	}
 	
+	public void youLost() {
+		winOrLoose(false);
+	}
+	
+	public void youWon() {
+		winOrLoose(true);
+	}
+	
+	public void winOrLoose(boolean won) {
+		VBox vbox = new VBox();
+		vbox.setAlignment(Pos.CENTER);
+		vbox.setStyle("-fx-background-color: rgb(" + 192 + "," + 254 + ", " + 213 + ");");
+		Label waiting;
+		if (won) {
+			waiting = new Label("You won!");
+		} else {
+			waiting = new Label("You Lost!");	
+		}
+		waiting.setStyle("-fx-font-size: 30pt;");
+		ImageView thp = new ImageView("/icons/TH-Poly-Logo.jpg");
+		vbox.getChildren().addAll(thp, waiting);
+		prime.setScene(new Scene(vbox));
+		prime.centerOnScreen();
+	}
+
 	
 
 }
