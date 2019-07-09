@@ -368,18 +368,8 @@ public class Board {
 						false);
 			}
 		});
-		// button.setStyle("-fx-background-color: transparent; -fx-background-image:
-		// url(\"/icons/3house.png\"); -fx-background-size: "+button.getWidth()+"
-		// "+button.getHeight()+"; -fx-rotate: 90;");
-		// /*
-		// * Platform.runLater(new Runnable() {
-		// *
-		// * @Override public void run() { // streetStageOpen = new StreetStage(me,
-		// * Besitzrechtkarte.findByName(x.getText()), false , false, false, false);
-		// }});
-		// */
+
 	}
-	// });}
 
 	void startMusik() {
 		final URL resource = getClass().getResource("/musik/AnnoDominiBeatsStillStanding.mp3");
