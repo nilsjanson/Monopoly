@@ -200,7 +200,7 @@ public class Board {
 		// infoStage = new InfoStage(me,Math.min(width, height), Math.max(width,
 		// height));
 		playerArr[0] = createPlayer(max * 0.075, max * 0.075, "/playerIcons/bike.png");
-		playerArr[1] = createPlayer(max * 0.075, max * 0.075, "/playerIcons/tank.png");
+		playerArr[1] = createPlayer(max * 0.075, max * 0.075, "/playerIcons/dog.png");
 		if (spieler > 2) {
 			playerArr[2] = createPlayer(max * 0.075, max * 0.075, "/playerIcons/tank.png");
 		}
