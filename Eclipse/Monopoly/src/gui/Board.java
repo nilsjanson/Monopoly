@@ -512,11 +512,27 @@ public class Board {
 	}
 	
 	public void youLost() {
-		winOrLoose(false);
+
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				winOrLoose(false);
+				
+
+			}
+		});
 	}
 	
 	public void youWon() {
-		winOrLoose(true);
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				winOrLoose(true);
+				
+
+			}
+		});
+		
 	}
 	
 	public void winOrLoose(boolean won) {
@@ -544,7 +560,7 @@ public class Board {
 				}
 			}
 		});
-		prime.setScene(new Scene(vbox));
+		prime.setScene(scene);
 		prime.centerOnScreen();
 	}
 

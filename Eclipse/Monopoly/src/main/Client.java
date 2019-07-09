@@ -191,8 +191,8 @@ public class Client extends Thread {
 					break;
 				case 12: //Spieler ist raus
 					int playId = in.readInt();
-					System.out.println(playerList[playId-1].getName()+" ist raus");
-					playerList[playId-1] = null;
+					System.out.println(playerList[playId].getName()+" ist raus");
+					playerList[playId] = null;
 					if(playId==ownPlayerNumber) {
 						System.out.println("Game over");
 						board.youLost();
