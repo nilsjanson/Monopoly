@@ -532,6 +532,18 @@ public class Board {
 		waiting.setStyle("-fx-font-size: 30pt;");
 		ImageView thp = new ImageView("/icons/TH-Poly-Logo.jpg");
 		vbox.getChildren().addAll(thp, waiting);
+		Scene scene = new Scene(vbox);
+		scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+
+			@Override
+			public void handle(KeyEvent event) {
+				switch (event.getCode()) {
+				default:
+					System.exit(0);
+					break;
+				}
+			}
+		});
 		prime.setScene(new Scene(vbox));
 		prime.centerOnScreen();
 	}
