@@ -156,5 +156,14 @@ public class Player {
 		names.add("Zollamt");
 		return names;
 	}
+	
+public static Player findPlayerByID(Player[] list, int id) {
+	for(Player p : list) {
+		if(p.getID() == id) {
+			return p;
+		}
+	}
+	return null;
+}
 
 }

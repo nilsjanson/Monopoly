@@ -191,10 +191,11 @@ public class Client extends Thread {
 					break;
 				case 12: //Spieler ist raus
 					int playId = in.readInt();
-					playerList[playId] = null;
-					System.out.println(playerList[playId].getName()+" ist raus");
+					System.out.println(playerList[playId-1].getName()+" ist raus");
+					playerList[playId-1] = null;
 					if(playId==ownPlayerNumber) {
 						System.out.println("Game over");
+						board.youLost();
 					} 
 					int counter = 0;
 					Player winner = null ;
@@ -206,6 +207,9 @@ public class Client extends Thread {
 					}
 					if(counter==1) {
 						System.out.println("Spiel ist vorbei. Spieler: " + winner.getName()+ " hat gewonnen" );
+						if(winner.getID()==ownPlayerNumber) {
+							board.youWon();
+						}
 					}
 					break;
 				default:
